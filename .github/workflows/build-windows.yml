@@ -30,8 +30,10 @@ jobs:
           node/target
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
     
-    - name: Build Windows Release
+    - name: Build Windows Release with Static CRT
       working-directory: ./node
+      env:
+        RUSTFLAGS: "-C target-feature=+crt-static"
       run: cargo build --release --bin PulseMeshNodeW
     
     - name: Create Release Package
@@ -40,6 +42,37 @@ jobs:
         New-Item -ItemType Directory -Force -Path release
         Copy-Item node/target/release/PulseMeshNodeW.exe release/
         Copy-Item README.md release/
+        
+        # Create a simple batch file for easy launching
+        @"
+@echo off
+echo Starting PulseMeshNode...
+echo.
+PulseMeshNodeW.exe
+pause
+"@ | Out-File -FilePath release/Start-PulseMeshNode.bat -Encoding ASCII
+        
+        # Create README for the release
+        @"
+# PulseMeshNode for Windows
+
+## Quick Start
+1. Double-click 'PulseMeshNodeW.exe' to start the node
+   OR
+   Double-click 'Start-PulseMeshNode.bat' for console output
+
+2. Configure your node settings in the UI
+
+3. Connect to the mesh network!
+
+## Requirements
+- Windows 10 or later (64-bit)
+- No additional software required!
+
+## Support
+Visit: https://github.com/Anunakie/PulseChainMeshNode
+"@ | Out-File -FilePath release/README.txt -Encoding UTF8
+        
         Compress-Archive -Path release/* -DestinationPath PulseMeshNode-Windows-x64.zip
     
     - name: Upload Artifact
