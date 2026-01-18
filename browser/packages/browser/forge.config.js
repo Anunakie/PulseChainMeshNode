@@ -14,7 +14,6 @@ module.exports = {
                 name: 'PulseMeshBrowser',
                 setupExe: 'PulseMeshBrowser-Setup.exe',
                 setupIcon: './src/main/icons/icon.ico',
-                // Create desktop and start menu shortcuts
                 createDesktopShortcut: true,
                 createStartMenuShortcut: true,
                 shortcutName: 'PulseMesh Browser',
@@ -34,19 +33,7 @@ module.exports = {
                     description: 'Privacy-focused browser for PulseChain mesh network',
                     categories: ['Network', 'WebBrowser'],
                     icon: './src/main/icons/icon.png',
-                }
-            },
-        },
-        {
-            name: '@electron-forge/maker-rpm',
-            config: {
-                options: {
-                    name: 'pulsemesh-browser',
-                    productName: 'PulseMesh Browser',
-                    genericName: 'Web Browser',
-                    description: 'Privacy-focused browser for PulseChain mesh network',
-                    categories: ['Network', 'WebBrowser'],
-                    icon: './src/main/icons/icon.png',
+                    bin: 'PulseMeshBrowser',
                 }
             },
         },

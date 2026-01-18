@@ -1,7 +1,7 @@
 import { getTabSession, getDefaultSession } from '../session';
 import tabsManager from '../tabs';
 import windowManager from '../window';
-const { ElectronChromeExtensions } = require('electron-chrome-extensions');
+const { ElectronChromeExtensions } = require('@masq-project/electron-chrome-extensions');
 const path = require('path');
 const fs = require('fs');
 
