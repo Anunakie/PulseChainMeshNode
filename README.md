@@ -1,53 +1,81 @@
-# PulseChainMeshNode
-
-**A decentralized mesh networking node for the PulseChain ecosystem**
+# ⬡ PulseChainMeshNode
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![PulseChain](https://img.shields.io/badge/Network-PulseChain-purple.svg)](https://pulsechain.com)
+[![PulseChain](https://img.shields.io/badge/Chain-PulseChain-purple.svg)](https://pulsechain.com)
+[![Status](https://img.shields.io/badge/Status-Token--Free%20Testing-green.svg)]()
 
-## Overview
+**Decentralized mesh networking for the PulseChain ecosystem.**
 
-PulseChainMeshNode is a privacy-focused, decentralized mesh networking solution built for the PulseChain network. It enables users to route internet traffic through a distributed network of nodes, providing enhanced privacy and censorship resistance.
+PulseChainMeshNode is a community-adapted fork of [MASQ Network](https://github.com/MASQ-Project/Node) focused on PulseChain compatibility, core mesh privacy, and open token-less testing — with token features planned for later phases.
 
-This project is a fork of the [MASQ Network](https://github.com/MASQ-Project/Node) adapted specifically for the PulseChain ecosystem.
+🌐 **Website:** [https://anunakie.github.io/PulseChainMeshNode/](https://anunakie.github.io/PulseChainMeshNode/)
 
-## Features
+---
 
-- **Decentralized Mesh Networking**: Route traffic through multiple nodes for enhanced privacy
-- **PulseChain Integration**: Native support for PulseChain mainnet (Chain ID: 369)
-- **Token-Free Testing Mode**: Currently operates without token requirements for testing and development
-- **Cross-Platform**: Supports Linux, macOS, and Windows
-- **Open Source**: Licensed under GPLv3
+## 🚀 Features
 
-## Current Status
+### 💳 PulseChain Web3 Wallets Built-In
+Ready-to-use Web3 wallets supporting PulseChain (Chain ID: 369) and compatible chains right from launch — making decentralized finance and interactions seamless without extra setup.
 
-⚠️ **Development/Testing Phase**
+### 📱 Organized Spaces for dApps
+Use Spaces to neatly organize your decentralized apps in a dock-style interface. Switch between focused workspaces effortlessly to reduce clutter and boost productivity.
 
-This project is currently in active development. Token functionality has been disabled to allow for testing and development without economic barriers. Future releases may integrate PulseChain-native tokens for network incentivization.
+### 🛡️ Supreme Ad & Tracker Blocking by Default
+All privacy protections enabled out-of-the-box: block cross-site trackers, cookies, and intrusive ads with no hidden toggles required for true default privacy.
 
-### What Works
-- PulseChain mainnet blockchain configuration
-- Basic mesh networking functionality
-- Node discovery and routing
+### 🗑️ Automatic History Self-Destruction
+Browsing history is limited by default and auto-deletes older entries. Customize how many items to keep before they permanently vanish for enhanced anonymity.
 
-### In Progress
-- Token integration for PulseChain
-- Smart contract deployment
-- Production hardening
+### 🌐 Decentralized dApp Access & Store Integration
+Connect through the PulseChainMeshNode mesh to browse and discover dApps on an uncensored, global network — with future plans for a built-in decentralized app library.
 
-## Quick Start
+### 🔐 Powerful Decentralized Mesh VPN (dMeshVPN)
+Route your traffic privately through multiple hops across the global PulseChainMeshNode network for strong anonymity, censorship resistance, and access to the true, unrestricted internet.
+
+### 💬 Wallet-to-Wallet Decentralized Chat
+Communicate directly peer-to-peer using Ethereum-compatible wallets via integrations like DM3 — no centralized platforms like traditional messengers needed.
+
+### 🔍 Privacy-Focused Decentralized Search
+Integrated search powered by decentralized engines that prioritizes user privacy — no tracking or profiling of your queries.
+
+### 📁 Decentralized File Sharing & Storage via IPFS
+Upload and share files securely using IPFS integration — content is distributed across nodes for censorship resistance, redundancy, and better privacy.
+
+### 💰 Future Bandwidth Sharing & Rewards (Coming Soon)
+Once token integration is added, share your unused bandwidth with the network to earn rewards — supplement privacy usage while supporting the decentralized mesh.
+
+---
+
+## ✅ Privacy by Default
+
+| Feature | Status |
+|---------|--------|
+| Ads blocked by default | ✅ |
+| Cross-site trackers blocked | ✅ |
+| Cookies blocked by default | ✅ |
+| Multi-hop dMesh routing | ✅ |
+| Country/region hopping | ✅ |
+| Auto history destruction | ✅ |
+| Decentralized search | ✅ |
+| IPFS storage integration | ✅ |
+| Wallet-based chat | ✅ |
+| PulseChain Web3 native | ✅ |
+| Privacy-first configuration | ✅ |
+| Open source & auditable | ✅ |
+
+---
+
+## ⚡ Quick Start
 
 ### Prerequisites
+- Rust 1.63 or higher
+- Git
 
-- Rust 1.60 or compatible version
-- Linux, macOS, or Windows
-- Internet connection
-
-### Building from Source
+### Build from Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/YourUsername/PulseChainMeshNode.git
+git clone https://github.com/Anunakie/PulseChainMeshNode.git
 cd PulseChainMeshNode
 
 # Build the project
@@ -56,65 +84,75 @@ cargo build --release
 
 # Run the node
 ./target/release/pulsemesh_node --help
+
+# Start with PulseChain mainnet
+./target/release/pulsemesh_node --chain pulse-mainnet
 ```
 
-### Configuration
+---
 
-The node can be configured via command-line arguments or configuration files. See the [documentation](docs/index.html) for detailed setup instructions.
+## 🗺️ Roadmap
 
-## Architecture
+### ✅ Phase 1: Fork & Rebrand
+- Fork MASQ Network codebase
+- Rebrand to PulseChainMeshNode
+- Add PulseChain support (Chain ID: 369)
+- Update RPC endpoints
 
-```
-PulseChainMeshNode/
-├── pulsemesh_lib/     # Core library with blockchain and networking primitives
-├── pulsemesh/         # CLI interface
-├── node/              # Main node binary (pulsemesh_node)
-├── automap/           # Automatic port mapping
-├── dns_utility/       # DNS utilities
-├── ip_country/        # IP geolocation
-└── docs/              # Documentation and website
-```
+### 🔄 Phase 2: Token-Free Testing (Current)
+- Disable token requirements for open testing
+- Build community and gather feedback
+- Improve documentation and setup guides
 
-## PulseChain Network Details
+### 📋 Phase 3: Smart Contracts
+- Deploy PulseChain-native smart contracts
+- Implement network incentivization
+- Add governance mechanisms
 
-| Parameter | Value |
-|-----------|-------|
-| Network | PulseChain Mainnet |
-| Chain ID | 369 |
-| Contract | TBD (Currently disabled) |
-| Token | TBD (Currently disabled) |
+### 🚀 Phase 4: Production Launch
+- Full production release
+- Token integration
+- Bandwidth rewards system
+- Mainnet deployment
 
-## Contributing
+---
 
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
+## 🔧 Technical Details
 
-## Credits
+- **Chain:** PulseChain Mainnet (Chain ID: 369)
+- **RPC:** https://rpc.pulsechain.com
+- **Language:** Rust
+- **License:** GPL-3.0
 
-This project is based on the excellent work of the [MASQ Project](https://github.com/MASQ-Project/Node). We are grateful for their open-source contribution to decentralized networking.
+---
 
-### Original MASQ Team
-- Dan Wiebe and the MASQ contributors
+## 🤝 Contributing
 
-## License
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m "Add some AmazingFeature"`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-```
-PulseChainMeshNode - Decentralized mesh networking for PulseChain
-Copyright (C) 2024 PulseChainMeshNode Contributors
+---
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-```
+## 📜 License
 
-## Disclaimer
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
 
-This software is provided "as is" without warranty of any kind. Use at your own risk. This project is not affiliated with or endorsed by PulseChain or the original MASQ Project.
+---
 
-## Links
+## 🙏 Acknowledgments
 
-- [Documentation](docs/index.html)
-- [PulseChain](https://pulsechain.com)
-- [Original MASQ Project](https://github.com/MASQ-Project/Node)
+- [MASQ Network](https://github.com/MASQ-Project/Node) - Original codebase
+- [PulseChain](https://pulsechain.com) - Blockchain platform
+- All contributors and community members
+
+---
+
+<p align="center">
+  <strong>⬡ PulseChainMeshNode</strong><br>
+  <em>Privacy-first mesh networking for PulseChain</em>
+</p>
