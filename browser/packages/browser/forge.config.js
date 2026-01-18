@@ -14,8 +14,6 @@ module.exports = {
                 name: 'PulseMeshBrowser',
                 setupExe: 'PulseMeshBrowser-Setup.exe',
                 setupIcon: './src/main/icons/icon.ico',
-                iconUrl: 'https://raw.githubusercontent.com/Anunakie/PulseChainMeshNode/main/browser/packages/browser/src/main/icons/icon.ico',
-                loadingGif: './src/main/icons/installing.gif',
                 // Create desktop and start menu shortcuts
                 createDesktopShortcut: true,
                 createStartMenuShortcut: true,

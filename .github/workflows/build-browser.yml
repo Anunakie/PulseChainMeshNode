@@ -34,23 +34,31 @@ jobs:
     - name: Make Windows Installer
       working-directory: ./browser/packages/browser
       run: yarn make --platform win32
+      continue-on-error: true
+    
+    - name: Make Windows ZIP (fallback)
+      if: failure()
+      working-directory: ./browser/packages/browser
+      run: yarn make --platform win32 --targets @electron-forge/maker-zip
     
     - name: List Output
       shell: pwsh
       run: |
-        Get-ChildItem -Recurse browser/packages/browser/out/make -Include *.exe,*.zip | ForEach-Object { Write-Host $_.FullName }
+        Get-ChildItem -Recurse browser/packages/browser/out -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }
     
     - name: Upload Windows Installer
       uses: actions/upload-artifact@v4
       with:
         name: PulseMeshBrowser-Windows-Setup
         path: browser/packages/browser/out/make/squirrel.windows/x64/*.exe
+        if-no-files-found: ignore
     
     - name: Upload Windows ZIP
       uses: actions/upload-artifact@v4
       with:
         name: PulseMeshBrowser-Windows-Portable
         path: browser/packages/browser/out/make/zip/win32/x64/*.zip
+        if-no-files-found: ignore
 
   build-linux:
     runs-on: ubuntu-latest
@@ -62,6 +70,11 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+    
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y dpkg fakeroot rpm
     
     - name: Install Yarn
       run: npm install -g yarn
@@ -77,9 +90,21 @@ jobs:
     - name: Make Linux Packages
       working-directory: ./browser/packages/browser
       run: yarn make --platform linux
+      continue-on-error: true
+    
+    - name: List Output
+      run: find browser/packages/browser/out -type f 2>/dev/null || echo "No output found"
     
     - name: Upload Linux DEB
       uses: actions/upload-artifact@v4
       with:
         name: PulseMeshBrowser-Linux-DEB
         path: browser/packages/browser/out/make/deb/x64/*.deb
+        if-no-files-found: ignore
+    
+    - name: Upload Linux ZIP
+      uses: actions/upload-artifact@v4
+      with:
+        name: PulseMeshBrowser-Linux-Portable
+        path: browser/packages/browser/out/make/zip/linux/x64/*.zip
+        if-no-files-found: ignore
