@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route } from 'react-router-dom';
-import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    RouterProvider,
-} from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 import WindowControl from '../../components/WindowControls';
 import Main from './Main';
@@ -12,10 +7,6 @@ import TitleBar from '../../components/TitleBar';
 
 import styles from './app.module.css';
 import Tab from './Tab/Tab';
-
-const router = createBrowserRouter(
-    createRoutesFromElements(<Route path="/main_window" element={<Main />} />)
-);
 
 const App = () => {
     const [tabs, setTabs] = useState([]);
@@ -40,40 +31,55 @@ const App = () => {
         setTimeout(() => getCurrentTabs(), 500);
     }, []);
 
-    window.electronApi.onTabsFound((_event, value) => {
-        console.log('tabsFound', value);
-        setTabs(value);
-    });
+    useEffect(() => {
+        const handleTabsFound = (_event, value) => {
+            console.log('tabsFound', value);
+            setTabs(value);
+        };
 
-    window.electronApi.onTabSelected((_event, value) => {
-        console.log('onTabSelected', value);
-        setSelected(value);
-    });
+        const handleTabSelected = (_event, value) => {
+            console.log('onTabSelected', value);
+            setSelected(value);
+        };
+
+        window.electronApi.onTabsFound(handleTabsFound);
+        window.electronApi.onTabSelected(handleTabSelected);
+
+        // Cleanup listeners on unmount
+        return () => {
+            // Note: If the API supports removing listeners, do it here
+        };
+    }, []);
 
     return (
-        <div className={styles.app}>
-            <RouterProvider router={router} />
-            <TitleBar />
-            <WindowControl />
-            <div className={styles.main_container}>
-                <button onClick={getCurrentTabs}>Get Current Tabs</button>
-                <div className={styles.browser_actions}>
-                    <browser-action-list></browser-action-list>
-                </div>
-                <div className={styles.tab_buttons}>
-                    {tabs.map((id) => (
-                        <button key={id} onClick={() => selectTab(id)}>
-                            {id}
-                        </button>
-                    ))}
-                </div>
-                <div className={styles.tab_container}>
-                    {tabs.map((id) => (
-                        <Tab key={id} id={id} selected={isSelected(id)} />
-                    ))}
+        <HashRouter>
+            <div className={styles.app}>
+                <TitleBar />
+                <WindowControl />
+                <div className={styles.main_container}>
+                    <Routes>
+                        <Route path="/" element={<Main />} />
+                        <Route path="/main_window" element={<Main />} />
+                        <Route path="*" element={<Main />} />
+                    </Routes>
+                    <div className={styles.browser_actions}>
+                        <browser-action-list></browser-action-list>
+                    </div>
+                    <div className={styles.tab_buttons}>
+                        {tabs.map((id) => (
+                            <button key={id} onClick={() => selectTab(id)}>
+                                {id}
+                            </button>
+                        ))}
+                    </div>
+                    <div className={styles.tab_container}>
+                        {tabs.map((id) => (
+                            <Tab key={id} id={id} selected={isSelected(id)} />
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
+        </HashRouter>
     );
 };
 
