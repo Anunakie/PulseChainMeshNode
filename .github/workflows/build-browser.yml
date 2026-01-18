@@ -34,31 +34,22 @@ jobs:
     - name: Make Windows Installer
       working-directory: ./browser/packages/browser
       run: yarn make --platform win32
-      continue-on-error: true
     
-    - name: Make Windows ZIP (fallback)
-      if: failure()
-      working-directory: ./browser/packages/browser
-      run: yarn make --platform win32 --targets @electron-forge/maker-zip
-    
-    - name: List Output
+    - name: List All Output Files
       shell: pwsh
       run: |
+        Write-Host "=== Listing all files in out directory ==="
         Get-ChildItem -Recurse browser/packages/browser/out -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }
     
-    - name: Upload Windows Installer
+    - name: Upload Windows Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: PulseMeshBrowser-Windows-Setup
-        path: browser/packages/browser/out/make/squirrel.windows/x64/*.exe
-        if-no-files-found: ignore
-    
-    - name: Upload Windows ZIP
-      uses: actions/upload-artifact@v4
-      with:
-        name: PulseMeshBrowser-Windows-Portable
-        path: browser/packages/browser/out/make/zip/win32/x64/*.zip
-        if-no-files-found: ignore
+        name: PulseMeshBrowser-Windows
+        path: |
+          browser/packages/browser/out/make/**/*.exe
+          browser/packages/browser/out/make/**/*.zip
+          browser/packages/browser/out/make/**/*.nupkg
+        if-no-files-found: warn
 
   build-linux:
     runs-on: ubuntu-latest
@@ -90,21 +81,18 @@ jobs:
     - name: Make Linux Packages
       working-directory: ./browser/packages/browser
       run: yarn make --platform linux
-      continue-on-error: true
     
-    - name: List Output
-      run: find browser/packages/browser/out -type f 2>/dev/null || echo "No output found"
+    - name: List All Output Files
+      run: |
+        echo "=== Listing all files in out directory ==="
+        find browser/packages/browser/out -type f 2>/dev/null || echo "No output found"
     
-    - name: Upload Linux DEB
+    - name: Upload Linux Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: PulseMeshBrowser-Linux-DEB
-        path: browser/packages/browser/out/make/deb/x64/*.deb
-        if-no-files-found: ignore
-    
-    - name: Upload Linux ZIP
-      uses: actions/upload-artifact@v4
-      with:
-        name: PulseMeshBrowser-Linux-Portable
-        path: browser/packages/browser/out/make/zip/linux/x64/*.zip
-        if-no-files-found: ignore
+        name: PulseMeshBrowser-Linux
+        path: |
+          browser/packages/browser/out/make/**/*.deb
+          browser/packages/browser/out/make/**/*.rpm
+          browser/packages/browser/out/make/**/*.zip
+        if-no-files-found: warn
