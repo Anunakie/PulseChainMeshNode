@@ -12,7 +12,24 @@ export const getExtensionFoldersAndManifests = (
     folders = [],
     manifests = []
 ) => {
-    const files = fs.readdirSync(directoryPath);
+    // Create the extensions directory if it doesn't exist
+    if (!fs.existsSync(directoryPath)) {
+        try {
+            fs.mkdirSync(directoryPath, { recursive: true });
+            console.log('Created extensions directory:', directoryPath);
+        } catch (err) {
+            console.error('Failed to create extensions directory:', err);
+            return { folders, manifests };
+        }
+    }
+
+    let files;
+    try {
+        files = fs.readdirSync(directoryPath);
+    } catch (err) {
+        console.error('Failed to read extensions directory:', err);
+        return { folders, manifests };
+    }
 
     for (const file of files) {
         const filePath = path.join(directoryPath, file);
