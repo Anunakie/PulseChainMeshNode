@@ -17,8 +17,8 @@ use actix::Addr;
 use actix::Context;
 use actix::Handler;
 use consuming_service::ConsumingService;
-use masq_lib::logger::Logger;
-use masq_lib::ui_gateway::NodeFromUiMessage;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
 use routing_service::RoutingService;
 
 pub const CRASH_KEY: &str = "HOPPER";
@@ -156,7 +156,7 @@ mod tests {
     use actix::Actor;
     use actix::System;
     use lazy_static::lazy_static;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use std::net::SocketAddr;
     use std::str::FromStr;
     use std::time::SystemTime;

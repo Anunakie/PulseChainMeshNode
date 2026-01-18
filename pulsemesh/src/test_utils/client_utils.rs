@@ -1,7 +1,7 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
-use masq_lib::messages::NODE_UI_PROTOCOL;
-use masq_lib::utils::localhost;
+use pulsemesh_lib::messages::NODE_UI_PROTOCOL;
+use pulsemesh_lib::utils::localhost;
 use std::net::TcpStream;
 use websocket::sync::Client;
 use websocket::ClientBuilder;

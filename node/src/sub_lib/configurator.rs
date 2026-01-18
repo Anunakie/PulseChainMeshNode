@@ -2,7 +2,7 @@
 
 use crate::sub_lib::peer_actors::BindMessage;
 use actix::Recipient;
-use masq_lib::ui_gateway::NodeFromUiMessage;
+use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
 

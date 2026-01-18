@@ -416,7 +416,7 @@ macro_rules! as_any_ref_in_trait {
     () => {
         #[cfg(test)]
         fn as_any(&self) -> &dyn std::any::Any {
-            use masq_lib::intentionally_blank;
+            use pulsemesh_lib::intentionally_blank;
             intentionally_blank!()
         }
     };
@@ -437,7 +437,7 @@ macro_rules! as_any_mut_in_trait {
     () => {
         #[cfg(test)]
         fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
-            use masq_lib::intentionally_blank;
+            use pulsemesh_lib::intentionally_blank;
             intentionally_blank!()
         }
     };
@@ -805,7 +805,7 @@ mod tests {
     #[test]
     fn type_name_of_works() {
         let result = type_name_of(running_test);
-        assert_eq!(result, "masq_lib::utils::running_test")
+        assert_eq!(result, "pulsemesh_lib::utils::running_test")
     }
 
     #[test]

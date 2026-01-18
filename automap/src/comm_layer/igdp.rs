@@ -10,12 +10,12 @@ use igd::{
     search_gateway, AddPortError, Gateway, GetExternalIpError, PortMappingProtocol,
     RemovePortError, SearchError, SearchOptions,
 };
-use masq_lib::debug;
-use masq_lib::error;
-use masq_lib::info;
-use masq_lib::logger::Logger;
-use masq_lib::utils::{AutomapProtocol, ExpectValue};
-use masq_lib::warning;
+use pulsemesh_lib::debug;
+use pulsemesh_lib::error;
+use pulsemesh_lib::info;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::utils::{AutomapProtocol, ExpectValue};
+use pulsemesh_lib::warning;
 use std::any::Any;
 use std::net::{IpAddr, Ipv4Addr, SocketAddrV4};
 use std::ops::Add;
@@ -583,7 +583,7 @@ mod tests {
     use crate::mocks::LocalIpFinderMock;
     use core::ptr::addr_of;
     use igd::RequestError;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
     use std::cell::RefCell;
     use std::net::Ipv6Addr;
     use std::ops::Sub;

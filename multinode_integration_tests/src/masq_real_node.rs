@@ -9,11 +9,11 @@ use crate::masq_node_server::MASQNodeServer;
 use crate::masq_node_ui_client::MASQNodeUIClient;
 use bip39::{Language, Mnemonic, Seed};
 use log::Level;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::constants::{CURRENT_LOGFILE_NAME, DEFAULT_UI_PORT};
-use masq_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
-use masq_lib::utils::{localhost, to_string};
-use masq_lib::utils::{DEFAULT_CONSUMING_DERIVATION_PATH, DEFAULT_EARNING_DERIVATION_PATH};
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::constants::{CURRENT_LOGFILE_NAME, DEFAULT_UI_PORT};
+use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
+use pulsemesh_lib::utils::{localhost, to_string};
+use pulsemesh_lib::utils::{DEFAULT_CONSUMING_DERIVATION_PATH, DEFAULT_EARNING_DERIVATION_PATH};
 use node_lib::blockchain::bip32::Bip32EncryptionKeyProvider;
 use node_lib::neighborhood::DEFAULT_MIN_HOPS;
 use node_lib::sub_lib::accountant::{
@@ -1243,9 +1243,9 @@ impl Drop for MASQRealNodeGuts {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use masq_lib::constants::{HTTP_PORT, TLS_PORT};
-    use masq_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
-    use masq_lib::utils::localhost;
+    use pulsemesh_lib::constants::{HTTP_PORT, TLS_PORT};
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
+    use pulsemesh_lib::utils::localhost;
 
     #[test]
     fn node_startup_config_builder_zero_hop() {

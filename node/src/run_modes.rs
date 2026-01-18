@@ -10,9 +10,9 @@ use crate::run_modes_factories::{
 use actix::System;
 use clap::Error;
 use futures::future::Future;
-use masq_lib::command::StdStreams;
-use masq_lib::multi_config::MultiConfig;
-use masq_lib::shared_schema::{ConfiguratorError, ParamError};
+use pulsemesh_lib::command::StdStreams;
+use pulsemesh_lib::multi_config::MultiConfig;
+use pulsemesh_lib::shared_schema::{ConfiguratorError, ParamError};
 use ProgramEntering::{Enter, Leave};
 
 #[derive(Debug, PartialEq, Eq)]
@@ -288,8 +288,8 @@ mod tests {
         DumpConfigRunnerMock, ServerInitializerFactoryMock, ServerInitializerMock,
     };
     use crate::server_initializer::test_utils::PrivilegeDropperMock;
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
-    use masq_lib::utils::slice_of_strs_to_vec_of_strings;
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::utils::slice_of_strs_to_vec_of_strings;
     use regex::Regex;
     use std::cell::RefCell;
     use std::ops::{Deref, Not};

@@ -5,8 +5,8 @@ use crate::terminal::secondary_infrastructure::{
     ChainedConstructors, InterfaceWrapper, MasqTerminal, WriterLock,
 };
 use linefeed::{Interface, Signal};
-use masq_lib::command::StdStreams;
-use masq_lib::constants::MASQ_PROMPT;
+use pulsemesh_lib::command::StdStreams;
+use pulsemesh_lib::constants::MASQ_PROMPT;
 use std::sync::Arc;
 
 #[cfg(not(test))]
@@ -20,7 +20,7 @@ mod prod_cfg {
 #[cfg(test)]
 mod test_cfg {
     pub use linefeed::memory::MemoryTerminal;
-    pub use masq_lib::intentionally_blank;
+    pub use pulsemesh_lib::intentionally_blank;
 }
 
 //Unlike the linefeed library is designed to be used, I stick with using the system stdout handles for writing into them instead of the custom handles provided from linefeed.

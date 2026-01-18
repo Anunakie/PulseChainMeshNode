@@ -6,12 +6,12 @@ use crate::commands::commands_common::{
     transaction, Command, CommandError, STANDARD_COMMAND_TIMEOUT_MILLIS,
 };
 use clap::{App, SubCommand};
-use masq_lib::as_any_ref_in_trait_impl;
-use masq_lib::constants::NODE_NOT_RUNNING_ERROR;
-use masq_lib::messages::{
+use pulsemesh_lib::as_any_ref_in_trait_impl;
+use pulsemesh_lib::constants::NODE_NOT_RUNNING_ERROR;
+use pulsemesh_lib::messages::{
     UiConnectionStage, UiConnectionStatusRequest, UiConnectionStatusResponse,
 };
-use masq_lib::short_writeln;
+use pulsemesh_lib::short_writeln;
 use std::fmt::Debug;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -84,8 +84,8 @@ mod tests {
     use crate::command_context::ContextError::ConnectionDropped;
     use crate::commands::commands_common::CommandError::ConnectionProblem;
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::constants::NODE_NOT_RUNNING_ERROR;
-    use masq_lib::messages::{
+    use pulsemesh_lib::constants::NODE_NOT_RUNNING_ERROR;
+    use pulsemesh_lib::messages::{
         ToMessageBody, UiConnectionStage, UiConnectionStatusRequest, UiConnectionStatusResponse,
     };
     use std::sync::{Arc, Mutex};

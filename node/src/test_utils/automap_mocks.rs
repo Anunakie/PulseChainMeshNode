@@ -3,7 +3,7 @@
 use crate::actor_system_factory::AutomapControlFactory;
 use automap_lib::comm_layer::AutomapError;
 use automap_lib::control_layer::automap_control::{AutomapControl, ChangeHandler};
-use masq_lib::utils::AutomapProtocol;
+use pulsemesh_lib::utils::AutomapProtocol;
 use std::cell::RefCell;
 use std::net::IpAddr;
 use std::sync::{Arc, Mutex};

@@ -6,11 +6,11 @@ use crate::commands::commands_common::{
     transaction, Command, CommandError, STANDARD_COMMAND_TIMEOUT_MILLIS,
 };
 use clap::{App, Arg, ArgGroup, SubCommand};
-use masq_lib::constants::EXIT_COUNTRY_MISSING_COUNTRIES_ERROR;
-use masq_lib::exit_locations::ExitLocationSet;
-use masq_lib::messages::{CountryGroups, UiSetExitLocationRequest, UiSetExitLocationResponse};
-use masq_lib::shared_schema::common_validators;
-use masq_lib::{as_any_ref_in_trait_impl, short_writeln};
+use pulsemesh_lib::constants::EXIT_COUNTRY_MISSING_COUNTRIES_ERROR;
+use pulsemesh_lib::exit_locations::ExitLocationSet;
+use pulsemesh_lib::messages::{CountryGroups, UiSetExitLocationRequest, UiSetExitLocationResponse};
+use pulsemesh_lib::shared_schema::common_validators;
+use pulsemesh_lib::{as_any_ref_in_trait_impl, short_writeln};
 use std::fmt::Debug;
 
 const EXIT_LOCATION_ABOUT: &str =
@@ -208,8 +208,8 @@ pub mod tests {
         Command, CommandError, STANDARD_COMMAND_TIMEOUT_MILLIS,
     };
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::constants::EXIT_COUNTRY_MISSING_COUNTRIES_ERROR;
-    use masq_lib::messages::{
+    use pulsemesh_lib::constants::EXIT_COUNTRY_MISSING_COUNTRIES_ERROR;
+    use pulsemesh_lib::messages::{
         CountryGroups, ExitLocation, ToMessageBody, UiSetExitLocationRequest,
         UiSetExitLocationResponse,
     };

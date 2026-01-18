@@ -37,15 +37,15 @@ use automap_lib::comm_layer::AutomapError;
 use automap_lib::control_layer::automap_control::{
     AutomapChange, AutomapControl, AutomapControlReal, ChangeHandler,
 };
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::crash_point::CrashPoint;
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::crash_point::CrashPoint;
 #[cfg(feature = "log_recipient_test")]
-use masq_lib::logger::log_broadcast_substitution_in_tests::prepare_log_recipient;
+use pulsemesh_lib::logger::log_broadcast_substitution_in_tests::prepare_log_recipient;
 #[cfg(not(feature = "log_recipient_test"))]
-use masq_lib::logger::prepare_log_recipient;
-use masq_lib::logger::Logger;
-use masq_lib::ui_gateway::{NodeFromUiMessage, NodeToUiMessage};
-use masq_lib::utils::{exit_process, AutomapProtocol};
+use pulsemesh_lib::logger::prepare_log_recipient;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::ui_gateway::{NodeFromUiMessage, NodeToUiMessage};
+use pulsemesh_lib::utils::{exit_process, AutomapProtocol};
 use std::net::{IpAddr, Ipv4Addr};
 use std::path::Path;
 
@@ -667,16 +667,16 @@ mod tests {
     use crossbeam_channel::unbounded;
     use lazy_static::lazy_static;
     use log::LevelFilter;
-    use masq_lib::constants::DEFAULT_CHAIN;
-    use masq_lib::crash_point::CrashPoint;
+    use pulsemesh_lib::constants::DEFAULT_CHAIN;
+    use pulsemesh_lib::crash_point::CrashPoint;
     #[cfg(feature = "log_recipient_test")]
-    use masq_lib::logger::INITIALIZATION_COUNTER;
-    use masq_lib::messages::{ToMessageBody, UiCrashRequest, UiDescriptorRequest};
-    use masq_lib::test_utils::environment_guard::EnvironmentGuard;
-    use masq_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
-    use masq_lib::ui_gateway::NodeFromUiMessage;
-    use masq_lib::utils::running_test;
-    use masq_lib::utils::AutomapProtocol::Igdp;
+    use pulsemesh_lib::logger::INITIALIZATION_COUNTER;
+    use pulsemesh_lib::messages::{ToMessageBody, UiCrashRequest, UiDescriptorRequest};
+    use pulsemesh_lib::test_utils::environment_guard::EnvironmentGuard;
+    use pulsemesh_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
+    use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
+    use pulsemesh_lib::utils::running_test;
+    use pulsemesh_lib::utils::AutomapProtocol::Igdp;
     use std::cell::RefCell;
     use std::collections::HashMap;
     use std::convert::TryFrom;

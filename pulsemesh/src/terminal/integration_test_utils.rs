@@ -4,10 +4,10 @@ use crate::terminal::line_reader::{split_quoted_line_for_fake_terminals_in_tests
 use crate::terminal::secondary_infrastructure::{MasqTerminal, WriterLock};
 use crossbeam_channel::{bounded, Sender, TryRecvError};
 use ctrlc;
-use masq_lib::command::StdStreams;
-use masq_lib::constants::MASQ_PROMPT;
-use masq_lib::short_writeln;
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::command::StdStreams;
+use pulsemesh_lib::constants::MASQ_PROMPT;
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::ExpectValue;
 use std::io::{stderr, stdin, stdout, Read, Write};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};

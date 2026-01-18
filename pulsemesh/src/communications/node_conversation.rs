@@ -2,8 +2,8 @@
 
 use crate::communications::connection_manager::OutgoingMessageType;
 use crossbeam_channel::{Receiver, RecvTimeoutError, Sender};
-use masq_lib::ui_gateway::{MessageBody, MessagePath};
-use masq_lib::ui_traffic_converter::UnmarshalError;
+use pulsemesh_lib::ui_gateway::{MessageBody, MessagePath};
+use pulsemesh_lib::ui_traffic_converter::UnmarshalError;
 use std::fmt::{Debug, Formatter};
 use std::time::Duration;
 
@@ -145,9 +145,9 @@ mod tests {
     use crate::communications::node_conversation::NodeConversationTermination::FiredAndForgotten;
     use crossbeam_channel::unbounded;
     use crossbeam_channel::TryRecvError;
-    use masq_lib::messages::FromMessageBody;
-    use masq_lib::messages::ToMessageBody;
-    use masq_lib::messages::{UiShutdownRequest, UiShutdownResponse, UiUnmarshalError};
+    use pulsemesh_lib::messages::FromMessageBody;
+    use pulsemesh_lib::messages::ToMessageBody;
+    use pulsemesh_lib::messages::{UiShutdownRequest, UiShutdownResponse, UiUnmarshalError};
 
     fn make_subject() -> (
         NodeConversation,

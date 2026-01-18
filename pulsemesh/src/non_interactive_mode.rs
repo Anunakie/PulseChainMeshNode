@@ -12,8 +12,8 @@ use crate::communications::broadcast_handler::{
 use crate::interactive_mode::go_interactive;
 use crate::non_interactive_clap::{NIClapFactory, NIClapFactoryReal};
 use crate::terminal::terminal_interface::TerminalWrapper;
-use masq_lib::command::{Command, StdStreams};
-use masq_lib::short_writeln;
+use pulsemesh_lib::command::{Command, StdStreams};
+use pulsemesh_lib::short_writeln;
 use std::io::Write;
 use std::ops::Not;
 
@@ -173,10 +173,10 @@ mod tests {
         CommandContextMock, CommandFactoryMock, CommandProcessorFactoryMock, CommandProcessorMock,
         MockCommand, NIClapFactoryMock, TerminalPassiveMock, TestStreamFactory,
     };
-    use masq_lib::intentionally_blank;
-    use masq_lib::messages::{ToMessageBody, UiNewPasswordBroadcast, UiShutdownRequest};
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
-    use masq_lib::utils::to_string;
+    use pulsemesh_lib::intentionally_blank;
+    use pulsemesh_lib::messages::{ToMessageBody, UiNewPasswordBroadcast, UiShutdownRequest};
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::utils::to_string;
     use std::any::Any;
     use std::sync::{Arc, Mutex};
 

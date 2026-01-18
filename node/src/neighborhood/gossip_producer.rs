@@ -5,7 +5,7 @@ use super::gossip::Gossip_0v1;
 use super::neighborhood_database::NeighborhoodDatabase;
 use crate::sub_lib::cryptde::PublicKey;
 use crate::sub_lib::utils::time_t_timestamp;
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 use std::cell::Cell;
 
 pub const DEAD_NODE_CHECK_INTERVAL_SECS: u32 = 60;
@@ -118,7 +118,7 @@ mod tests {
         db_from_node, make_node_record, make_node_record_cc,
     };
     use itertools::Itertools;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use std::collections::btree_set::BTreeSet;
     use std::convert::TryFrom;
 

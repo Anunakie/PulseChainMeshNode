@@ -3,9 +3,9 @@
 pub mod utils;
 
 use crate::utils::CommandConfig;
-use masq_lib::messages::{ToMessageBody, UiCrashRequest};
-use masq_lib::ui_traffic_converter::UiTrafficConverter;
-use masq_lib::utils::{find_free_port, localhost};
+use pulsemesh_lib::messages::{ToMessageBody, UiCrashRequest};
+use pulsemesh_lib::ui_traffic_converter::UiTrafficConverter;
+use pulsemesh_lib::utils::{find_free_port, localhost};
 use websocket::{ClientBuilder, OwnedMessage};
 
 //we test only those actors who are subscribers of UiGateway who are:

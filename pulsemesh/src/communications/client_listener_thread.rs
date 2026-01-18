@@ -1,8 +1,8 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
 use crossbeam_channel::{unbounded, Receiver, Sender};
-use masq_lib::ui_gateway::MessageBody;
-use masq_lib::ui_traffic_converter::UiTrafficConverter;
+use pulsemesh_lib::ui_gateway::MessageBody;
+use pulsemesh_lib::ui_traffic_converter::UiTrafficConverter;
 use std::net::TcpStream;
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -141,10 +141,10 @@ mod tests {
     use super::*;
     use crate::test_utils::client_utils::make_client;
     use crossbeam_channel::unbounded;
-    use masq_lib::messages::ToMessageBody;
-    use masq_lib::messages::{UiShutdownRequest, UiShutdownResponse};
-    use masq_lib::test_utils::mock_websockets_server::MockWebSocketsServer;
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::messages::ToMessageBody;
+    use pulsemesh_lib::messages::{UiShutdownRequest, UiShutdownResponse};
+    use pulsemesh_lib::test_utils::mock_websockets_server::MockWebSocketsServer;
+    use pulsemesh_lib::utils::find_free_port;
     use std::time::Duration;
     use websocket::ws::sender::Sender;
 

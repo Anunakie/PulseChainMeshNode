@@ -1,16 +1,16 @@
 // Copyright (c) 2022, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
 // TODO: GH-805
-// The actual mock server has been migrated to masq_lib/src/test_utils/mock_blockchain_client_server.rs
+// The actual mock server has been migrated to pulsemesh_lib/src/test_utils/mock_blockchain_client_server.rs
 
 #[cfg(test)]
 mod tests {
     use crate::masq_node_cluster::{DockerHostSocketAddr, MASQNodeCluster};
     use crossbeam_channel::unbounded;
-    use masq_lib::test_utils::mock_blockchain_client_server::{
+    use pulsemesh_lib::test_utils::mock_blockchain_client_server::{
         MockBlockchainClientServer, CONTENT_LENGTH_DETECTOR,
     };
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::utils::find_free_port;
     use serde_derive::{Deserialize, Serialize};
     use std::io::{ErrorKind, Read, Write};
     use std::net::TcpStream;

@@ -6,10 +6,10 @@ use crate::commands::commands_common::{
 };
 use crate::terminal::terminal_interface::TerminalWrapper;
 use clap::{App, Arg, SubCommand};
-use masq_lib::messages::{
+use pulsemesh_lib::messages::{
     UiChangePasswordRequest, UiChangePasswordResponse, UiNewPasswordBroadcast,
 };
-use masq_lib::{as_any_ref_in_trait_impl, short_writeln};
+use pulsemesh_lib::{as_any_ref_in_trait_impl, short_writeln};
 use std::io::Write;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -120,7 +120,7 @@ mod tests {
     use super::*;
     use crate::command_factory::{CommandFactory, CommandFactoryError, CommandFactoryReal};
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::messages::{ToMessageBody, UiChangePasswordRequest, UiChangePasswordResponse};
+    use pulsemesh_lib::messages::{ToMessageBody, UiChangePasswordRequest, UiChangePasswordResponse};
     use std::sync::{Arc, Mutex};
 
     #[test]

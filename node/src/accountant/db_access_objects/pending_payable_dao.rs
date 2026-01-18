@@ -9,7 +9,7 @@ use crate::blockchain::blockchain_bridge::PendingPayableFingerprint;
 use crate::blockchain::blockchain_interface::blockchain_interface_web3::HashAndAmount;
 use crate::database::rusqlite_wrappers::ConnectionWrapper;
 use crate::sub_lib::wallet::Wallet;
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::utils::ExpectValue;
 use rusqlite::Row;
 use std::collections::HashSet;
 use std::fmt::Debug;
@@ -285,7 +285,7 @@ mod tests {
     };
     use crate::database::rusqlite_wrappers::ConnectionWrapperReal;
     use crate::database::test_utils::ConnectionWrapperMock;
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
     use rusqlite::{Connection, OpenFlags};
     use std::str::FromStr;
     use std::time::SystemTime;

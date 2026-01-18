@@ -2,8 +2,8 @@
 
 pub(in crate::commands::financials_command) mod restricted {
     use crate::commands::financials_command::data_structures::restricted::UserOriginalTypingOfRanges;
-    use masq_lib::constants::{MASQ_TOTAL_SUPPLY, WEIS_IN_GWEI};
-    use masq_lib::utils::ExpectValue;
+    use pulsemesh_lib::constants::{MASQ_TOTAL_SUPPLY, WEIS_IN_GWEI};
+    use pulsemesh_lib::utils::ExpectValue;
     use num::CheckedMul;
     use regex::{Captures, Regex};
     use std::any::type_name;
@@ -310,7 +310,7 @@ mod tests {
         process_optionally_fractional_number,
     };
     use crate::commands::financials_command::test_utils::transpose_inputs_to_nested_tuples;
-    use masq_lib::constants::{MASQ_TOTAL_SUPPLY, WEIS_IN_GWEI};
+    use pulsemesh_lib::constants::{MASQ_TOTAL_SUPPLY, WEIS_IN_GWEI};
     use regex::Regex;
 
     #[test]

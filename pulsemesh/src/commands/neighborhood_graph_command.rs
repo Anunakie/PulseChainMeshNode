@@ -1,12 +1,12 @@
 use clap::{App, SubCommand};
-use masq_lib::{as_any_ref_in_trait_impl, short_writeln};
+use pulsemesh_lib::{as_any_ref_in_trait_impl, short_writeln};
 
 use crate::command_context::CommandContext;
 use crate::commands::commands_common::CommandError::Payload;
 use crate::commands::commands_common::{
     transaction, Command, CommandError, STANDARD_COMMAND_TIMEOUT_MILLIS,
 };
-use masq_lib::messages::{UiGetNeighborhoodGraphRequest, UiGetNeighborhoodGraphResponse};
+use pulsemesh_lib::messages::{UiGetNeighborhoodGraphRequest, UiGetNeighborhoodGraphResponse};
 
 const NEIGHBORHOOD_GRAPH_HELP: &str = "Use this command plainly, without any flags or arguments. The result will be delivered in digraph format, documentation at https://graphviz.org/documentation/";
 
@@ -58,7 +58,7 @@ impl Command for GetNeighborhoodGraphCommand {
 pub mod tests {
     use super::*;
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::messages::ToMessageBody;
+    use pulsemesh_lib::messages::ToMessageBody;
     use std::sync::{Arc, Mutex};
 
     #[test]

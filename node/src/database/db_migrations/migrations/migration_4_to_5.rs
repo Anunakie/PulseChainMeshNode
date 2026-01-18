@@ -91,9 +91,9 @@ mod tests {
     use crate::test_utils::make_wallet;
     use ethereum_types::BigEndianHash;
     use itertools::Itertools;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
-    use masq_lib::utils::NeighborhoodModeLight;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
+    use pulsemesh_lib::utils::NeighborhoodModeLight;
     use rusqlite::types::Value::Null;
     use rusqlite::ToSql;
     use std::collections::HashMap;

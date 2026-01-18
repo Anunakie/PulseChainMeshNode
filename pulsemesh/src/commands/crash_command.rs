@@ -3,7 +3,7 @@
 use crate::command_context::CommandContext;
 use crate::commands::commands_common::{send, Command, CommandError};
 use clap::{App, Arg, SubCommand};
-use masq_lib::messages::UiCrashRequest;
+use pulsemesh_lib::messages::UiCrashRequest;
 use std::fmt::Debug;
 
 #[derive(Debug)]
@@ -90,7 +90,7 @@ mod tests {
     use crate::command_context::ContextError;
     use crate::command_factory::{CommandFactory, CommandFactoryReal};
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::messages::ToMessageBody;
+    use pulsemesh_lib::messages::ToMessageBody;
     use std::sync::{Arc, Mutex};
 
     #[test]

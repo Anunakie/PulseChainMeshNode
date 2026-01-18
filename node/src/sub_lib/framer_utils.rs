@@ -1,5 +1,5 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
-use masq_lib::utils::index_of;
+use pulsemesh_lib::utils::index_of;
 
 #[derive(PartialEq, Eq, Debug)]
 pub struct ChunkOffsetLength {

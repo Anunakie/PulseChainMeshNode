@@ -8,8 +8,8 @@ use crate::blockchain::blockchain_bridge::RetrieveTransactions;
 use crate::sub_lib::peer_actors::BindMessage;
 use actix::Message;
 use actix::Recipient;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::ui_gateway::NodeFromUiMessage;
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
 use web3::types::U256;
@@ -89,7 +89,7 @@ mod tests {
     use crate::test_utils::persistent_configuration_mock::PersistentConfigurationMock;
     use crate::test_utils::recorder::{make_blockchain_bridge_subs_from_recorder, Recorder};
     use actix::{Actor, System};
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::utils::find_free_port;
     use std::sync::{Arc, Mutex};
 
     #[test]

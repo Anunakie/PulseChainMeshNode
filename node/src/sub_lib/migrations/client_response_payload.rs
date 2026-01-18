@@ -12,13 +12,13 @@ use std::convert::TryFrom;
 
 lazy_static! {
     pub static ref MIGRATIONS: Migrations = {
-        let current_version = masq_lib::constants::CLIENT_RESPONSE_PAYLOAD_CURRENT_VERSION;
+        let current_version = pulsemesh_lib::constants::CLIENT_RESPONSE_PAYLOAD_CURRENT_VERSION;
         let mut migrations = Migrations::new(current_version);
 
         migrate_value!(dv!(0, 1), ClientResponsePayload_0v1, ClientResponsePayloadMF_0v1, {|value: serde_cbor::Value| {
             ClientResponsePayload_0v1::try_from (&value)
         }});
-        migrations.add_step (masq_lib::data_version::FUTURE_VERSION, dv!(0, 1), Box::new (ClientResponsePayloadMF_0v1{}));
+        migrations.add_step (pulsemesh_lib::data_version::FUTURE_VERSION, dv!(0, 1), Box::new (ClientResponsePayloadMF_0v1{}));
 
         // add more steps here
 
@@ -95,7 +95,7 @@ impl TryFrom<&Value> for ClientResponsePayload_0v1 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use masq_lib::data_version::DataVersion;
+    use pulsemesh_lib::data_version::DataVersion;
     use serde_derive::{Deserialize, Serialize};
 
     #[test]

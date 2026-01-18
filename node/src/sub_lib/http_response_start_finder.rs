@@ -4,7 +4,7 @@ use crate::sub_lib::http_packet_framer::ChunkProgressState;
 use crate::sub_lib::http_packet_framer::HttpFramerState;
 use crate::sub_lib::http_packet_framer::HttpPacketStartFinder;
 use crate::sub_lib::http_packet_framer::PacketProgressState;
-use masq_lib::utils::index_of;
+use pulsemesh_lib::utils::index_of;
 use regex::Regex;
 
 const LONGEST_PREFIX_LEN: usize = 13;

@@ -174,7 +174,7 @@ impl ResolvConfDnsInspector {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
     use std::fs;
     use std::io::{Seek, SeekFrom, Write};
     use std::net::IpAddr;

@@ -15,12 +15,12 @@ use crate::sub_lib::node_addr::NodeAddr;
 use crate::sub_lib::wallet::Wallet;
 use clap::{value_t, Error};
 use itertools::Itertools;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::constants::{DEFAULT_CHAIN, MASQ_URL_PREFIX};
-use masq_lib::logger::Logger;
-use masq_lib::multi_config::MultiConfig;
-use masq_lib::shared_schema::{ConfiguratorError, ParamError};
-use masq_lib::utils::{to_string, AutomapProtocol, ExpectValue};
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::constants::{DEFAULT_CHAIN, PULSEMESH_URL_PREFIX};
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::multi_config::MultiConfig;
+use pulsemesh_lib::shared_schema::{ConfiguratorError, ParamError};
+use pulsemesh_lib::utils::{to_string, AutomapProtocol, ExpectValue};
 use rustc_hex::FromHex;
 use std::net::{IpAddr, Ipv4Addr};
 use std::str::FromStr;
@@ -421,7 +421,7 @@ fn validate_descriptors_from_user(
                     Err(ParamError::new(
                         "neighbors", &format!(
                             "Mismatched chains. You are requiring access to '{}' ({}{}:<public key>@<node address>) with descriptor belonging to '{}'",
-                            desired_chain, MASQ_URL_PREFIX,
+                            desired_chain, PULSEMESH_URL_PREFIX,
                             desired_chain,
                             competence_from_descriptor.rec().literal_identifier
                         )
@@ -638,11 +638,11 @@ mod tests {
     };
     use crate::test_utils::ArgsBuilder;
     use lazy_static::lazy_static;
-    use masq_lib::constants::DEFAULT_GAS_PRICE;
-    use masq_lib::multi_config::{CommandLineVcl, NameValueVclArg, VclArg, VirtualCommandLine};
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
-    use masq_lib::utils::running_test;
+    use pulsemesh_lib::constants::DEFAULT_GAS_PRICE;
+    use pulsemesh_lib::multi_config::{CommandLineVcl, NameValueVclArg, VclArg, VirtualCommandLine};
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
+    use pulsemesh_lib::utils::running_test;
     use std::path::PathBuf;
     use std::str::FromStr;
     use std::sync::{Arc, Mutex};

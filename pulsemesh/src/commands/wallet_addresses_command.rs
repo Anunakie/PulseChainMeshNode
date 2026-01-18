@@ -5,8 +5,8 @@ use crate::commands::commands_common::{
     transaction, Command, CommandError, STANDARD_COMMAND_TIMEOUT_MILLIS,
 };
 use clap::{App, Arg, SubCommand};
-use masq_lib::messages::{UiWalletAddressesRequest, UiWalletAddressesResponse};
-use masq_lib::{as_any_ref_in_trait_impl, short_writeln};
+use pulsemesh_lib::messages::{UiWalletAddressesRequest, UiWalletAddressesResponse};
+use pulsemesh_lib::{as_any_ref_in_trait_impl, short_writeln};
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct WalletAddressesCommand {
@@ -76,7 +76,7 @@ mod tests {
     use crate::command_factory::{CommandFactory, CommandFactoryReal};
     use crate::commands::commands_common::{Command, CommandError};
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::messages::{ToMessageBody, UiWalletAddressesRequest, UiWalletAddressesResponse};
+    use pulsemesh_lib::messages::{ToMessageBody, UiWalletAddressesRequest, UiWalletAddressesResponse};
     use std::sync::{Arc, Mutex};
 
     #[test]

@@ -1,6 +1,6 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 use crate::run_modes::RunModes;
-use masq_lib::command::StdStreams;
+use pulsemesh_lib::command::StdStreams;
 use std::io;
 
 pub fn main_with_args(args: &[String]) -> i32 {

@@ -2,9 +2,9 @@
 
 use crate::terminal::secondary_infrastructure::{InterfaceWrapper, MasqTerminal, WriterLock};
 use linefeed::{ReadResult, Signal};
-use masq_lib::command::StdStreams;
-use masq_lib::constants::MASQ_PROMPT;
-use masq_lib::short_writeln;
+use pulsemesh_lib::command::StdStreams;
+use pulsemesh_lib::constants::MASQ_PROMPT;
+use pulsemesh_lib::short_writeln;
 use std::error::Error;
 use std::fmt::Debug;
 use std::io::Write;
@@ -141,7 +141,7 @@ pub fn split_quoted_line_for_fake_terminals_in_tests(input: String) -> Vec<Strin
 mod tests {
     use super::*;
     use crate::test_utils::mocks::{InterfaceRawMock, WriterInactive};
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
     use std::io::ErrorKind;
     use std::sync::{Arc, Mutex};
 

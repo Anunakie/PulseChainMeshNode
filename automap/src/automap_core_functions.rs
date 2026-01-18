@@ -7,7 +7,7 @@ use crate::comm_layer::{AutomapError, AutomapErrorCause, Transactor};
 use crate::control_layer::automap_control::AutomapChange;
 use crate::probe_researcher::request_probe;
 use log::{error, info, warn};
-use masq_lib::utils::{find_free_port, AutomapProtocol};
+use pulsemesh_lib::utils::{find_free_port, AutomapProtocol};
 use std::env::Args;
 use std::net::{IpAddr, SocketAddr};
 use std::str::FromStr;

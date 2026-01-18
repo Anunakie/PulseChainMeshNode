@@ -3,7 +3,7 @@
 use crate::arbitrary_id_stamp_in_trait;
 use crate::sub_lib::blockchain_bridge::ConsumingWalletBalances;
 use crate::sub_lib::wallet::Wallet;
-use masq_lib::blockchains::chains::Chain;
+use pulsemesh_lib::blockchains::chains::Chain;
 
 // Table of chains by
 //

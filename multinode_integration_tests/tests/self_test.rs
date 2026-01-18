@@ -1,6 +1,6 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
-use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
 use multinode_integration_tests_lib::command::Command;
 use multinode_integration_tests_lib::main::CONTROL_STREAM_PORT;
 use multinode_integration_tests_lib::masq_cores_client::MASQCoresClient;

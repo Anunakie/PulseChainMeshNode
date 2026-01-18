@@ -1,12 +1,12 @@
 use crate::command_context::CommandContext;
 use crate::commands::commands_common::{transaction, Command, CommandError};
 use clap::{App, Arg, ArgGroup, SubCommand};
-use masq_lib::as_any_ref_in_trait_impl;
-use masq_lib::messages::{UiSetConfigurationRequest, UiSetConfigurationResponse};
-use masq_lib::shared_schema::gas_price_arg;
-use masq_lib::shared_schema::min_hops_arg;
-use masq_lib::short_writeln;
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::as_any_ref_in_trait_impl;
+use pulsemesh_lib::messages::{UiSetConfigurationRequest, UiSetConfigurationResponse};
+use pulsemesh_lib::shared_schema::gas_price_arg;
+use pulsemesh_lib::shared_schema::min_hops_arg;
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::ExpectValue;
 use std::num::IntErrorKind;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -99,7 +99,7 @@ pub fn set_configuration_subcommand() -> App<'static, 'static> {
 mod tests {
     use super::*;
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::messages::{
+    use pulsemesh_lib::messages::{
         ToMessageBody, UiSetConfigurationRequest, UiSetConfigurationResponse,
     };
     use std::sync::{Arc, Mutex};

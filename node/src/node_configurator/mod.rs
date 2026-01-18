@@ -15,13 +15,13 @@ use crate::sub_lib::utils::{db_connection_launch_panic, make_new_multi_config};
 use clap::{value_t, App};
 use core::option::Option;
 use dirs::{data_local_dir, home_dir};
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::constants::DEFAULT_CHAIN;
-use masq_lib::multi_config::{
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::constants::DEFAULT_CHAIN;
+use pulsemesh_lib::multi_config::{
     merge, CommandLineVcl, EnvironmentVcl, MultiConfig, VirtualCommandLine,
 };
-use masq_lib::shared_schema::ConfiguratorError;
-use masq_lib::utils::{add_masq_and_chain_directories, localhost};
+use pulsemesh_lib::shared_schema::ConfiguratorError;
+use pulsemesh_lib::utils::{add_masq_and_chain_directories, localhost};
 use std::env::current_dir;
 use std::net::{SocketAddr, TcpListener};
 use std::path::{Path, PathBuf};
@@ -351,10 +351,10 @@ mod tests {
     use super::*;
     use crate::node_test_utils::DirsWrapperMock;
     use crate::test_utils::ArgsBuilder;
-    use masq_lib::shared_schema::{config_file_arg, data_directory_arg, DATA_DIRECTORY_HELP};
-    use masq_lib::test_utils::environment_guard::EnvironmentGuard;
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::shared_schema::{config_file_arg, data_directory_arg, DATA_DIRECTORY_HELP};
+    use pulsemesh_lib::test_utils::environment_guard::EnvironmentGuard;
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::utils::find_free_port;
     use std::net::{SocketAddr, TcpListener};
 
     fn determine_config_file_path_app() -> App<'static, 'static> {

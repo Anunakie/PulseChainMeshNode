@@ -442,12 +442,12 @@ impl Serialize for Wallet {
 mod tests {
     use super::*;
     use crate::blockchain::test_utils::make_meaningless_seed;
-    use crate::masq_lib::utils::DEFAULT_CONSUMING_DERIVATION_PATH;
+    use crate::pulsemesh_lib::utils::DEFAULT_CONSUMING_DERIVATION_PATH;
     use crate::test_utils::make_paying_wallet;
     use crate::test_utils::make_wallet;
     use bip39::{Language, Mnemonic, Seed};
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
-    use masq_lib::utils::derivation_path;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::utils::derivation_path;
     use rusqlite::Connection;
     use rustc_hex::FromHex;
     use serde_cbor;

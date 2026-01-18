@@ -29,16 +29,16 @@ use crate::sub_lib::neighborhood::{NeighborhoodMode as NeighborhoodModeEnum, DEF
 use crate::sub_lib::utils::make_new_multi_config;
 use clap::{value_t, App};
 use itertools::Itertools;
-use masq_lib::blockchains::chains::Chain as BlockChain;
-use masq_lib::constants::DEFAULT_CHAIN;
-use masq_lib::logger::Logger;
-use masq_lib::messages::UiSetupResponseValueStatus::{Blank, Configured, Default, Required, Set};
-use masq_lib::messages::{UiSetupRequestValue, UiSetupResponseValue, UiSetupResponseValueStatus};
-use masq_lib::multi_config::{
+use pulsemesh_lib::blockchains::chains::Chain as BlockChain;
+use pulsemesh_lib::constants::DEFAULT_CHAIN;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::messages::UiSetupResponseValueStatus::{Blank, Configured, Default, Required, Set};
+use pulsemesh_lib::messages::{UiSetupRequestValue, UiSetupResponseValue, UiSetupResponseValueStatus};
+use pulsemesh_lib::multi_config::{
     CommandLineVcl, ConfigFileVcl, EnvironmentVcl, MultiConfig, VirtualCommandLine,
 };
-use masq_lib::shared_schema::{data_directory_arg, shared_app, ConfiguratorError};
-use masq_lib::utils::{
+use pulsemesh_lib::shared_schema::{data_directory_arg, shared_app, ConfiguratorError};
+use pulsemesh_lib::utils::{
     add_chain_specific_directory, to_string, ExpectValue, DATA_DIRECTORY_DAEMON_HELP,
 };
 use std::collections::HashMap;
@@ -284,7 +284,7 @@ impl SetupReporterReal {
         existing_setup_dir: Option<&UiSetupResponseValue>,
         incoming_setup_dir: Option<&UiSetupResponseValue>,
         all_but_configured: &SetupCluster,
-        chain: masq_lib::blockchains::chains::Chain,
+        chain: pulsemesh_lib::blockchains::chains::Chain,
         real_user: crate::bootstrapper::RealUser,
         data_directory_opt: Option<PathBuf>,
     ) -> (PathBuf, UiSetupResponseValueStatus) {
@@ -541,10 +541,10 @@ impl SetupReporterReal {
         // instead of Null, so that the key length is correct.
         bootstrapper_config.cryptde_pair = CryptDEPair::new(
             Box::new(CryptDEReal::new(
-                masq_lib::blockchains::chains::Chain::PolyMainnet,
+                pulsemesh_lib::blockchains::chains::Chain::PolyMainnet,
             )),
             Box::new(CryptDEReal::new(
-                masq_lib::blockchains::chains::Chain::PolyMainnet,
+                pulsemesh_lib::blockchains::chains::Chain::PolyMainnet,
             )),
         );
         bootstrapper_config.data_directory = data_directory.to_path_buf();
@@ -1254,14 +1254,14 @@ mod tests {
     };
     use crate::test_utils::{assert_string_contains, rate_pack};
     use core::option::Option;
-    use masq_lib::blockchains::chains::Chain as Blockchain;
-    use masq_lib::blockchains::chains::Chain::PolyAmoy;
-    use masq_lib::constants::{DEFAULT_CHAIN, DEFAULT_GAS_PRICE};
-    use masq_lib::messages::UiSetupResponseValueStatus::{Blank, Configured, Required, Set};
-    use masq_lib::test_utils::environment_guard::{ClapGuard, EnvironmentGuard};
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
-    use masq_lib::utils::{add_chain_specific_directory, AutomapProtocol};
+    use pulsemesh_lib::blockchains::chains::Chain as Blockchain;
+    use pulsemesh_lib::blockchains::chains::Chain::PolyAmoy;
+    use pulsemesh_lib::constants::{DEFAULT_CHAIN, DEFAULT_GAS_PRICE};
+    use pulsemesh_lib::messages::UiSetupResponseValueStatus::{Blank, Configured, Required, Set};
+    use pulsemesh_lib::test_utils::environment_guard::{ClapGuard, EnvironmentGuard};
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
+    use pulsemesh_lib::utils::{add_chain_specific_directory, AutomapProtocol};
     use std::cell::RefCell;
     use std::convert::TryFrom;
     #[cfg(not(target_os = "windows"))]
@@ -3292,7 +3292,7 @@ mod tests {
 
     #[test]
     fn neighbors_computed_default_persistent_config_present_password_present_values_present() {
-        let cryptde = CryptDEReal::new(masq_lib::blockchains::chains::Chain::Dev);
+        let cryptde = CryptDEReal::new(pulsemesh_lib::blockchains::chains::Chain::Dev);
         let past_neighbors_params_arc = Arc::new(Mutex::new(vec![]));
         let persistent_config = PersistentConfigurationMock::new()
             .past_neighbors_params(&past_neighbors_params_arc)

@@ -1,10 +1,10 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
 use crate::utils::{DaemonProcess, MasqProcess};
-use masq_lib::test_utils::utils::{
+use pulsemesh_lib::test_utils::utils::{
     ensure_node_home_directory_exists, is_running_under_github_actions,
 };
-use masq_lib::utils::find_free_port;
+use pulsemesh_lib::utils::find_free_port;
 use regex::Regex;
 use std::thread;
 use std::time::Duration;

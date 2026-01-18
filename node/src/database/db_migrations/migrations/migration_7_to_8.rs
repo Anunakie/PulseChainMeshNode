@@ -34,7 +34,7 @@ mod tests {
     use crate::test_utils::database_utils::{
         bring_db_0_back_to_life_and_return_connection, make_external_data, retrieve_config_row,
     };
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
 
     #[test]
     fn old_version_says_7() {

@@ -11,7 +11,7 @@ use rand::{thread_rng, Rng};
 
 use crate::automap_core_functions::{TestParameters, TestStatus};
 use crate::comm_layer::{AutomapError, AutomapErrorCause, Transactor};
-use masq_lib::utils::AutomapProtocol;
+use pulsemesh_lib::utils::AutomapProtocol;
 
 #[derive(Debug)]
 pub struct FirstSectionData {
@@ -187,7 +187,7 @@ mod tests {
     use super::*;
     use std::io::{ErrorKind, IoSlice};
 
-    use masq_lib::utils::{find_free_port_0000, localhost};
+    use pulsemesh_lib::utils::{find_free_port_0000, localhost};
 
     use crate::automap_core_functions::TestStatus;
     use crate::probe_researcher::{deploy_background_listener, generate_nonce};

@@ -4,7 +4,7 @@ use crate::proxy_server::tls_protocol_pack::TlsProtocolPack;
 use crate::sub_lib::cryptde::PlainData;
 use crate::sub_lib::dispatcher::InboundClientData;
 use crate::sub_lib::proxy_server::ProxyProtocol;
-use masq_lib::constants::{HTTP_PORT, TLS_PORT};
+use pulsemesh_lib::constants::{HTTP_PORT, TLS_PORT};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Host {

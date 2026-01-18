@@ -16,7 +16,7 @@ use crate::sub_lib::stream_key::StreamKey;
 use crate::sub_lib::tokio_wrappers::ReadHalfWrapper;
 use actix::Recipient;
 use crossbeam_channel::{unbounded, Receiver, Sender};
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 use std::io;
 use std::net::IpAddr;
 use std::net::SocketAddr;

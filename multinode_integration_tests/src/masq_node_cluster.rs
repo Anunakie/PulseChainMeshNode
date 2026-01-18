@@ -7,8 +7,8 @@ use crate::masq_mock_node::{
 use crate::masq_node::{MASQNode, MASQNodeUtils};
 use crate::masq_real_node::MASQRealNode;
 use crate::masq_real_node::NodeStartupConfig;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
 use node_lib::sub_lib::cryptde::PublicKey;
 use std::collections::HashMap;
 use std::collections::HashSet;

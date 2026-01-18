@@ -1,8 +1,8 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
-use masq_lib::utils::find_free_port;
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
+use pulsemesh_lib::utils::find_free_port;
 use multinode_integration_tests_lib::masq_mock_node::MASQMockNode;
 use multinode_integration_tests_lib::masq_node::{MASQNode, MASQNodeUtils, PortSelector};
 use multinode_integration_tests_lib::masq_node_cluster::MASQNodeCluster;

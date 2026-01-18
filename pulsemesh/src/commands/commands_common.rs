@@ -4,10 +4,10 @@ use crate::command_context::{CommandContext, ContextError};
 use crate::commands::commands_common::CommandError::{
     ConnectionProblem, Other, Payload, Reception, Transmission, UnexpectedResponse,
 };
-use masq_lib::intentionally_blank;
-use masq_lib::messages::{FromMessageBody, ToMessageBody, UiMessageError};
-use masq_lib::short_writeln;
-use masq_lib::ui_gateway::MessageBody;
+use pulsemesh_lib::intentionally_blank;
+use pulsemesh_lib::messages::{FromMessageBody, ToMessageBody, UiMessageError};
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::ui_gateway::MessageBody;
 use std::any::Any;
 use std::fmt::Debug;
 use std::fmt::Display;
@@ -125,9 +125,9 @@ mod tests {
         Other, Payload, Reception, Transmission, UnexpectedResponse,
     };
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::messages::{UiStartOrder, UiStartResponse};
-    use masq_lib::ui_gateway::MessagePath::Conversation;
-    use masq_lib::ui_gateway::{MessageBody, MessagePath};
+    use pulsemesh_lib::messages::{UiStartOrder, UiStartResponse};
+    use pulsemesh_lib::ui_gateway::MessagePath::Conversation;
+    use pulsemesh_lib::ui_gateway::{MessageBody, MessagePath};
 
     #[test]
     fn constants_have_correct_values() {

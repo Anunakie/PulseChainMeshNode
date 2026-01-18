@@ -13,8 +13,8 @@ use crate::blockchain::blockchain_interface::{BlockchainAgentBuildError, Blockch
 use crate::sub_lib::wallet::Wallet;
 use futures::{Future};
 use indoc::indoc;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::logger::Logger;
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::logger::Logger;
 use std::convert::{From, TryInto};
 use std::fmt::Debug;
 use actix::Recipient;
@@ -297,7 +297,7 @@ impl BlockchainInterfaceWeb3 {
 
     pub fn web3_gas_limit_const_part(chain: Chain) -> u128 {
         match chain {
-            Chain::EthMainnet | Chain::EthRopsten | Chain::Dev => 55_000,
+            Chain::PulseMainnet | Chain::EthMainnet | Chain::EthRopsten | Chain::Dev => 55_000,
             Chain::PolyMainnet | Chain::PolyAmoy | Chain::BaseMainnet | Chain::BaseSepolia => {
                 70_000
             }
@@ -452,11 +452,11 @@ mod tests {
     use crate::test_utils::make_wallet;
     use ethsign_crypto::Keccak256;
     use futures::Future;
-    use masq_lib::blockchains::chains::Chain;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::test_utils::mock_blockchain_client_server::MBCSBuilder;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::blockchains::chains::Chain;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::mock_blockchain_client_server::MBCSBuilder;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::utils::find_free_port;
     use std::net::Ipv4Addr;
     use std::str::FromStr;
     use web3::transports::Http;

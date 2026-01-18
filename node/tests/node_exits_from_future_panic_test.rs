@@ -3,9 +3,9 @@
 pub mod utils;
 
 use crate::utils::CommandConfig;
-use masq_lib::constants::DEFAULT_CHAIN;
-use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
-use masq_lib::utils::add_chain_specific_directory;
+use pulsemesh_lib::constants::DEFAULT_CHAIN;
+use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
+use pulsemesh_lib::utils::add_chain_specific_directory;
 use std::fs::create_dir_all;
 #[cfg(not(target_os = "windows"))]
 use std::process;

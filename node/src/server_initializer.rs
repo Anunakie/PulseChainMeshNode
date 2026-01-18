@@ -15,10 +15,10 @@ use flexi_logger::{
 use futures::try_ready;
 use lazy_static::lazy_static;
 use log::{log, Level};
-use masq_lib::command::StdStreams;
-use masq_lib::logger;
-use masq_lib::logger::{real_format_function, POINTER_TO_FORMAT_FUNCTION};
-use masq_lib::shared_schema::ConfiguratorError;
+use pulsemesh_lib::command::StdStreams;
+use pulsemesh_lib::logger;
+use pulsemesh_lib::logger::{real_format_function, POINTER_TO_FORMAT_FUNCTION};
+use pulsemesh_lib::shared_schema::ConfiguratorError;
 use std::any::Any;
 use std::io;
 use std::panic::{Location, PanicInfo};
@@ -255,7 +255,7 @@ fn panic_hook(panic_info: AltPanicInfo) {
     } else {
         "<message indecipherable>".to_string()
     };
-    let logger = masq_lib::logger::Logger::new("PanicHandler");
+    let logger = pulsemesh_lib::logger::Logger::new("PanicHandler");
     error!(logger, "{} - {}", location, message);
     let backtrace = Backtrace::new();
     error!(logger, "{:?}", backtrace);
@@ -392,13 +392,13 @@ pub mod tests {
     use crate::server_initializer::test_utils::PrivilegeDropperMock;
     use crate::test_utils::logfile_name_guard::LogfileNameGuard;
     use crate::test_utils::unshared_test_utils::make_pre_populated_mocked_directory_wrapper;
-    use masq_lib::constants::DEFAULT_CHAIN;
-    use masq_lib::crash_point::CrashPoint;
-    use masq_lib::multi_config::MultiConfig;
-    use masq_lib::shared_schema::{ConfiguratorError, ParamError};
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::utils::slice_of_strs_to_vec_of_strings;
+    use pulsemesh_lib::constants::DEFAULT_CHAIN;
+    use pulsemesh_lib::crash_point::CrashPoint;
+    use pulsemesh_lib::multi_config::MultiConfig;
+    use pulsemesh_lib::shared_schema::{ConfiguratorError, ParamError};
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::utils::slice_of_strs_to_vec_of_strings;
     use std::cell::RefCell;
     use std::ops::Not;
     use std::sync::{Arc, Mutex};

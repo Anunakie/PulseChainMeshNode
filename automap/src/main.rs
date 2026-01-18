@@ -7,7 +7,7 @@ use automap_lib::comm_layer::AutomapErrorCause;
 use automap_lib::control_layer::automap_control::{AutomapControl, AutomapControlReal};
 use automap_lib::logger::initiate_logger;
 use log::info;
-use masq_lib::utils::AutomapProtocol;
+use pulsemesh_lib::utils::AutomapProtocol;
 
 const SERVER_SOCKET_ADDRESS: &str = "54.212.109.41:8081";
 /*

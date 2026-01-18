@@ -16,7 +16,7 @@ use crate::database::db_migrations::migrator_utils::{
     DBMigDeclarator, DBMigrationUtilities, DBMigrationUtilitiesReal, DBMigratorInnerConfiguration,
 };
 use crate::database::rusqlite_wrappers::{ConnectionWrapper, TransactionSafeWrapper};
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 
 pub trait DbMigrator {
     fn migrate_database(
@@ -196,11 +196,11 @@ mod tests {
     use crate::database::rusqlite_wrappers::{ConnectionWrapper, ConnectionWrapperReal};
     use crate::database::test_utils::ConnectionWrapperMock;
     use crate::test_utils::database_utils::make_external_data;
-    use masq_lib::constants::CURRENT_SCHEMA_VERSION;
-    use masq_lib::logger::Logger;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
-    use masq_lib::utils::NeighborhoodModeLight;
+    use pulsemesh_lib::constants::CURRENT_SCHEMA_VERSION;
+    use pulsemesh_lib::logger::Logger;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::utils::NeighborhoodModeLight;
     use rusqlite::{Connection, Error};
     use std::cell::RefCell;
     use std::fmt::Debug;

@@ -6,10 +6,10 @@ use crate::commands::commands_common::CommandError::{
 };
 use crate::commands::commands_common::{transaction, Command, CommandError};
 use clap::{App, SubCommand};
-use masq_lib::constants::NODE_NOT_RUNNING_ERROR;
-use masq_lib::messages::{UiShutdownRequest, UiShutdownResponse};
-use masq_lib::short_writeln;
-use masq_lib::utils::localhost;
+use pulsemesh_lib::constants::NODE_NOT_RUNNING_ERROR;
+use pulsemesh_lib::messages::{UiShutdownRequest, UiShutdownResponse};
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::localhost;
 use std::fmt::Debug;
 use std::net::{SocketAddr, TcpStream};
 use std::ops::Add;
@@ -144,9 +144,9 @@ mod tests {
     use crate::command_factory::{CommandFactory, CommandFactoryReal};
     use crate::test_utils::mocks::CommandContextMock;
     use crossbeam_channel::unbounded;
-    use masq_lib::messages::ToMessageBody;
-    use masq_lib::messages::{UiShutdownRequest, UiShutdownResponse};
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::messages::ToMessageBody;
+    use pulsemesh_lib::messages::{UiShutdownRequest, UiShutdownResponse};
+    use pulsemesh_lib::utils::find_free_port;
     use std::cell::RefCell;
     use std::net::TcpListener;
     use std::sync::{Arc, Mutex};

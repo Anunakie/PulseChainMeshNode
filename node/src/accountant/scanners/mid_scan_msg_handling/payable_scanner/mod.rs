@@ -12,7 +12,7 @@ use crate::accountant::scanners::Scanner;
 use crate::sub_lib::blockchain_bridge::OutboundPaymentsInstructions;
 use actix::Message;
 use itertools::Either;
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 
 pub trait MultistagePayableScanner<BeginMessage, EndMessage>:
     Scanner<BeginMessage, EndMessage> + SolvencySensitivePaymentInstructor

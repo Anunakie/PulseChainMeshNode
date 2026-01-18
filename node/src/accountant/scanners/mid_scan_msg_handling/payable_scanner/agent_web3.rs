@@ -3,7 +3,7 @@
 use crate::accountant::scanners::mid_scan_msg_handling::payable_scanner::blockchain_agent::BlockchainAgent;
 use crate::sub_lib::blockchain_bridge::ConsumingWalletBalances;
 use crate::sub_lib::wallet::Wallet;
-use masq_lib::blockchains::chains::Chain;
+use pulsemesh_lib::blockchains::chains::Chain;
 
 #[derive(Debug, Clone)]
 pub struct BlockchainAgentWeb3 {
@@ -70,7 +70,7 @@ mod tests {
     use crate::accountant::scanners::mid_scan_msg_handling::payable_scanner::blockchain_agent::BlockchainAgent;
     use crate::sub_lib::blockchain_bridge::ConsumingWalletBalances;
     use crate::test_utils::make_wallet;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use web3::types::U256;
 
     #[test]

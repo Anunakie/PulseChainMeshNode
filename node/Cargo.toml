@@ -103,5 +103,4 @@ path = "src/lib.rs"
 
 #[profile.release]
 #opt-level = 0
-[patch.crates-io]
-socket2 = "0.5"
+

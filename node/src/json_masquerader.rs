@@ -2,7 +2,7 @@
 use crate::discriminator::UnmaskedChunk;
 use crate::masquerader::MasqueradeError;
 use crate::masquerader::Masquerader;
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 use serde_derive::{Deserialize, Serialize};
 
 pub struct JsonMasquerader {
@@ -135,8 +135,8 @@ struct JsonMasqueraderUnmaskStructure {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use masq_lib::test_utils::logging::init_test_logging;
-    use masq_lib::test_utils::logging::TestLogHandler;
+    use pulsemesh_lib::test_utils::logging::init_test_logging;
+    use pulsemesh_lib::test_utils::logging::TestLogHandler;
 
     #[test]
     fn json_masquerader_can_mask_and_unmask_bodytext() {

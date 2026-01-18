@@ -14,11 +14,11 @@ use actix::Context;
 use actix::Handler;
 use actix::Recipient;
 use lazy_static::lazy_static;
-use masq_lib::logger::Logger;
-use masq_lib::messages::{
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::messages::{
     FromMessageBody, ToMessageBody, UiDescriptorRequest, UiDescriptorResponse,
 };
-use masq_lib::ui_gateway::{MessageTarget, NodeFromUiMessage, NodeToUiMessage};
+use pulsemesh_lib::ui_gateway::{MessageTarget, NodeFromUiMessage, NodeToUiMessage};
 use std::net::{IpAddr, Ipv4Addr};
 
 pub const CRASH_KEY: &str = "DISPATCHER";
@@ -232,11 +232,11 @@ mod tests {
     use crate::test_utils::unshared_test_utils::prove_that_crash_request_handler_is_hooked_up;
     use actix::System;
     use lazy_static::lazy_static;
-    use masq_lib::blockchains::chains::Chain;
-    use masq_lib::constants::HTTP_PORT;
-    use masq_lib::messages::{ToMessageBody, UiDescriptorResponse};
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::ui_gateway::MessageTarget;
+    use pulsemesh_lib::blockchains::chains::Chain;
+    use pulsemesh_lib::constants::HTTP_PORT;
+    use pulsemesh_lib::messages::{ToMessageBody, UiDescriptorResponse};
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::ui_gateway::MessageTarget;
     use std::convert::TryFrom;
     use std::net::{IpAddr, Ipv4Addr, SocketAddr};
     use std::str::FromStr;

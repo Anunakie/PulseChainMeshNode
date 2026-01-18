@@ -25,12 +25,12 @@ use crate::commands::financials_command::pretty_print_utils::restricted::{
     triple_or_single_blank_line, StringValuesFormattableAccount,
 };
 use clap::ArgMatches;
-use masq_lib::messages::{
+use pulsemesh_lib::messages::{
     CustomQueries, QueryResults, RangeQuery, TopRecordsConfig, UiFinancialStatistics,
     UiFinancialsRequest, UiFinancialsResponse,
 };
-use masq_lib::short_writeln;
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::ExpectValue;
 use num::CheckedMul;
 use std::fmt::{Debug, Display};
 use std::io::Write;
@@ -323,12 +323,12 @@ mod tests {
     use crate::commands::financials_command::test_utils::transpose_inputs_to_nested_tuples;
     use crate::test_utils::mocks::CommandContextMock;
     use atty::Stream;
-    use masq_lib::messages::{
+    use pulsemesh_lib::messages::{
         ToMessageBody, TopRecordsOrdering, UiFinancialStatistics, UiFinancialsResponse,
         UiPayableAccount, UiReceivableAccount,
     };
-    use masq_lib::ui_gateway::MessageBody;
-    use masq_lib::utils::slice_of_strs_to_vec_of_strings;
+    use pulsemesh_lib::ui_gateway::MessageBody;
+    use pulsemesh_lib::utils::slice_of_strs_to_vec_of_strings;
     use regex::Regex;
     use std::sync::{Arc, Mutex};
 

@@ -2,12 +2,12 @@
 
 use crate::terminal::line_reader::TerminalEvent;
 use linefeed::{Interface, ReadResult, Signal, Writer};
-use masq_lib::command::StdStreams;
+use pulsemesh_lib::command::StdStreams;
 
 #[cfg(test)]
 mod test_cfg {
     pub use linefeed::memory::MemoryTerminal;
-    pub use masq_lib::intentionally_blank;
+    pub use pulsemesh_lib::intentionally_blank;
 }
 
 macro_rules! improvised_struct_id {

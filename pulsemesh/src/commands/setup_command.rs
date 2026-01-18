@@ -4,15 +4,15 @@ use crate::command_context::CommandContext;
 use crate::commands::commands_common::{transaction, Command, CommandError};
 use crate::terminal::terminal_interface::TerminalWrapper;
 use clap::{value_t, App, SubCommand};
-use masq_lib::as_any_ref_in_trait_impl;
-use masq_lib::constants::SETUP_ERROR;
-use masq_lib::messages::{
+use pulsemesh_lib::as_any_ref_in_trait_impl;
+use pulsemesh_lib::constants::SETUP_ERROR;
+use pulsemesh_lib::messages::{
     UiSetupBroadcast, UiSetupInner, UiSetupRequest, UiSetupRequestValue, UiSetupResponse,
     UiSetupResponseValue, UiSetupResponseValueStatus,
 };
-use masq_lib::shared_schema::{data_directory_arg, shared_app};
-use masq_lib::short_writeln;
-use masq_lib::utils::{index_of_from, DATA_DIRECTORY_DAEMON_HELP};
+use pulsemesh_lib::shared_schema::{data_directory_arg, shared_app};
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::{index_of_from, DATA_DIRECTORY_DAEMON_HELP};
 use std::fmt::Debug;
 use std::io::Write;
 use std::iter::Iterator;
@@ -164,10 +164,10 @@ mod tests {
     use crate::command_factory::{CommandFactory, CommandFactoryReal};
     use crate::communications::broadcast_handler::StreamFactory;
     use crate::test_utils::mocks::{CommandContextMock, TerminalPassiveMock, TestStreamFactory};
-    use masq_lib::constants::DEFAULT_CHAIN;
-    use masq_lib::messages::ToMessageBody;
-    use masq_lib::messages::UiSetupResponseValueStatus::{Configured, Default, Set};
-    use masq_lib::messages::{UiSetupRequest, UiSetupResponse, UiSetupResponseValue};
+    use pulsemesh_lib::constants::DEFAULT_CHAIN;
+    use pulsemesh_lib::messages::ToMessageBody;
+    use pulsemesh_lib::messages::UiSetupResponseValueStatus::{Configured, Default, Set};
+    use pulsemesh_lib::messages::{UiSetupRequest, UiSetupResponse, UiSetupResponseValue};
     use std::sync::{Arc, Mutex};
 
     #[test]

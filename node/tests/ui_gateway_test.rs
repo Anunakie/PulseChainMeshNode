@@ -3,16 +3,16 @@
 pub mod utils;
 
 use crate::utils::MASQNode;
-use masq_lib::constants::DEFAULT_CHAIN;
-use masq_lib::messages::SerializableLogLevel::Warn;
-use masq_lib::messages::{
+use pulsemesh_lib::constants::DEFAULT_CHAIN;
+use pulsemesh_lib::messages::SerializableLogLevel::Warn;
+use pulsemesh_lib::messages::{
     UiChangePasswordRequest, UiCheckPasswordRequest, UiCheckPasswordResponse, UiLogBroadcast,
     UiRedirect, UiSetupRequest, UiSetupResponse, UiShutdownRequest, UiStartOrder, UiStartResponse,
     UiWalletAddressesRequest, NODE_UI_PROTOCOL,
 };
-use masq_lib::test_utils::ui_connection::UiConnection;
-use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
-use masq_lib::utils::{add_chain_specific_directory, find_free_port};
+use pulsemesh_lib::test_utils::ui_connection::UiConnection;
+use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
+use pulsemesh_lib::utils::{add_chain_specific_directory, find_free_port};
 use std::net::TcpStream;
 use std::thread;
 use std::time::{Duration, SystemTime};

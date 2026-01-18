@@ -7,9 +7,9 @@ use crate::comm_layer::{
     AutomapError, HousekeepingThreadCommand, Transactor, DEFAULT_MAPPING_LIFETIME_SECONDS,
 };
 use crossbeam_channel::Sender;
-use masq_lib::debug;
-use masq_lib::logger::Logger;
-use masq_lib::utils::{plus, AutomapProtocol};
+use pulsemesh_lib::debug;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::utils::{plus, AutomapProtocol};
 use std::cell::{RefCell, RefMut};
 use std::collections::HashSet;
 use std::fmt::Debug;

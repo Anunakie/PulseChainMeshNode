@@ -34,10 +34,10 @@ use actix::Message;
 use actix::{Addr, Recipient};
 use futures::Future;
 use itertools::Itertools;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::logger::Logger;
-use masq_lib::messages::ScanType;
-use masq_lib::ui_gateway::NodeFromUiMessage;
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::messages::ScanType;
+use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
 use regex::Regex;
 use std::path::Path;
 use std::string::ToString;
@@ -583,21 +583,21 @@ mod tests {
     use crate::test_utils::{make_paying_wallet, make_wallet};
     use actix::System;
     use ethereum_types::U64;
-    use masq_lib::messages::ScanType;
-    use masq_lib::test_utils::logging::init_test_logging;
-    use masq_lib::test_utils::logging::TestLogHandler;
-    use masq_lib::test_utils::mock_blockchain_client_server::MBCSBuilder;
-    use masq_lib::test_utils::utils::{
+    use pulsemesh_lib::messages::ScanType;
+    use pulsemesh_lib::test_utils::logging::init_test_logging;
+    use pulsemesh_lib::test_utils::logging::TestLogHandler;
+    use pulsemesh_lib::test_utils::mock_blockchain_client_server::MBCSBuilder;
+    use pulsemesh_lib::test_utils::utils::{
         ensure_node_home_directory_exists, LogObject, TEST_DEFAULT_CHAIN,
     };
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::utils::find_free_port;
     use std::any::TypeId;
     use std::path::Path;
     use std::str::FromStr;
     use std::sync::{Arc, Mutex};
     use std::time::{Duration, SystemTime};
     use web3::types::{TransactionReceipt, H160};
-    use masq_lib::constants::DEFAULT_MAX_BLOCK_COUNT;
+    use pulsemesh_lib::constants::DEFAULT_MAX_BLOCK_COUNT;
     use crate::blockchain::blockchain_interface::blockchain_interface_web3::lower_level_interface_web3::{TransactionBlock, TxReceipt};
 
     impl Handler<AssertionsMessage<Self>> for BlockchainBridge {

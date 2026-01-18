@@ -58,7 +58,7 @@ use actix::Handler;
 use actix::MessageResult;
 use actix::System;
 use actix::{Actor, Message};
-use masq_lib::ui_gateway::{NodeFromUiMessage, NodeToUiMessage};
+use pulsemesh_lib::ui_gateway::{NodeFromUiMessage, NodeToUiMessage};
 use std::any::{Any, TypeId};
 use std::sync::{Arc, Mutex};
 use std::thread;

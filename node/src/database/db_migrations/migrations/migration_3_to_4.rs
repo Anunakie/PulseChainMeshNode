@@ -124,8 +124,8 @@ mod tests {
         bring_db_0_back_to_life_and_return_connection, make_external_data, retrieve_config_row,
     };
     use bip39::{Language, Mnemonic, MnemonicType, Seed};
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
-    use masq_lib::utils::{derivation_path, to_string};
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::utils::{derivation_path, to_string};
     use rand::Rng;
     use rusqlite::ToSql;
     use std::panic::{catch_unwind, AssertUnwindSafe};

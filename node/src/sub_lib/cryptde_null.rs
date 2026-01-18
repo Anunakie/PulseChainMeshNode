@@ -6,8 +6,8 @@ use crate::sub_lib::cryptde::PlainData;
 use crate::sub_lib::cryptde::PrivateKey;
 use crate::sub_lib::cryptde::PublicKey;
 use crate::sub_lib::cryptde::{CryptDE, SymmetricKey};
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::utils::ExpectValue;
 use rand::prelude::*;
 use rustc_hex::ToHex;
 use std::any::Any;
@@ -293,7 +293,7 @@ mod tests {
     use crate::bootstrapper::CryptDEPair;
     use ethsign_crypto::Keccak256;
     use lazy_static::lazy_static;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use std::panic::{catch_unwind, AssertUnwindSafe};
 
     lazy_static! {

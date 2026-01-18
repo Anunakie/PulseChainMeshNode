@@ -7,11 +7,11 @@ use crate::communications::client_listener_thread::{ClientListener, ClientListen
 use crate::communications::node_conversation::{NodeConversation, NodeConversationTermination};
 use crossbeam_channel::{unbounded, RecvTimeoutError};
 use crossbeam_channel::{Receiver, RecvError, Sender};
-use masq_lib::messages::{CrashReason, FromMessageBody, ToMessageBody, UiNodeCrashedBroadcast};
-use masq_lib::messages::{UiRedirect, NODE_UI_PROTOCOL};
-use masq_lib::ui_gateway::{MessageBody, MessagePath};
-use masq_lib::ui_traffic_converter::UiTrafficConverter;
-use masq_lib::utils::localhost;
+use pulsemesh_lib::messages::{CrashReason, FromMessageBody, ToMessageBody, UiNodeCrashedBroadcast};
+use pulsemesh_lib::messages::{UiRedirect, NODE_UI_PROTOCOL};
+use pulsemesh_lib::ui_gateway::{MessageBody, MessagePath};
+use pulsemesh_lib::ui_traffic_converter::UiTrafficConverter;
+use pulsemesh_lib::utils::localhost;
 use std::collections::{HashMap, HashSet};
 use std::net::TcpStream;
 use std::thread;
@@ -554,20 +554,20 @@ mod tests {
     use crate::communications::node_conversation::ClientError;
     use crate::test_utils::client_utils::make_client;
     use crossbeam_channel::TryRecvError;
-    use masq_lib::messages::{
+    use pulsemesh_lib::messages::{
         CrashReason, FromMessageBody, ToMessageBody, UiFinancialStatistics, UiNodeCrashedBroadcast,
         UiSetupBroadcast,
     };
-    use masq_lib::messages::{
+    use pulsemesh_lib::messages::{
         UiFinancialsRequest, UiFinancialsResponse, UiRedirect, UiSetupRequest, UiSetupResponse,
         UiShutdownRequest, UiShutdownResponse, UiStartOrder, UiStartResponse, UiUnmarshalError,
     };
-    use masq_lib::test_utils::mock_websockets_server::{
+    use pulsemesh_lib::test_utils::mock_websockets_server::{
         MockWebSocketsServer, MockWebSocketsServerStopHandle,
     };
     #[cfg(target_os = "windows")]
-    use masq_lib::test_utils::utils::is_running_under_github_actions;
-    use masq_lib::utils::{find_free_port, running_test};
+    use pulsemesh_lib::test_utils::utils::is_running_under_github_actions;
+    use pulsemesh_lib::utils::{find_free_port, running_test};
     use std::hash::Hash;
     use std::sync::{Arc, Mutex};
     use std::thread;

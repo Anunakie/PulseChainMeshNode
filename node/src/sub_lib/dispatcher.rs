@@ -6,7 +6,7 @@ use crate::sub_lib::peer_actors::{BindMessage, NewPublicIp};
 use crate::sub_lib::stream_handler_pool::TransmitDataMsg;
 use actix::Message;
 use actix::Recipient;
-use masq_lib::ui_gateway::NodeFromUiMessage;
+use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
 use pretty_hex::PrettyHex;
 use serde::de::Visitor;
 use serde::Deserialize;

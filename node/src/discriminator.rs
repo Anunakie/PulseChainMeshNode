@@ -2,7 +2,7 @@
 use crate::masquerader::{MasqueradeError, Masquerader};
 use crate::sub_lib::framer::Framer;
 use core::fmt::Debug;
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct UnmaskedChunk {
@@ -77,7 +77,7 @@ mod tests {
     use super::*;
     use crate::masquerader::MasqueradeError;
     use crate::sub_lib::framer::FramedChunk;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
     use std::cell::RefCell;
     use std::ops::DerefMut;
     use std::sync::Arc;

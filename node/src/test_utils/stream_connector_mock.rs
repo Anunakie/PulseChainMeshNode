@@ -5,7 +5,7 @@ use crate::sub_lib::stream_connector::StreamConnector;
 use crate::test_utils::tokio_wrapper_mocks::ReadHalfWrapperMock;
 use crate::test_utils::tokio_wrapper_mocks::WriteHalfWrapperMock;
 use futures::future::result;
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 use std::cell::RefCell;
 use std::io;
 use std::net::IpAddr;

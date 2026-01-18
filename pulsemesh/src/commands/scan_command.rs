@@ -3,7 +3,7 @@
 use crate::command_context::CommandContext;
 use crate::commands::commands_common::{transaction, Command, CommandError};
 use clap::{App, Arg, SubCommand};
-use masq_lib::messages::{ScanType, UiScanRequest, UiScanResponse};
+use pulsemesh_lib::messages::{ScanType, UiScanRequest, UiScanResponse};
 use std::fmt::Debug;
 use std::str::FromStr;
 
@@ -72,7 +72,7 @@ mod tests {
     use crate::command_context::ContextError;
     use crate::command_factory::{CommandFactory, CommandFactoryReal};
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::messages::{ToMessageBody, UiScanRequest};
+    use pulsemesh_lib::messages::{ToMessageBody, UiScanRequest};
     use std::sync::{Arc, Mutex};
 
     #[test]

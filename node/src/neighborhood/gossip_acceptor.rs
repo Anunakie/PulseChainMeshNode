@@ -11,7 +11,7 @@ use crate::sub_lib::neighborhood::{
     ConnectionProgressEvent, ConnectionProgressMessage, GossipFailure_0v1, NeighborhoodMetadata,
 };
 use crate::sub_lib::node_addr::NodeAddr;
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::net::{IpAddr, SocketAddr};
@@ -1439,9 +1439,9 @@ mod tests {
     use ip_country_lib::dbip_country::COUNTRIES;
     use itertools::Itertools;
     use lazy_static::lazy_static;
-    use masq_lib::messages::ExitLocation;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::messages::ExitLocation;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use std::convert::TryInto;
     use std::net::Ipv4Addr;
     use std::ops::{Add, Sub};

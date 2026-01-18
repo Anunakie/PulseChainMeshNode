@@ -1,7 +1,7 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
-use masq_lib::command::{Command, StdStreams};
-use masq_lib::constants::{HIGHEST_USABLE_PORT, LOWEST_USABLE_INSECURE_PORT};
+use pulsemesh_lib::command::{Command, StdStreams};
+use pulsemesh_lib::constants::{HIGHEST_USABLE_PORT, LOWEST_USABLE_INSECURE_PORT};
 use node_lib::sub_lib::framer::Framer;
 use node_lib::sub_lib::node_addr::NodeAddr;
 use node_lib::sub_lib::utils::indicates_dead_stream;
@@ -343,8 +343,8 @@ impl MockNode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::utils::find_free_port;
     use std::io::Read;
     use std::io::Write;
     use std::net::IpAddr;

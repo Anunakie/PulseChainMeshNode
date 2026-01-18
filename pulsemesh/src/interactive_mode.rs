@@ -7,9 +7,9 @@ use crate::non_interactive_mode::handle_command_common;
 use crate::schema::app;
 use crate::terminal::line_reader::TerminalEvent;
 use crate::terminal::terminal_interface::TerminalWrapper;
-use masq_lib::command::StdStreams;
-use masq_lib::short_writeln;
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::command::StdStreams;
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::ExpectValue;
 use std::io::Write;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -168,7 +168,7 @@ mod tests {
         CommandFactoryMock, CommandProcessorMock, TerminalActiveMock, TerminalPassiveMock,
     };
     use crossbeam_channel::bounded;
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
     use std::sync::{Arc, Mutex};
     use std::thread;
     use std::time::{Duration, Instant};

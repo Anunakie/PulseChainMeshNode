@@ -241,8 +241,8 @@ mod tests {
         assert_table_created_as_strict, bring_db_0_back_to_life_and_return_connection,
         make_external_data, retrieve_config_row,
     };
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
     use rusqlite::Row;
     use std::str::FromStr;
 

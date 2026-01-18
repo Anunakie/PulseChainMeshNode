@@ -5,7 +5,7 @@ use crate::command_context::{CommandContext, ContextError};
 use crate::commands::commands_common::{Command, CommandError};
 use crate::communications::broadcast_handler::BroadcastHandle;
 use crate::terminal::terminal_interface::TerminalWrapper;
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::utils::ExpectValue;
 
 pub trait CommandProcessorFactory {
     fn make(
@@ -82,10 +82,10 @@ mod tests {
     };
     use crate::test_utils::mocks::TestStreamFactory;
     use crossbeam_channel::{bounded, Sender};
-    use masq_lib::messages::UiShutdownRequest;
-    use masq_lib::messages::{ToMessageBody, UiCheckPasswordResponse, UiUndeliveredFireAndForget};
-    use masq_lib::test_utils::mock_websockets_server::MockWebSocketsServer;
-    use masq_lib::utils::{find_free_port, running_test, to_string};
+    use pulsemesh_lib::messages::UiShutdownRequest;
+    use pulsemesh_lib::messages::{ToMessageBody, UiCheckPasswordResponse, UiUndeliveredFireAndForget};
+    use pulsemesh_lib::test_utils::mock_websockets_server::MockWebSocketsServer;
+    use pulsemesh_lib::utils::{find_free_port, running_test, to_string};
     use std::thread;
     use std::time::Duration;
 

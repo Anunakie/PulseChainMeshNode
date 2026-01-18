@@ -2,7 +2,7 @@
 
 use actix::Message;
 use lazy_static::lazy_static;
-use masq_lib::messages::CrashReason;
+use pulsemesh_lib::messages::CrashReason;
 
 lazy_static! {
     static ref RECOGNIZERS: Vec<Box<dyn Recognizer>> = vec![

@@ -2,8 +2,8 @@
 
 use ethabi;
 use futures::Future;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::constants::MASQ_TOTAL_SUPPLY;
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::constants::MASQ_TOTAL_SUPPLY;
 use web3;
 use web3::contract::{Contract, Options};
 use web3::transports::Http;

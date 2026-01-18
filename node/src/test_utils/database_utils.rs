@@ -7,9 +7,9 @@ use crate::database::db_initializer::ExternalData;
 use crate::database::rusqlite_wrappers::ConnectionWrapper;
 
 use crate::database::db_migrations::db_migrator::DbMigrator;
-use masq_lib::logger::Logger;
-use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
-use masq_lib::utils::{to_string, NeighborhoodModeLight};
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+use pulsemesh_lib::utils::{to_string, NeighborhoodModeLight};
 use rusqlite::{Connection, Error};
 use std::cell::RefCell;
 use std::env::current_dir;

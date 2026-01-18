@@ -145,7 +145,7 @@ impl Hash for Bip32EncryptionKeyProvider {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::masq_lib::utils::{
+    use crate::pulsemesh_lib::utils::{
         DEFAULT_CONSUMING_DERIVATION_PATH, DEFAULT_EARNING_DERIVATION_PATH,
     };
     use bip39::{Language, Mnemonic, Seed};

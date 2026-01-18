@@ -16,7 +16,7 @@ use crate::sub_lib::versioned_data::VersionedData;
 use crate::sub_lib::wallet::Wallet;
 use actix::Message;
 use actix::Recipient;
-use masq_lib::ui_gateway::NodeFromUiMessage;
+use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
 use serde_derive::{Deserialize, Serialize};
 use std::fmt::Debug;
 use std::net::SocketAddr;
@@ -177,7 +177,7 @@ mod tests {
     use crate::test_utils::{make_meaningless_message_type, make_paying_wallet};
     use actix::Actor;
     use lazy_static::lazy_static;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use std::net::IpAddr;
     use std::str::FromStr;
 

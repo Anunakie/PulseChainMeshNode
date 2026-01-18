@@ -11,7 +11,7 @@ use crate::control_layer::automap_control::{
 };
 use crossbeam_channel::Sender;
 use lazy_static::lazy_static;
-use masq_lib::utils::AutomapProtocol;
+use pulsemesh_lib::utils::AutomapProtocol;
 use std::any::Any;
 use std::cell::RefCell;
 use std::io::ErrorKind;

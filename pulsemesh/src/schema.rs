@@ -21,7 +21,7 @@ use crate::commands::start_command::start_subcommand;
 use crate::commands::wallet_addresses_command::wallet_addresses_subcommand;
 use clap::{App, AppSettings, Arg};
 use lazy_static::lazy_static;
-use masq_lib::constants::{DEFAULT_UI_PORT, HIGHEST_USABLE_PORT, LOWEST_USABLE_INSECURE_PORT};
+use pulsemesh_lib::constants::{DEFAULT_UI_PORT, HIGHEST_USABLE_PORT, LOWEST_USABLE_INSECURE_PORT};
 
 lazy_static! {
     static ref UI_PORT_HELP: String = format!(

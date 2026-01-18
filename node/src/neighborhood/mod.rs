@@ -59,20 +59,20 @@ use gossip_acceptor::GossipAcceptorReal;
 use gossip_producer::GossipProducer;
 use gossip_producer::GossipProducerReal;
 use itertools::Itertools;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::constants::{EXIT_COUNTRY_MISSING_COUNTRIES_ERROR, PAYLOAD_ZERO_SIZE};
-use masq_lib::crash_point::CrashPoint;
-use masq_lib::exit_locations::ExitLocationSet;
-use masq_lib::logger::Logger;
-use masq_lib::messages::{
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::constants::{EXIT_COUNTRY_MISSING_COUNTRIES_ERROR, PAYLOAD_ZERO_SIZE};
+use pulsemesh_lib::crash_point::CrashPoint;
+use pulsemesh_lib::exit_locations::ExitLocationSet;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::messages::{
     ExitLocation, FromMessageBody, ToMessageBody, UiConnectionStage, UiConnectionStatusRequest,
     UiGetNeighborhoodGraphRequest, UiGetNeighborhoodGraphResponse, UiSetExitLocationRequest,
     UiSetExitLocationResponse,
 };
-use masq_lib::messages::{UiConnectionStatusResponse, UiShutdownRequest};
-use masq_lib::ui_gateway::MessagePath::Conversation;
-use masq_lib::ui_gateway::{MessageBody, MessageTarget, NodeFromUiMessage, NodeToUiMessage};
-use masq_lib::utils::{exit_process, ExpectValue, NeighborhoodModeLight};
+use pulsemesh_lib::messages::{UiConnectionStatusResponse, UiShutdownRequest};
+use pulsemesh_lib::ui_gateway::MessagePath::Conversation;
+use pulsemesh_lib::ui_gateway::{MessageBody, MessageTarget, NodeFromUiMessage, NodeToUiMessage};
+use pulsemesh_lib::utils::{exit_process, ExpectValue, NeighborhoodModeLight};
 use neighborhood_database::NeighborhoodDatabase;
 use node_record::NodeRecord;
 use std::collections::HashSet;
@@ -2203,15 +2203,15 @@ mod tests {
     use std::time::Instant;
     use tokio::prelude::Future;
 
-    use masq_lib::constants::{DEFAULT_CHAIN, TLS_PORT};
-    use masq_lib::messages::{
+    use pulsemesh_lib::constants::{DEFAULT_CHAIN, TLS_PORT};
+    use pulsemesh_lib::messages::{
         CountryGroups, ToMessageBody, UiConnectionChangeBroadcast, UiConnectionStage,
     };
-    use masq_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
-    use masq_lib::ui_gateway::MessageBody;
-    use masq_lib::ui_gateway::MessagePath::Conversation;
-    use masq_lib::ui_gateway::MessageTarget;
-    use masq_lib::utils::running_test;
+    use pulsemesh_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
+    use pulsemesh_lib::ui_gateway::MessageBody;
+    use pulsemesh_lib::ui_gateway::MessagePath::Conversation;
+    use pulsemesh_lib::ui_gateway::MessageTarget;
+    use pulsemesh_lib::utils::running_test;
 
     use crate::db_config::persistent_configuration::PersistentConfigError;
     use crate::neighborhood::gossip::Gossip_0v1;
@@ -2265,7 +2265,7 @@ mod tests {
         ConnectionProgress, ConnectionStage, OverallConnectionStage,
     };
     use crate::test_utils::unshared_test_utils::notify_handlers::NotifyLaterHandleMock;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
 
     lazy_static! {
         static ref CRYPTDE_PAIR: CryptDEPair = CryptDEPair::null();

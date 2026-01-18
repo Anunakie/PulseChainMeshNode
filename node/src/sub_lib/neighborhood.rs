@@ -20,11 +20,11 @@ use actix::Recipient;
 use core::fmt;
 use itertools::Itertools;
 use lazy_static::lazy_static;
-use masq_lib::blockchains::blockchain_records::CHAINS;
-use masq_lib::blockchains::chains::{chain_from_chain_identifier_opt, Chain};
-use masq_lib::constants::{CENTRAL_DELIMITER, CHAIN_IDENTIFIER_DELIMITER, MASQ_URL_PREFIX};
-use masq_lib::ui_gateway::NodeFromUiMessage;
-use masq_lib::utils::NeighborhoodModeLight;
+use pulsemesh_lib::blockchains::blockchain_records::CHAINS;
+use pulsemesh_lib::blockchains::chains::{chain_from_chain_identifier_opt, Chain};
+use pulsemesh_lib::constants::{CENTRAL_DELIMITER, CHAIN_IDENTIFIER_DELIMITER, PULSEMESH_URL_PREFIX};
+use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
+use pulsemesh_lib::utils::NeighborhoodModeLight;
 use serde_derive::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Formatter};
@@ -239,7 +239,7 @@ impl NodeDescriptor {
         let chain_identifier = self.blockchain.rec().literal_identifier;
         format!(
             "{}{}{}{}{}{}",
-            MASQ_URL_PREFIX,
+            PULSEMESH_URL_PREFIX,
             chain_identifier,
             CHAIN_IDENTIFIER_DELIMITER,
             contact_public_key_string,
@@ -285,7 +285,7 @@ fn second_dividing<'a>(front: &'a str, descriptor: &str) -> Result<(Chain, &'a s
 }
 
 fn strip_prefix(str_descriptor: &str) -> Result<&str, String> {
-    if let Some(str) = str_descriptor.strip_prefix(MASQ_URL_PREFIX) {
+    if let Some(str) = str_descriptor.strip_prefix(PULSEMESH_URL_PREFIX) {
         Ok(str)
     } else {
         Err(DescriptorParsingError::PrefixMissing(str_descriptor).to_string())
@@ -624,9 +624,9 @@ mod tests {
     use crate::sub_lib::utils::NotifyLaterHandleReal;
     use crate::test_utils::recorder::Recorder;
     use actix::Actor;
-    use masq_lib::constants::DEFAULT_CHAIN;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
-    use masq_lib::utils::{localhost, NeighborhoodModeLight};
+    use pulsemesh_lib::constants::DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::utils::{localhost, NeighborhoodModeLight};
     use std::str::FromStr;
 
     lazy_static! {
@@ -1047,7 +1047,7 @@ mod tests {
         let string_descriptor = descriptor.to_string(cryptde);
 
         let result = string_descriptor
-            .strip_prefix(MASQ_URL_PREFIX)
+            .strip_prefix(PULSEMESH_URL_PREFIX)
             .unwrap()
             .chars()
             .skip_while(|char| char != &CHAIN_IDENTIFIER_DELIMITER)

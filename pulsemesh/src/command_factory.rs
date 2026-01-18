@@ -113,7 +113,7 @@ impl CommandFactoryReal {
 mod tests {
     use super::*;
     use crate::command_factory::CommandFactoryError::UnrecognizedSubcommand;
-    use masq_lib::messages::CountryGroups;
+    use pulsemesh_lib::messages::CountryGroups;
 
     #[test]
     fn complains_about_unrecognized_subcommand() {

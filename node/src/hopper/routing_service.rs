@@ -15,7 +15,7 @@ use crate::sub_lib::proxy_client::{
 use crate::sub_lib::proxy_server::{ClientRequestPayload_0v1, ProxyServerSubs};
 use crate::sub_lib::stream_handler_pool::TransmitDataMsg;
 use actix::Recipient;
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 use std::borrow::Borrow;
 use std::convert::TryFrom;
 use std::net::SocketAddr;
@@ -529,9 +529,9 @@ mod tests {
     };
     use actix::System;
     use lazy_static::lazy_static;
-    use masq_lib::test_utils::environment_guard::EnvironmentGuard;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::environment_guard::EnvironmentGuard;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use std::net::SocketAddr;
     use std::str::FromStr;
     use std::time::SystemTime;

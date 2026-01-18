@@ -2,7 +2,7 @@
 
 use crate::command::Command;
 use crate::masq_node::MASQNodeUtils;
-use masq_lib::test_utils::utils::UrlHolder;
+use pulsemesh_lib::test_utils::utils::UrlHolder;
 use node_lib::test_utils;
 use std::net::{IpAddr, Ipv4Addr};
 

@@ -4,7 +4,7 @@ use crate::accountant::scanners::mid_scan_msg_handling::payable_scanner::blockch
 use crate::accountant::{ResponseSkeleton, SkeletonOptHolder};
 use crate::sub_lib::wallet::Wallet;
 use actix::Message;
-use masq_lib::type_obfuscation::Obfuscated;
+use pulsemesh_lib::type_obfuscation::Obfuscated;
 use std::fmt::Debug;
 
 #[derive(Debug, Message, PartialEq, Eq, Clone)]

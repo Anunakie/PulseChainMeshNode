@@ -8,10 +8,10 @@ use std::time::{Duration, Instant, SystemTime};
 use websocket::sync::Client;
 use websocket::{ClientBuilder, OwnedMessage, WebSocketError};
 
-use masq_lib::messages::NODE_UI_PROTOCOL;
-use masq_lib::ui_gateway::{MessageBody, MessagePath};
-use masq_lib::ui_traffic_converter::UiTrafficConverter;
-use masq_lib::utils::plus;
+use pulsemesh_lib::messages::NODE_UI_PROTOCOL;
+use pulsemesh_lib::ui_gateway::{MessageBody, MessagePath};
+use pulsemesh_lib::ui_traffic_converter::UiTrafficConverter;
+use pulsemesh_lib::utils::plus;
 
 pub struct MASQNodeUIClient {
     inner: RefCell<MASQNodeUIClientInner>,

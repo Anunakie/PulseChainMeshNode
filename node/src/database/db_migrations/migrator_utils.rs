@@ -3,9 +3,9 @@
 use crate::database::db_initializer::ExternalData;
 use crate::database::db_migrations::db_migrator::{DatabaseMigration, DbMigratorReal};
 use crate::database::rusqlite_wrappers::{ConnectionWrapper, TransactionSafeWrapper};
-use masq_lib::constants::CURRENT_SCHEMA_VERSION;
-use masq_lib::logger::Logger;
-use masq_lib::utils::{to_string, ExpectValue};
+use pulsemesh_lib::constants::CURRENT_SCHEMA_VERSION;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::utils::{to_string, ExpectValue};
 use rusqlite::{Error, ToSql};
 use std::fmt::{Display, Formatter};
 
@@ -240,8 +240,8 @@ mod tests {
     };
     use crate::database::rusqlite_wrappers::ConnectionWrapperReal;
     use crate::test_utils::database_utils::make_external_data;
-    use masq_lib::logger::Logger;
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::logger::Logger;
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
     use rusqlite::{Connection, Error, OptionalExtension, ToSql};
 
     #[test]

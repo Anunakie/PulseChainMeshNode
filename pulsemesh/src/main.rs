@@ -1,7 +1,7 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
 use masq_cli_lib::non_interactive_mode::Main;
-use masq_lib::command::{Command, StdStreams};
+use pulsemesh_lib::command::{Command, StdStreams};
 use std::io;
 
 fn main() {

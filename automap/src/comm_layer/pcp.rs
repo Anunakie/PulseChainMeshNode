@@ -12,11 +12,11 @@ use std::{io, thread};
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use rand::RngCore;
 
-use masq_lib::error;
-use masq_lib::info;
-use masq_lib::logger::Logger;
-use masq_lib::utils::AutomapProtocol;
-use masq_lib::{debug, warning};
+use pulsemesh_lib::error;
+use pulsemesh_lib::info;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::utils::AutomapProtocol;
+use pulsemesh_lib::{debug, warning};
 
 use crate::comm_layer::pcp_pmp_common::{
     find_routers, make_local_socket_address, FreePortFactory, FreePortFactoryReal, MappingConfig,
@@ -574,8 +574,8 @@ mod tests {
     use std::time::Duration;
     use std::{io, thread};
 
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::utils::localhost;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::utils::localhost;
 
     use crate::comm_layer::pcp_pmp_common::ROUTER_PORT;
     use crate::comm_layer::{AutomapErrorCause, LocalIpFinder};

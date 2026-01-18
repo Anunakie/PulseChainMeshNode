@@ -11,9 +11,9 @@ use std::time::{Duration, Instant};
 
 use crossbeam_channel::{unbounded, Receiver, Sender};
 
-use masq_lib::logger::Logger;
-use masq_lib::utils::AutomapProtocol;
-use masq_lib::{debug, error, info, warning};
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::utils::AutomapProtocol;
+use pulsemesh_lib::{debug, error, info, warning};
 
 use crate::comm_layer::pcp_pmp_common::{
     find_routers, make_local_socket_address, FreePortFactory, FreePortFactoryReal, MappingConfig,
@@ -526,8 +526,8 @@ mod tests {
 
     use lazy_static::lazy_static;
 
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::utils::AutomapProtocol;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::utils::AutomapProtocol;
 
     use crate::comm_layer::pcp_pmp_common::MappingConfig;
     use crate::comm_layer::AutomapErrorCause;

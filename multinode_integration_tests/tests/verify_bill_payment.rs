@@ -1,11 +1,11 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 use bip39::{Language, Mnemonic, Seed};
 use futures::Future;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::constants::WEIS_IN_GWEI;
-use masq_lib::messages::{ScanType, ToMessageBody, UiScanRequest};
-use masq_lib::test_utils::utils::UrlHolder;
-use masq_lib::utils::{derivation_path, find_free_port, NeighborhoodModeLight};
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::constants::WEIS_IN_GWEI;
+use pulsemesh_lib::messages::{ScanType, ToMessageBody, UiScanRequest};
+use pulsemesh_lib::test_utils::utils::UrlHolder;
+use pulsemesh_lib::utils::{derivation_path, find_free_port, NeighborhoodModeLight};
 use multinode_integration_tests_lib::blockchain::BlockchainServer;
 use multinode_integration_tests_lib::masq_node::{MASQNode, MASQNodeUtils};
 use multinode_integration_tests_lib::masq_node_cluster::MASQNodeCluster;

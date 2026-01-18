@@ -6,11 +6,11 @@ use crate::commands::commands_common::{
     dump_parameter_line, transaction, Command, CommandError, STANDARD_COMMAND_TIMEOUT_MILLIS,
 };
 use clap::{App, Arg, SubCommand};
-use masq_lib::as_any_ref_in_trait_impl;
-use masq_lib::constants::NODE_NOT_RUNNING_ERROR;
-use masq_lib::messages::{UiConfigurationRequest, UiConfigurationResponse};
-use masq_lib::short_writeln;
-use masq_lib::utils::to_string;
+use pulsemesh_lib::as_any_ref_in_trait_impl;
+use pulsemesh_lib::constants::NODE_NOT_RUNNING_ERROR;
+use pulsemesh_lib::messages::{UiConfigurationRequest, UiConfigurationResponse};
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::to_string;
 use std::fmt::{Debug, Display};
 use std::io::Write;
 use std::iter::once;
@@ -225,11 +225,11 @@ mod tests {
     use crate::command_factory::{CommandFactory, CommandFactoryReal};
     use crate::commands::commands_common::CommandError::ConnectionProblem;
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::constants::NODE_NOT_RUNNING_ERROR;
-    use masq_lib::messages::{
+    use pulsemesh_lib::constants::NODE_NOT_RUNNING_ERROR;
+    use pulsemesh_lib::messages::{
         ToMessageBody, UiConfigurationResponse, UiPaymentThresholds, UiRatePack, UiScanIntervals,
     };
-    use masq_lib::utils::AutomapProtocol;
+    use pulsemesh_lib::utils::AutomapProtocol;
     use std::sync::{Arc, Mutex};
 
     #[test]

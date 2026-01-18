@@ -4,8 +4,8 @@
 use crate::database::db_initializer::ExternalData;
 use crate::database::db_migrations::migrator_utils::{DBMigDeclarator, StatementObject};
 use crate::database::rusqlite_wrappers::TransactionSafeWrapper;
-use masq_lib::logger::Logger;
-use masq_lib::utils::to_string;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::utils::to_string;
 use std::cell::RefCell;
 use std::sync::{Arc, Mutex};
 

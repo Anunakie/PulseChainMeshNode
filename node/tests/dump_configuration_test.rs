@@ -3,11 +3,11 @@
 pub mod utils;
 
 use crate::utils::CommandConfig;
-use masq_lib::constants::{CURRENT_SCHEMA_VERSION, DEFAULT_CHAIN};
-use masq_lib::messages::{UiShutdownRequest, NODE_UI_PROTOCOL};
-use masq_lib::test_utils::environment_guard::EnvironmentGuard;
-use masq_lib::test_utils::ui_connection::UiConnection;
-use masq_lib::utils::find_free_port;
+use pulsemesh_lib::constants::{CURRENT_SCHEMA_VERSION, DEFAULT_CHAIN};
+use pulsemesh_lib::messages::{UiShutdownRequest, NODE_UI_PROTOCOL};
+use pulsemesh_lib::test_utils::environment_guard::EnvironmentGuard;
+use pulsemesh_lib::test_utils::ui_connection::UiConnection;
+use pulsemesh_lib::utils::find_free_port;
 use node_lib::test_utils::assert_string_contains;
 
 #[test]

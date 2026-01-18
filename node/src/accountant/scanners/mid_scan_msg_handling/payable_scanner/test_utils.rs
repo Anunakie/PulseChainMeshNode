@@ -7,7 +7,7 @@ use crate::sub_lib::blockchain_bridge::ConsumingWalletBalances;
 use crate::sub_lib::wallet::Wallet;
 use crate::test_utils::unshared_test_utils::arbitrary_id_stamp::ArbitraryIdStamp;
 use crate::{arbitrary_id_stamp_in_trait_impl, set_arbitrary_id_stamp_in_mock_impl};
-use masq_lib::blockchains::chains::Chain;
+use pulsemesh_lib::blockchains::chains::Chain;
 use std::cell::RefCell;
 
 pub struct BlockchainAgentMock {

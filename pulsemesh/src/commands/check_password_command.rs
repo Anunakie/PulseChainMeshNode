@@ -5,10 +5,10 @@ use crate::commands::commands_common::{
     transaction, Command, CommandError, STANDARD_COMMAND_TIMEOUT_MILLIS,
 };
 use clap::{App, Arg, SubCommand};
-use masq_lib::as_any_ref_in_trait_impl;
-use masq_lib::messages::{UiCheckPasswordRequest, UiCheckPasswordResponse};
-use masq_lib::short_writeln;
-use masq_lib::utils::to_string;
+use pulsemesh_lib::as_any_ref_in_trait_impl;
+use pulsemesh_lib::messages::{UiCheckPasswordRequest, UiCheckPasswordResponse};
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::to_string;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct CheckPasswordCommand {
@@ -73,7 +73,7 @@ mod tests {
     use crate::command_factory::{CommandFactory, CommandFactoryError, CommandFactoryReal};
     use crate::commands::commands_common::{Command, CommandError};
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::messages::{ToMessageBody, UiCheckPasswordRequest, UiCheckPasswordResponse};
+    use pulsemesh_lib::messages::{ToMessageBody, UiCheckPasswordRequest, UiCheckPasswordResponse};
     use std::sync::{Arc, Mutex};
 
     #[test]

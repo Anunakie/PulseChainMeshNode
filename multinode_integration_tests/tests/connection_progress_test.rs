@@ -2,11 +2,11 @@
 
 use std::time::Duration;
 
-use masq_lib::messages::{
+use pulsemesh_lib::messages::{
     FromMessageBody, ToMessageBody, UiConnectionChangeBroadcast, UiConnectionStage,
     UiConnectionStatusRequest, UiConnectionStatusResponse,
 };
-use masq_lib::utils::find_free_port;
+use pulsemesh_lib::utils::find_free_port;
 use multinode_integration_tests_lib::masq_node::MASQNode;
 use multinode_integration_tests_lib::masq_node_cluster::MASQNodeCluster;
 use multinode_integration_tests_lib::masq_real_node::{

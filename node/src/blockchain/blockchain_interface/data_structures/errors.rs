@@ -122,7 +122,7 @@ mod tests {
     use crate::blockchain::blockchain_interface::{BlockchainAgentBuildError, BlockchainError};
     use crate::blockchain::test_utils::make_tx_hash;
     use crate::test_utils::make_wallet;
-    use masq_lib::utils::{slice_of_strs_to_vec_of_strings, to_string};
+    use pulsemesh_lib::utils::{slice_of_strs_to_vec_of_strings, to_string};
 
     #[test]
     fn constants_have_correct_values() {

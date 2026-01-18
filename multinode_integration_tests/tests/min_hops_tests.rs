@@ -1,7 +1,7 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
-use masq_lib::messages::{ToMessageBody, UiSetConfigurationRequest};
-use masq_lib::utils::{find_free_port, index_of};
+use pulsemesh_lib::messages::{ToMessageBody, UiSetConfigurationRequest};
+use pulsemesh_lib::utils::{find_free_port, index_of};
 use multinode_integration_tests_lib::masq_node::MASQNode;
 use multinode_integration_tests_lib::masq_node_cluster::MASQNodeCluster;
 use multinode_integration_tests_lib::masq_real_node::{

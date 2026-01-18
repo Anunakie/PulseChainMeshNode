@@ -3,11 +3,11 @@
 use crate::bootstrapper::{BootstrapperConfig, CryptDEPair};
 use crate::node_configurator::{initialize_database, DirsWrapper, FieldPair, NodeConfigurator};
 use crate::node_configurator::{ConfigInitializationData, DirsWrapperReal};
-use masq_lib::crash_point::CrashPoint;
-use masq_lib::logger::Logger;
-use masq_lib::multi_config::{MultiConfig, VirtualCommandLine};
-use masq_lib::shared_schema::ConfiguratorError;
-use masq_lib::utils::NeighborhoodModeLight;
+use pulsemesh_lib::crash_point::CrashPoint;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::multi_config::{MultiConfig, VirtualCommandLine};
+use pulsemesh_lib::shared_schema::ConfiguratorError;
+use pulsemesh_lib::utils::NeighborhoodModeLight;
 use std::net::SocketAddr;
 use std::net::{IpAddr, Ipv4Addr};
 
@@ -31,9 +31,9 @@ use crate::sub_lib::cryptde_null::CryptDENull;
 use crate::sub_lib::cryptde_real::CryptDEReal;
 use crate::sub_lib::utils::make_new_multi_config;
 use crate::tls_discriminator_factory::TlsDiscriminatorFactory;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::constants::{DEFAULT_UI_PORT, HTTP_PORT, TLS_PORT};
-use masq_lib::multi_config::{CommandLineVcl, ConfigFileVcl, EnvironmentVcl};
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::constants::{DEFAULT_UI_PORT, HTTP_PORT, TLS_PORT};
+use pulsemesh_lib::multi_config::{CommandLineVcl, ConfigFileVcl, EnvironmentVcl};
 use std::str::FromStr;
 
 pub struct NodeConfiguratorStandardPrivileged {
@@ -421,13 +421,13 @@ mod tests {
     };
     use crate::test_utils::{assert_string_contains, ArgsBuilder};
     use lazy_static::lazy_static;
-    use masq_lib::blockchains::chains::Chain;
-    use masq_lib::constants::DEFAULT_CHAIN;
-    use masq_lib::multi_config::VirtualCommandLine;
-    use masq_lib::shared_schema::ParamError;
-    use masq_lib::test_utils::environment_guard::{ClapGuard, EnvironmentGuard};
-    use masq_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
-    use masq_lib::utils::running_test;
+    use pulsemesh_lib::blockchains::chains::Chain;
+    use pulsemesh_lib::constants::DEFAULT_CHAIN;
+    use pulsemesh_lib::multi_config::VirtualCommandLine;
+    use pulsemesh_lib::shared_schema::ParamError;
+    use pulsemesh_lib::test_utils::environment_guard::{ClapGuard, EnvironmentGuard};
+    use pulsemesh_lib::test_utils::utils::{ensure_node_home_directory_exists, TEST_DEFAULT_CHAIN};
+    use pulsemesh_lib::utils::running_test;
     use rustc_hex::FromHex;
     use std::convert::TryFrom;
     use std::env::current_dir;

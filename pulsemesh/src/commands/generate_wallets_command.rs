@@ -6,11 +6,11 @@ use crate::commands::commands_common::{
 };
 use clap::{App, Arg, SubCommand};
 use lazy_static::lazy_static;
-use masq_lib::as_any_ref_in_trait_impl;
-use masq_lib::messages::{UiGenerateSeedSpec, UiGenerateWalletsRequest, UiGenerateWalletsResponse};
-use masq_lib::short_writeln;
-use masq_lib::utils::DEFAULT_EARNING_DERIVATION_PATH;
-use masq_lib::utils::{to_string, DEFAULT_CONSUMING_DERIVATION_PATH};
+use pulsemesh_lib::as_any_ref_in_trait_impl;
+use pulsemesh_lib::messages::{UiGenerateSeedSpec, UiGenerateWalletsRequest, UiGenerateWalletsResponse};
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::DEFAULT_EARNING_DERIVATION_PATH;
+use pulsemesh_lib::utils::{to_string, DEFAULT_CONSUMING_DERIVATION_PATH};
 
 lazy_static! {
     static ref CONSUMING_PATH_HELP: String = format!(
@@ -230,7 +230,7 @@ pub fn generate_wallets_subcommand() -> App<'static, 'static> {
 mod tests {
     use std::sync::{Arc, Mutex};
 
-    use masq_lib::messages::{
+    use pulsemesh_lib::messages::{
         ToMessageBody, UiGenerateSeedSpec, UiGenerateWalletsRequest, UiGenerateWalletsResponse,
     };
 

@@ -4,7 +4,7 @@ use crate::commands::financials_command::parsing_and_value_dressing::restricted:
     parse_masq_range_to_gwei, parse_time_params,
 };
 use clap::{App, Arg, ArgGroup, SubCommand};
-use masq_lib::shared_schema::common_validators::validate_non_zero_u16;
+use pulsemesh_lib::shared_schema::common_validators::validate_non_zero_u16;
 use num::CheckedMul;
 use std::fmt::{Debug, Display};
 use std::num::ParseIntError;

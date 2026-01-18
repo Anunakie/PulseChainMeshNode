@@ -39,8 +39,8 @@ fn handle_help_or_version_if_required<'a>(args: &[String]) -> ArgMatches<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use masq_lib::constants::DEFAULT_UI_PORT;
-    use masq_lib::utils::to_string;
+    use pulsemesh_lib::constants::DEFAULT_UI_PORT;
+    use pulsemesh_lib::utils::to_string;
 
     #[test]
     fn non_interactive_clap_real_produces_default_value_for_ui_port() {

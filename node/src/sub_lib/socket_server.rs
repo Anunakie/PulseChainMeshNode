@@ -1,7 +1,7 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
-use masq_lib::command::StdStreams;
-use masq_lib::multi_config::MultiConfig;
-use masq_lib::shared_schema::ConfiguratorError;
+use pulsemesh_lib::command::StdStreams;
+use pulsemesh_lib::multi_config::MultiConfig;
+use pulsemesh_lib::shared_schema::ConfiguratorError;
 use tokio::prelude::Future;
 
 pub trait ConfiguredByPrivilege: Future<Item = (), Error = ()> {

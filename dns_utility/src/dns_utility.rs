@@ -2,8 +2,8 @@
 use crate::dns_modifier::DnsModifier;
 use crate::dns_modifier_factory::DnsModifierFactory;
 use crate::dns_modifier_factory::DnsModifierFactoryReal;
-use masq_lib::command::{Command, StdStreams};
-use masq_lib::short_writeln;
+use pulsemesh_lib::command::{Command, StdStreams};
+use pulsemesh_lib::short_writeln;
 use std::io::Write;
 
 enum Action {
@@ -111,7 +111,7 @@ impl DnsUtility {
 mod tests {
     use super::*;
     use crate::dns_modifier::DnsModifier;
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
     use std::cell::RefCell;
     use std::io;
 

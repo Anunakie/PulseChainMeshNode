@@ -19,7 +19,7 @@ use crate::database::rusqlite_wrappers::ConnectionWrapper;
 use crate::sub_lib::wallet::Wallet;
 #[cfg(test)]
 use ethereum_types::{BigEndianHash, U256};
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::utils::ExpectValue;
 #[cfg(test)]
 use rusqlite::OptionalExtension;
 use rusqlite::{Error, Row};
@@ -551,8 +551,8 @@ mod tests {
         DbInitializationConfig, DbInitializer, DbInitializerReal, DATABASE_FILE,
     };
     use crate::test_utils::make_wallet;
-    use masq_lib::messages::TopRecordsOrdering::{Age, Balance};
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::messages::TopRecordsOrdering::{Age, Balance};
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
     use rusqlite::{Connection, OpenFlags};
     use rusqlite::{ToSql};
     use std::path::Path;

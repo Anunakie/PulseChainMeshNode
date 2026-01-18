@@ -1,12 +1,12 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
 use crate::terminal::terminal_interface::TerminalWrapper;
-use masq_lib::messages::{CrashReason, UiNodeCrashedBroadcast};
-use masq_lib::short_writeln;
+use pulsemesh_lib::messages::{CrashReason, UiNodeCrashedBroadcast};
+use pulsemesh_lib::short_writeln;
 #[cfg(target_os = "windows")]
-use masq_lib::utils::exit_process;
+use pulsemesh_lib::utils::exit_process;
 #[cfg(not(target_os = "windows"))]
-use masq_lib::utils::exit_process_with_sigterm;
+use pulsemesh_lib::utils::exit_process_with_sigterm;
 use std::io::Write;
 
 pub struct CrashNotifier {}
@@ -63,7 +63,7 @@ impl CrashNotifier {
 mod tests {
     use super::*;
     use crate::test_utils::mocks::TerminalPassiveMock;
-    use masq_lib::utils::running_test;
+    use pulsemesh_lib::utils::running_test;
     use std::sync::Arc;
     use test_utilities::byte_array_reader_writer::ByteArrayWriter;
 

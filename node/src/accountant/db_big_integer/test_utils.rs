@@ -15,7 +15,7 @@ pub(in crate::accountant::db_big_integer) mod restricted {
     use crate::accountant::db_big_integer::big_int_db_processor::{
         DisplayableParamValue, KeyVariants,
     };
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
     use rusqlite::Connection;
 
     pub fn create_new_empty_db(module: &str, test_name: &str) -> Connection {

@@ -5,8 +5,8 @@ use crate::communications::broadcast_handler::BroadcastHandle;
 use crate::communications::connection_manager::{ConnectionManager, REDIRECT_TIMEOUT_MILLIS};
 use crate::communications::node_conversation::ClientError;
 use crate::terminal::terminal_interface::TerminalWrapper;
-use masq_lib::constants::{TIMEOUT_ERROR, UNMARSHAL_ERROR};
-use masq_lib::ui_gateway::MessageBody;
+use pulsemesh_lib::constants::{TIMEOUT_ERROR, UNMARSHAL_ERROR};
+use pulsemesh_lib::ui_gateway::MessageBody;
 use std::fmt::{Debug, Formatter};
 use std::io;
 use std::io::{Read, Write};
@@ -154,13 +154,13 @@ mod tests {
     };
     use crate::communications::broadcast_handler::BroadcastHandleInactive;
     use crate::test_utils::mocks::TRANSACT_TIMEOUT_MILLIS_FOR_TESTS;
-    use masq_lib::messages::{FromMessageBody, UiCrashRequest, UiSetupRequest};
-    use masq_lib::messages::{ToMessageBody, UiShutdownRequest, UiShutdownResponse};
-    use masq_lib::test_utils::mock_websockets_server::MockWebSocketsServer;
-    use masq_lib::ui_gateway::MessageBody;
-    use masq_lib::ui_gateway::MessagePath::Conversation;
-    use masq_lib::ui_traffic_converter::{TrafficConversionError, UnmarshalError};
-    use masq_lib::utils::{find_free_port, running_test};
+    use pulsemesh_lib::messages::{FromMessageBody, UiCrashRequest, UiSetupRequest};
+    use pulsemesh_lib::messages::{ToMessageBody, UiShutdownRequest, UiShutdownResponse};
+    use pulsemesh_lib::test_utils::mock_websockets_server::MockWebSocketsServer;
+    use pulsemesh_lib::ui_gateway::MessageBody;
+    use pulsemesh_lib::ui_gateway::MessagePath::Conversation;
+    use pulsemesh_lib::ui_traffic_converter::{TrafficConversionError, UnmarshalError};
+    use pulsemesh_lib::utils::{find_free_port, running_test};
     use test_utilities::byte_array_reader_writer::{ByteArrayReader, ByteArrayWriter};
 
     #[test]

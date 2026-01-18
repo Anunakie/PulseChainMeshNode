@@ -3,7 +3,7 @@
 
 use crate::ui_gateway::websocket_supervisor::{WebSocketSupervisor, WebSocketSupervisorFactory};
 use actix::Recipient;
-use masq_lib::ui_gateway::{NodeFromUiMessage, NodeToUiMessage};
+use pulsemesh_lib::ui_gateway::{NodeFromUiMessage, NodeToUiMessage};
 use std::cell::RefCell;
 use std::sync::{Arc, Mutex};
 

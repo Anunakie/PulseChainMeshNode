@@ -1,8 +1,8 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
 use crate::utils::MasqProcess;
-use masq_lib::test_utils::utils::check_if_source_code_is_attached;
-use masq_lib::test_utils::utils::ShouldWeRunTheTest::Skip;
+use pulsemesh_lib::test_utils::utils::check_if_source_code_is_attached;
+use pulsemesh_lib::test_utils::utils::ShouldWeRunTheTest::Skip;
 use regex::Regex;
 use std::env::current_dir;
 use std::fs;

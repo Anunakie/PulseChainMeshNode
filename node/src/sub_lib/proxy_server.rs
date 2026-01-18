@@ -13,7 +13,7 @@ use crate::sub_lib::utils::MessageScheduler;
 use crate::sub_lib::versioned_data::VersionedData;
 use actix::Message;
 use actix::Recipient;
-use masq_lib::ui_gateway::NodeFromUiMessage;
+use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
 use serde_derive::{Deserialize, Serialize};
 use std::fmt::Debug;
 

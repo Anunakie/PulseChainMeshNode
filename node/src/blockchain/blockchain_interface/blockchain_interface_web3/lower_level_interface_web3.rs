@@ -180,8 +180,8 @@ mod tests {
     use crate::test_utils::make_wallet;
     use ethereum_types::{H256, U64};
     use futures::Future;
-    use masq_lib::test_utils::mock_blockchain_client_server::MBCSBuilder;
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::test_utils::mock_blockchain_client_server::MBCSBuilder;
+    use pulsemesh_lib::utils::find_free_port;
     use std::str::FromStr;
     use web3::types::{BlockNumber, Bytes, FilterBuilder, Log, TransactionReceipt, U256};
     use crate::blockchain::blockchain_interface::blockchain_interface_web3::lower_level_interface_web3::{TxReceipt, TxStatus};

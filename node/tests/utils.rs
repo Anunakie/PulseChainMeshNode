@@ -1,12 +1,12 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 
 use itertools::Itertools;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::constants::{CURRENT_LOGFILE_NAME, DEFAULT_CHAIN, DEFAULT_UI_PORT};
-use masq_lib::test_utils::utils::{
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::constants::{CURRENT_LOGFILE_NAME, DEFAULT_CHAIN, DEFAULT_UI_PORT};
+use pulsemesh_lib::test_utils::utils::{
     ensure_node_home_directory_exists, node_home_directory, recreate_data_dir,
 };
-use masq_lib::utils::{add_masq_and_chain_directories, localhost, running_test};
+use pulsemesh_lib::utils::{add_masq_and_chain_directories, localhost, running_test};
 use node_lib::database::db_initializer::{
     DbInitializationConfig, DbInitializer, DbInitializerReal,
 };
@@ -716,7 +716,7 @@ pub fn make_conn(home_dir: &Path) -> Box<dyn ConnectionWrapper> {
 #[cfg(test)]
 mod tests {
     use super::MASQNode;
-    use masq_lib::utils::slice_of_strs_to_vec_of_strings;
+    use pulsemesh_lib::utils::slice_of_strs_to_vec_of_strings;
 
     #[test]
     fn extend_without_duplication_replaces_default_params_with_additionally_supplied_values() {

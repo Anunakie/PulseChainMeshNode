@@ -15,11 +15,11 @@ use actix::{Actor, System, SystemRunner};
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use flexi_logger::LevelFilter;
 use itertools::Itertools;
-use masq_lib::command::StdStreams;
-use masq_lib::shared_schema::ConfiguratorError;
+use pulsemesh_lib::command::StdStreams;
+use pulsemesh_lib::shared_schema::ConfiguratorError;
 use std::collections::HashMap;
 
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::utils::ExpectValue;
 use std::path::PathBuf;
 use std::str::FromStr;
 
@@ -194,10 +194,10 @@ mod tests {
     use crate::test_utils::unshared_test_utils::ChannelFactoryMock;
     use actix::System;
     use crossbeam_channel::unbounded;
-    use masq_lib::test_utils::environment_guard::EnvironmentGuard;
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
-    use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
-    use masq_lib::utils::{find_free_port, localhost, slice_of_strs_to_vec_of_strings};
+    use pulsemesh_lib::test_utils::environment_guard::EnvironmentGuard;
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
+    use pulsemesh_lib::utils::{find_free_port, localhost, slice_of_strs_to_vec_of_strings};
     use std::cell::RefCell;
     use std::iter::FromIterator;
     use std::net::{SocketAddr, TcpListener};

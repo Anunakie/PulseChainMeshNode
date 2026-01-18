@@ -10,7 +10,7 @@ use crate::sub_lib::neighborhood::{NodeDescriptor, RatePack};
 use crate::sub_lib::node_addr::NodeAddr;
 use crate::sub_lib::utils::time_t_timestamp;
 use crate::sub_lib::wallet::Wallet;
-use masq_lib::blockchains::chains::Chain;
+use pulsemesh_lib::blockchains::chains::Chain;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::btree_set::BTreeSet;
 use std::collections::HashSet;
@@ -380,7 +380,7 @@ mod tests {
     use crate::test_utils::neighborhood_test_utils::{db_from_node, make_node_record};
     use crate::test_utils::{assert_contains, rate_pack};
     use lazy_static::lazy_static;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use std::net::IpAddr;
     use std::str::FromStr;
 

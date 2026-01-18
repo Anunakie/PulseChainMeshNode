@@ -8,15 +8,15 @@ use futures::stream::SplitSink;
 use futures::Future;
 use futures::Sink;
 use futures::Stream;
-use masq_lib::constants::UNMARSHAL_ERROR;
-use masq_lib::logger::Logger;
-use masq_lib::messages::{ToMessageBody, UiUnmarshalError, NODE_UI_PROTOCOL};
-use masq_lib::ui_gateway::MessagePath::Conversation;
-use masq_lib::ui_gateway::MessageTarget::ClientId;
-use masq_lib::ui_gateway::{MessageBody, MessageTarget, NodeFromUiMessage, NodeToUiMessage};
-use masq_lib::ui_traffic_converter::UiTrafficConverter;
-use masq_lib::ui_traffic_converter::UnmarshalError::{Critical, NonCritical};
-use masq_lib::utils::{localhost, ExpectValue};
+use pulsemesh_lib::constants::UNMARSHAL_ERROR;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::messages::{ToMessageBody, UiUnmarshalError, NODE_UI_PROTOCOL};
+use pulsemesh_lib::ui_gateway::MessagePath::Conversation;
+use pulsemesh_lib::ui_gateway::MessageTarget::ClientId;
+use pulsemesh_lib::ui_gateway::{MessageBody, MessageTarget, NodeFromUiMessage, NodeToUiMessage};
+use pulsemesh_lib::ui_traffic_converter::UiTrafficConverter;
+use pulsemesh_lib::ui_traffic_converter::UnmarshalError::{Critical, NonCritical};
+use pulsemesh_lib::utils::{localhost, ExpectValue};
 use std::any::Any;
 use std::collections::HashMap;
 use std::fmt::Debug;
@@ -595,18 +595,18 @@ mod tests {
     use actix::{Actor, Addr};
     use crossbeam_channel::bounded;
     use futures::lazy;
-    use masq_lib::constants::UNMARSHAL_ERROR;
-    use masq_lib::messages::{
+    use pulsemesh_lib::constants::UNMARSHAL_ERROR;
+    use pulsemesh_lib::messages::{
         FromMessageBody, UiDescriptorResponse, UiShutdownRequest, UiStartOrder, UiUnmarshalError,
         NODE_UI_PROTOCOL,
     };
-    use masq_lib::test_utils::logging::init_test_logging;
-    use masq_lib::test_utils::logging::TestLogHandler;
-    use masq_lib::test_utils::ui_connection::UiConnection;
-    use masq_lib::ui_gateway::MessagePath::FireAndForget;
-    use masq_lib::ui_gateway::NodeFromUiMessage;
-    use masq_lib::ui_traffic_converter::UiTrafficConverter;
-    use masq_lib::utils::{find_free_port, localhost};
+    use pulsemesh_lib::test_utils::logging::init_test_logging;
+    use pulsemesh_lib::test_utils::logging::TestLogHandler;
+    use pulsemesh_lib::test_utils::ui_connection::UiConnection;
+    use pulsemesh_lib::ui_gateway::MessagePath::FireAndForget;
+    use pulsemesh_lib::ui_gateway::NodeFromUiMessage;
+    use pulsemesh_lib::ui_traffic_converter::UiTrafficConverter;
+    use pulsemesh_lib::utils::{find_free_port, localhost};
     use std::cell::RefCell;
     use std::io::{Error, ErrorKind};
     use std::net::{IpAddr, Ipv4Addr, Shutdown};

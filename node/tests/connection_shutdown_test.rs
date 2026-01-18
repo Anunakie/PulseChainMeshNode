@@ -4,8 +4,8 @@ pub mod utils;
 
 use crate::utils::CommandConfig;
 use crossbeam_channel::{unbounded, Sender};
-use masq_lib::test_utils::environment_guard::EnvironmentGuard;
-use masq_lib::utils::find_free_port;
+use pulsemesh_lib::test_utils::environment_guard::EnvironmentGuard;
+use pulsemesh_lib::utils::find_free_port;
 use std::io::{Read, Write};
 use std::net::{IpAddr, TcpListener, TcpStream};
 use std::net::{Shutdown, SocketAddr};

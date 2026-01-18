@@ -5,9 +5,9 @@ use crate::accountant::scanners::mid_scan_msg_handling::payable_scanner::blockch
 use crate::sub_lib::blockchain_bridge::ConsumingWalletBalances;
 use crate::sub_lib::wallet::Wallet;
 use ethereum_types::U256;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::logger::Logger;
-use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
 
 #[derive(Clone)]
 pub struct BlockchainAgentNull {
@@ -83,9 +83,9 @@ mod tests {
     use crate::sub_lib::blockchain_bridge::ConsumingWalletBalances;
     use crate::sub_lib::wallet::Wallet;
 
-    use masq_lib::logger::Logger;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::logger::Logger;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use web3::types::U256;
 
     fn blockchain_agent_null_constructor_works<C>(constructor: C)

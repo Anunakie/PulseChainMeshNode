@@ -3,10 +3,10 @@
 use std::thread;
 use std::time::Duration;
 
-use masq_lib::messages::{
+use pulsemesh_lib::messages::{
     CountryGroups, ToMessageBody, UiSetConfigurationRequest, UiSetExitLocationRequest,
 };
-use masq_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
+use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
 use multinode_integration_tests_lib::masq_node::{MASQNode, PortSelector};
 use multinode_integration_tests_lib::masq_node_cluster::MASQNodeCluster;
 use multinode_integration_tests_lib::neighborhood_constructor::construct_neighborhood;

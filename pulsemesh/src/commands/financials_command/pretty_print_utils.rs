@@ -8,10 +8,10 @@ pub(in crate::commands::financials_command) mod restricted {
         convert_masq_from_gwei_and_dress_well, neaten_users_writing_if_possible,
     };
     use crate::commands::financials_command::FinancialsCommand;
-    use masq_lib::constants::WALLET_ADDRESS_LENGTH;
-    use masq_lib::messages::{UiPayableAccount, UiReceivableAccount};
-    use masq_lib::short_writeln;
-    use masq_lib::utils::to_string;
+    use pulsemesh_lib::constants::WALLET_ADDRESS_LENGTH;
+    use pulsemesh_lib::messages::{UiPayableAccount, UiReceivableAccount};
+    use pulsemesh_lib::short_writeln;
+    use pulsemesh_lib::utils::to_string;
     use std::fmt::{Debug, Display};
     use std::io::Write;
     use thousands::Separable;

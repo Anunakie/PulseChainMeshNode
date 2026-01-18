@@ -19,10 +19,10 @@ use actix::Context;
 use actix::Handler;
 use actix::Recipient;
 use itertools::Either;
-use masq_lib::logger::Logger;
-use masq_lib::messages::UiCrashRequest;
-use masq_lib::ui_gateway::{MessageBody, NodeFromUiMessage, NodeToUiMessage};
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::messages::UiCrashRequest;
+use pulsemesh_lib::ui_gateway::{MessageBody, NodeFromUiMessage, NodeToUiMessage};
+use pulsemesh_lib::utils::ExpectValue;
 use std::mem::replace;
 
 pub const CRASH_KEY: &str = "UIGATEWAY";
@@ -200,11 +200,11 @@ mod tests {
     use actix::Message;
     use actix::System;
     use crossbeam_channel::{unbounded, Sender};
-    use masq_lib::messages::{ToMessageBody, UiChangePasswordRequest};
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
-    use masq_lib::ui_gateway::MessagePath::FireAndForget;
-    use masq_lib::ui_gateway::{MessageBody, MessagePath, MessageTarget};
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::messages::{ToMessageBody, UiChangePasswordRequest};
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::ui_gateway::MessagePath::FireAndForget;
+    use pulsemesh_lib::ui_gateway::{MessageBody, MessagePath, MessageTarget};
+    use pulsemesh_lib::utils::find_free_port;
     use std::sync::{Arc, Mutex};
 
     #[test]

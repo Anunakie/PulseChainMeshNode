@@ -7,7 +7,7 @@ use std::str::FromStr;
 
 use crossbeam_channel::Sender;
 
-use masq_lib::utils::AutomapProtocol;
+use pulsemesh_lib::utils::AutomapProtocol;
 
 use crate::comm_layer::pcp_pmp_common::MappingConfig;
 use crate::control_layer::automap_control::ChangeHandler;

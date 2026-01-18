@@ -3,7 +3,7 @@
 use crate::dns_modifier::DnsModifier;
 use crate::ipconfig_wrapper::{IpconfigWrapper, IpconfigWrapperReal};
 use crate::netsh::{Netsh, NetshCommand, NetshError};
-use masq_lib::utils::plus;
+use pulsemesh_lib::utils::plus;
 use std::collections::HashSet;
 use std::fmt::Debug;
 use std::io;
@@ -461,7 +461,7 @@ mod tests {
     use crate::ipconfig_wrapper::test_utils::IpconfigWrapperMock;
     use crate::netsh::tests_utils::NetshMock;
     use crate::utils::get_parameters_from;
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
     use std::cell::RefCell;
     use std::collections::HashMap;
     use std::io::Error;

@@ -35,7 +35,7 @@ use crate::sub_lib::wallet::Wallet;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use ethsign_crypto::Keccak256;
 use futures::sync::mpsc::SendError;
-use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
 use rand::RngCore;
 use regex::Regex;
 use rustc_hex::ToHex;
@@ -527,13 +527,13 @@ pub mod unshared_test_utils {
     use crossbeam_channel::{unbounded, Receiver, Sender};
     use itertools::Either;
     use lazy_static::lazy_static;
-    use masq_lib::constants::HTTP_PORT;
-    use masq_lib::messages::{ToMessageBody, UiCrashRequest};
-    use masq_lib::multi_config::MultiConfig;
+    use pulsemesh_lib::constants::HTTP_PORT;
+    use pulsemesh_lib::messages::{ToMessageBody, UiCrashRequest};
+    use pulsemesh_lib::multi_config::MultiConfig;
     #[cfg(not(feature = "no_test_share"))]
-    use masq_lib::test_utils::utils::MutexIncrementInset;
-    use masq_lib::ui_gateway::{NodeFromUiMessage, NodeToUiMessage};
-    use masq_lib::utils::slice_of_strs_to_vec_of_strings;
+    use pulsemesh_lib::test_utils::utils::MutexIncrementInset;
+    use pulsemesh_lib::ui_gateway::{NodeFromUiMessage, NodeToUiMessage};
+    use pulsemesh_lib::utils::slice_of_strs_to_vec_of_strings;
     use std::any::TypeId;
     use std::cell::RefCell;
     use std::collections::HashMap;

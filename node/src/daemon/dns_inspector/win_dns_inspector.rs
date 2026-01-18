@@ -236,7 +236,7 @@ impl RegKeyReal {
 mod tests {
     use super::*;
     use crate::daemon::dns_inspector::DnsInspectionError;
-    use masq_lib::test_utils::fake_stream_holder::FakeStreamHolder;
+    use pulsemesh_lib::test_utils::fake_stream_holder::FakeStreamHolder;
     use std::cell::RefCell;
     use std::collections::HashMap;
     use std::io::Error;

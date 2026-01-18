@@ -3,7 +3,7 @@
 use crate::accountant::scanners::mid_scan_msg_handling::payable_scanner::msgs::BlockchainAgentWithContextMessage;
 use crate::accountant::scanners::mid_scan_msg_handling::payable_scanner::PreparedAdjustment;
 use crate::sub_lib::blockchain_bridge::OutboundPaymentsInstructions;
-use masq_lib::logger::Logger;
+use pulsemesh_lib::logger::Logger;
 use std::time::SystemTime;
 
 pub trait PaymentAdjuster {
@@ -75,8 +75,8 @@ mod tests {
     use crate::accountant::scanners::mid_scan_msg_handling::payable_scanner::test_utils::BlockchainAgentMock;
     use crate::accountant::scanners::test_utils::protect_payables_in_test;
     use crate::accountant::test_utils::make_payable_account;
-    use masq_lib::logger::Logger;
-    use masq_lib::test_utils::logging::{init_test_logging, TestLogHandler};
+    use pulsemesh_lib::logger::Logger;
+    use pulsemesh_lib::test_utils::logging::{init_test_logging, TestLogHandler};
 
     #[test]
     fn search_for_indispensable_adjustment_always_returns_none() {

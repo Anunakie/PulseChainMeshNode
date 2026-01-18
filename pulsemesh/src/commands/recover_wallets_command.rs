@@ -6,10 +6,10 @@ use crate::commands::commands_common::{
 };
 use clap::{App, Arg, ArgGroup, SubCommand};
 use itertools::{Either, Itertools};
-use masq_lib::as_any_ref_in_trait_impl;
-use masq_lib::messages::{UiRecoverSeedSpec, UiRecoverWalletsRequest, UiRecoverWalletsResponse};
-use masq_lib::short_writeln;
-use masq_lib::utils::to_string;
+use pulsemesh_lib::as_any_ref_in_trait_impl;
+use pulsemesh_lib::messages::{UiRecoverSeedSpec, UiRecoverWalletsRequest, UiRecoverWalletsResponse};
+use pulsemesh_lib::short_writeln;
+use pulsemesh_lib::utils::to_string;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct SeedSpec {
@@ -245,7 +245,7 @@ mod tests {
     use super::*;
     use crate::command_factory::{CommandFactory, CommandFactoryError, CommandFactoryReal};
     use crate::test_utils::mocks::CommandContextMock;
-    use masq_lib::messages::{ToMessageBody, UiRecoverWalletsRequest, UiRecoverWalletsResponse};
+    use pulsemesh_lib::messages::{ToMessageBody, UiRecoverWalletsRequest, UiRecoverWalletsResponse};
     use std::sync::{Arc, Mutex};
 
     #[test]

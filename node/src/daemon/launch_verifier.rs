@@ -3,9 +3,9 @@
 use crate::daemon::launch_verifier::LaunchVerification::{
     CleanFailure, DirtyFailure, InterventionRequired, Launched,
 };
-use masq_lib::logger::Logger;
-use masq_lib::messages::NODE_UI_PROTOCOL;
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::messages::NODE_UI_PROTOCOL;
+use pulsemesh_lib::utils::ExpectValue;
 use std::cell::RefCell;
 use std::net::TcpStream;
 use std::thread;
@@ -258,7 +258,7 @@ mod tests {
         CleanFailure, InterventionRequired, Launched,
     };
     use crate::daemon::mocks::{ClientBuilderWrapperMock, ClientWrapperMock, VerifierToolsMock};
-    use masq_lib::utils::find_free_port;
+    use pulsemesh_lib::utils::find_free_port;
     use std::process::{Child, Command};
     use std::sync::{Arc, Mutex};
     use std::time::Instant;

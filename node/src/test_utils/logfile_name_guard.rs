@@ -2,7 +2,7 @@
 #![cfg(test)]
 use crate::server_initializer::LoggerInitializerWrapperReal;
 use lazy_static::lazy_static;
-use masq_lib::test_utils::environment_guard::ConcurrencyPreventer;
+use pulsemesh_lib::test_utils::environment_guard::ConcurrencyPreventer;
 use std::path::PathBuf;
 use std::sync::Mutex;
 

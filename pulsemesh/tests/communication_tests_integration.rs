@@ -2,8 +2,8 @@
 
 use crate::utils::DaemonProcess;
 use crate::utils::MasqProcess;
-use masq_lib::test_utils::utils::ensure_node_home_directory_exists;
-use masq_lib::utils::find_free_port;
+use pulsemesh_lib::test_utils::utils::ensure_node_home_directory_exists;
+use pulsemesh_lib::utils::find_free_port;
 use std::thread;
 use std::time::Duration;
 use time::macros::datetime;

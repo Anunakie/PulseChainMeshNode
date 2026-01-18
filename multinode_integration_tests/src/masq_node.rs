@@ -1,12 +1,12 @@
 // Copyright (c) 2019, MASQ (https://masq.ai) and/or its affiliates. All rights reserved.
 use crate::command::Command;
 use base64::URL_SAFE_NO_PAD;
-use masq_lib::blockchains::chains::Chain;
-use masq_lib::constants::{
+use pulsemesh_lib::blockchains::chains::Chain;
+use pulsemesh_lib::constants::{
     CENTRAL_DELIMITER, CHAIN_IDENTIFIER_DELIMITER, CURRENT_LOGFILE_NAME, HIGHEST_USABLE_PORT,
-    MASQ_URL_PREFIX,
+    PULSEMESH_URL_PREFIX,
 };
-use masq_lib::utils::to_string;
+use pulsemesh_lib::utils::to_string;
 use node_lib::neighborhood::node_location::get_node_location;
 use node_lib::sub_lib::cryptde::{CryptDE, PublicKey};
 use node_lib::sub_lib::cryptde_null::CryptDENull;
@@ -91,7 +91,7 @@ impl fmt::Display for NodeReference {
         write!(
             f,
             "{}{}{}{}{}{}:{}",
-            MASQ_URL_PREFIX,
+            PULSEMESH_URL_PREFIX,
             self.chain.rec().literal_identifier,
             CHAIN_IDENTIFIER_DELIMITER,
             public_key_string,
@@ -317,7 +317,7 @@ impl MASQNodeUtils {
 mod tests {
     use super::*;
     use base64::{decode_config, STANDARD_NO_PAD};
-    use masq_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_MULTINODE_CHAIN;
 
     #[test]
     fn strip_ports_works_single_port() {

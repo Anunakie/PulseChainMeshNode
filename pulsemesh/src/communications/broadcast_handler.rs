@@ -5,13 +5,13 @@ use crate::commands::setup_command::SetupCommand;
 use crate::notifications::crashed_notification::CrashNotifier;
 use crate::terminal::terminal_interface::TerminalWrapper;
 use crossbeam_channel::{unbounded, RecvError, Sender};
-use masq_lib::messages::{
+use pulsemesh_lib::messages::{
     FromMessageBody, UiConnectionChangeBroadcast, UiLogBroadcast, UiNewPasswordBroadcast,
     UiNodeCrashedBroadcast, UiSetupBroadcast, UiUndeliveredFireAndForget,
 };
-use masq_lib::ui_gateway::MessageBody;
-use masq_lib::utils::ExpectValue;
-use masq_lib::{as_any_ref_in_trait, as_any_ref_in_trait_impl, short_writeln};
+use pulsemesh_lib::ui_gateway::MessageBody;
+use pulsemesh_lib::utils::ExpectValue;
+use pulsemesh_lib::{as_any_ref_in_trait, as_any_ref_in_trait_impl, short_writeln};
 use std::fmt::Debug;
 use std::io::Write;
 use std::thread;
@@ -191,13 +191,13 @@ mod tests {
         TerminalPassiveMock, TestStreamFactory,
     };
     use crossbeam_channel::{bounded, unbounded, Receiver};
-    use masq_lib::messages::UiSetupResponseValueStatus::{Configured, Default};
-    use masq_lib::messages::{
+    use pulsemesh_lib::messages::UiSetupResponseValueStatus::{Configured, Default};
+    use pulsemesh_lib::messages::{
         CrashReason, SerializableLogLevel, ToMessageBody, UiConnectionChangeBroadcast,
         UiConnectionStage, UiLogBroadcast, UiNodeCrashedBroadcast,
     };
-    use masq_lib::messages::{UiSetupBroadcast, UiSetupResponseValue, UiSetupResponseValueStatus};
-    use masq_lib::ui_gateway::MessagePath;
+    use pulsemesh_lib::messages::{UiSetupBroadcast, UiSetupResponseValue, UiSetupResponseValueStatus};
+    use pulsemesh_lib::ui_gateway::MessagePath;
     use std::sync::Arc;
     use std::time::Duration;
 
@@ -243,7 +243,7 @@ mod tests {
             TerminalPassiveMock::new(),
         ))))
         .start(Box::new(factory));
-        let message = masq_lib::messages::UiLogBroadcast {
+        let message = pulsemesh_lib::messages::UiLogBroadcast {
             msg: "Empty. No Nodes to report to; continuing".to_string(),
             log_level: SerializableLogLevel::Info,
         }

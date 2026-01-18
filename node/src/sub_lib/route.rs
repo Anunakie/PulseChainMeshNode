@@ -358,7 +358,7 @@ mod tests {
     use crate::test_utils::make_paying_wallet;
     use crate::test_utils::make_wallet;
     use lazy_static::lazy_static;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use serde_cbor;
 
     lazy_static! {

@@ -12,8 +12,8 @@ use crate::sub_lib::node_addr::NodeAddr;
 use crate::sub_lib::utils::time_t_timestamp;
 use crate::sub_lib::wallet::Wallet;
 use itertools::Itertools;
-use masq_lib::logger::Logger;
-use masq_lib::utils::ExpectValue;
+use pulsemesh_lib::logger::Logger;
+use pulsemesh_lib::utils::ExpectValue;
 use std::collections::HashSet;
 use std::collections::{BTreeSet, HashMap};
 use std::fmt::Debug;
@@ -391,8 +391,8 @@ mod tests {
     use crate::test_utils::neighborhood_test_utils::{
         db_from_node, make_node_record, make_node_record_cc, make_segmented_ip, make_segments,
     };
-    use masq_lib::constants::DEFAULT_CHAIN;
-    use masq_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
+    use pulsemesh_lib::constants::DEFAULT_CHAIN;
+    use pulsemesh_lib::test_utils::utils::TEST_DEFAULT_CHAIN;
     use std::iter::FromIterator;
     use std::str::FromStr;
 
