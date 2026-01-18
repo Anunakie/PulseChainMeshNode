@@ -30,12 +30,12 @@ lazy_static! {
     pub static ref TEMPORARY_CONSUMING_WALLET: Wallet = Wallet::from_str("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF").expect("Internal error");
     pub static ref MSG_ID_INCREMENTER: AtomicU32 = AtomicU32::default();
     pub static ref DEFAULT_PAYMENT_THRESHOLDS: PaymentThresholds = PaymentThresholds {
-        debt_threshold_gwei: 1_000_000_000,
+        debt_threshold_gwei: u64::MAX, // PULSEMESH: Disabled - no debt threshold
         maturity_threshold_sec: 1200,
         payment_grace_period_sec: 1200,
-        permanent_debt_allowed_gwei: 500_000_000,
+        permanent_debt_allowed_gwei: u64::MAX, // PULSEMESH: Disabled - unlimited debt allowed
         threshold_interval_sec: 21600,
-        unban_below_gwei: 500_000_000,
+        unban_below_gwei: u64::MAX, // PULSEMESH: Disabled - never ban
     };
     pub static ref DEFAULT_SCAN_INTERVALS: ScanIntervals = ScanIntervals {
         pending_payable_scan_interval: Duration::from_secs(600),
@@ -223,12 +223,12 @@ mod tests {
         let temporary_consuming_wallet_expected: Wallet =
             Wallet::from_str("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF").expect("Internal error");
         let payment_thresholds_expected = PaymentThresholds {
-            debt_threshold_gwei: 1_000_000_000,
+            debt_threshold_gwei: u64::MAX, // PULSEMESH: Disabled - no debt threshold
             maturity_threshold_sec: 1200,
             payment_grace_period_sec: 1200,
-            permanent_debt_allowed_gwei: 500_000_000,
+            permanent_debt_allowed_gwei: u64::MAX, // PULSEMESH: Disabled - unlimited debt allowed
             threshold_interval_sec: 21600,
-            unban_below_gwei: 500_000_000,
+            unban_below_gwei: u64::MAX, // PULSEMESH: Disabled - never ban
         };
         let scan_intervals_expected = ScanIntervals {
             pending_payable_scan_interval: Duration::from_secs(600),

@@ -4,7 +4,7 @@ use crate::blockchains::chains::Chain;
 use crate::data_version::DataVersion;
 use const_format::concatcp;
 
-pub const DEFAULT_CHAIN: Chain = Chain::BaseMainnet;
+pub const DEFAULT_CHAIN: Chain = Chain::PulseMainnet;
 pub const CURRENT_SCHEMA_VERSION: usize = 11;
 
 pub const HIGHEST_RANDOM_CLANDESTINE_PORT: u16 = 9999;
@@ -14,14 +14,16 @@ pub const LOWEST_USABLE_INSECURE_PORT: u16 = 1025;
 pub const HIGHEST_USABLE_PORT: u16 = 65535;
 pub const DEFAULT_UI_PORT: u16 = 5333;
 
-pub const MASQ_URL_PREFIX: &str = "masq://";
-pub const CURRENT_LOGFILE_NAME: &str = "MASQNode_rCURRENT.log";
-pub const MASQ_PROMPT: &str = "masq> ";
+pub const PULSEMESH_URL_PREFIX: &str = "pulsemesh://";
+pub const CURRENT_LOGFILE_NAME: &str = "PulseMeshNode_rCURRENT.log";
+pub const PULSEMESH_PROMPT: &str = "pulsemesh> ";
 
 pub const DEFAULT_GAS_PRICE: u64 = 1; //TODO ?? Really
 
 pub const WALLET_ADDRESS_LENGTH: usize = 42;
-pub const MASQ_TOTAL_SUPPLY: u64 = 37_500_000;
+// Token functionality disabled for PulseMesh
+// pub const MASQ_TOTAL_SUPPLY: u64 = 37_500_000;
+pub const PULSEMESH_TOTAL_SUPPLY: u64 = 0;
 pub const WEIS_IN_GWEI: i128 = 1_000_000_000;
 
 pub const DEFAULT_MAX_BLOCK_COUNT: u64 = 100_000;
@@ -34,6 +36,8 @@ pub const POLYGON_MAINNET_CONTRACT_CREATION_BLOCK: u64 = 14_863_650;
 pub const POLYGON_AMOY_CONTRACT_CREATION_BLOCK: u64 = 5_323_366;
 pub const BASE_MAINNET_CONTRACT_CREATION_BLOCK: u64 = 19_711_235;
 pub const BASE_SEPOLIA_CONTRACT_CREATION_BLOCK: u64 = 14_732_730;
+pub const PULSE_MAINNET_CONTRACT_CREATION_BLOCK: u64 = 0;
+
 pub const MULTINODE_TESTNET_CONTRACT_CREATION_BLOCK: u64 = 0;
 
 //Migration versions
@@ -97,6 +101,7 @@ pub const CHAIN_IDENTIFIER_DELIMITER: char = ':';
 const POLYGON_FAMILY: &str = "polygon";
 const ETH_FAMILY: &str = "eth";
 const BASE_FAMILY: &str = "base";
+const PULSE_FAMILY: &str = "pulse";
 const MAINNET: &str = "mainnet";
 const LINK: char = '-';
 pub const POLYGON_MAINNET_FULL_IDENTIFIER: &str = concatcp!(POLYGON_FAMILY, LINK, MAINNET);
@@ -105,6 +110,7 @@ pub const ETH_MAINNET_FULL_IDENTIFIER: &str = concatcp!(ETH_FAMILY, LINK, MAINNE
 pub const ETH_ROPSTEN_FULL_IDENTIFIER: &str = concatcp!(ETH_FAMILY, LINK, "ropsten");
 pub const BASE_MAINNET_FULL_IDENTIFIER: &str = concatcp!(BASE_FAMILY, LINK, MAINNET);
 pub const BASE_SEPOLIA_FULL_IDENTIFIER: &str = concatcp!(BASE_FAMILY, LINK, "sepolia");
+pub const PULSE_MAINNET_FULL_IDENTIFIER: &str = concatcp!(PULSE_FAMILY, LINK, MAINNET);
 pub const DEV_CHAIN_FULL_IDENTIFIER: &str = "dev";
 
 #[cfg(test)]
@@ -113,19 +119,19 @@ mod tests {
 
     #[test]
     fn constants_have_correct_values() {
-        assert_eq!(DEFAULT_CHAIN, Chain::BaseMainnet);
+        assert_eq!(DEFAULT_CHAIN, Chain::PulseMainnet);
         assert_eq!(HIGHEST_RANDOM_CLANDESTINE_PORT, 9999);
         assert_eq!(HTTP_PORT, 80);
         assert_eq!(TLS_PORT, 443);
         assert_eq!(LOWEST_USABLE_INSECURE_PORT, 1025);
         assert_eq!(HIGHEST_USABLE_PORT, 65535);
         assert_eq!(DEFAULT_UI_PORT, 5333);
-        assert_eq!(MASQ_URL_PREFIX, "masq://");
-        assert_eq!(CURRENT_LOGFILE_NAME, "MASQNode_rCURRENT.log");
-        assert_eq!(MASQ_PROMPT, "masq> ");
+        assert_eq!(PULSEMESH_URL_PREFIX, "pulsemesh://");
+        assert_eq!(CURRENT_LOGFILE_NAME, "PulseMeshNode_rCURRENT.log");
+        assert_eq!(PULSEMESH_PROMPT, "pulsemesh> ");
         assert_eq!(DEFAULT_GAS_PRICE, 1);
         assert_eq!(WALLET_ADDRESS_LENGTH, 42);
-        assert_eq!(MASQ_TOTAL_SUPPLY, 37_500_000);
+        assert_eq!(PULSEMESH_TOTAL_SUPPLY, 0);
         assert_eq!(WEIS_IN_GWEI, 1_000_000_000);
         assert_eq!(ETH_MAINNET_CONTRACT_CREATION_BLOCK, 11_170_708);
         assert_eq!(ETH_ROPSTEN_CONTRACT_CREATION_BLOCK, 8_688_171);
@@ -133,6 +139,7 @@ mod tests {
         assert_eq!(POLYGON_AMOY_CONTRACT_CREATION_BLOCK, 5_323_366);
         assert_eq!(BASE_MAINNET_CONTRACT_CREATION_BLOCK, 19_711_235);
         assert_eq!(BASE_SEPOLIA_CONTRACT_CREATION_BLOCK, 14_732_730);
+        assert_eq!(PULSE_MAINNET_CONTRACT_CREATION_BLOCK, 0);
         assert_eq!(MULTINODE_TESTNET_CONTRACT_CREATION_BLOCK, 0);
         assert_eq!(CONFIGURATOR_PREFIX, 0x0001_0000_0000_0000);
         assert_eq!(CONFIGURATOR_READ_ERROR, CONFIGURATOR_PREFIX | 1);
@@ -172,6 +179,7 @@ mod tests {
         assert_eq!(POLYGON_FAMILY, "polygon");
         assert_eq!(ETH_FAMILY, "eth");
         assert_eq!(BASE_FAMILY, "base");
+        assert_eq!(PULSE_FAMILY, "pulse");
         assert_eq!(MAINNET, "mainnet");
         assert_eq!(LINK, '-');
         assert_eq!(POLYGON_MAINNET_FULL_IDENTIFIER, "polygon-mainnet");
@@ -179,6 +187,7 @@ mod tests {
         assert_eq!(ETH_MAINNET_FULL_IDENTIFIER, "eth-mainnet");
         assert_eq!(ETH_ROPSTEN_FULL_IDENTIFIER, "eth-ropsten");
         assert_eq!(BASE_SEPOLIA_FULL_IDENTIFIER, "base-sepolia");
+        assert_eq!(PULSE_MAINNET_FULL_IDENTIFIER, "pulse-mainnet");
         assert_eq!(DEV_CHAIN_FULL_IDENTIFIER, "dev");
         assert_eq!(
             CLIENT_REQUEST_PAYLOAD_CURRENT_VERSION,

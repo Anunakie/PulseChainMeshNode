@@ -1,7 +1,7 @@
 [package]
-name = "masq_lib"
+name = "pulsemesh_lib"
 version = "0.9.0"
-authors = ["Dan Wiebe <dnwiebe@gmail.com>", "MASQ"]
+authors = ["Dan Wiebe <dnwiebe@gmail.com>", "PulseMesh"]
 license = "GPL-3.0-only"
 description = "Code common to Node and masq; also, temporarily, to dns_utility"
 edition = "2021"
@@ -37,5 +37,5 @@ log_recipient_test = []
 nix = "0.23.0"
 
 [lib]
-name = "masq_lib"
+name = "pulsemesh_lib"
 path = "src/lib.rs"

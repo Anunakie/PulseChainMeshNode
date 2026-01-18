@@ -1,9 +1,9 @@
 [package]
-name = "masq"
+name = "pulsemesh"
 version = "0.9.0"
-authors = ["Dan Wiebe <dnwiebe@gmail.com>", "MASQ"]
+authors = ["Dan Wiebe <dnwiebe@gmail.com>", "PulseMesh"]
 license = "GPL-3.0-only"
-description = "Reference implementation of user interface for MASQ Node"
+description = "Reference implementation of user interface for PulseMesh Node"
 edition = "2021"
 workspace = "../node"
 
@@ -16,7 +16,7 @@ crossbeam-channel = "0.5.1"
 itertools = "0.8.0"
 lazy_static = "1.4.0"
 linefeed = "0.6.0"
-masq_lib = { path = "../masq_lib" }
+pulsemesh_lib = { path = "../pulsemesh_lib" }
 num = "0.4.0"
 regex = "1.5.4"
 thousands = "0.2.0"
@@ -35,5 +35,5 @@ name = "masq_cli_lib"
 path = "src/lib.rs"
 
 [[bin]]
-name = "masq"
+name = "pulsemesh"
 path = "src/main.rs"

@@ -4,13 +4,14 @@ use crate::blockchains::blockchain_records::{BlockchainRecord, CHAINS};
 use crate::constants::{
     BASE_MAINNET_FULL_IDENTIFIER, BASE_SEPOLIA_FULL_IDENTIFIER, DEFAULT_CHAIN,
     DEV_CHAIN_FULL_IDENTIFIER, ETH_MAINNET_FULL_IDENTIFIER, ETH_ROPSTEN_FULL_IDENTIFIER,
-    POLYGON_AMOY_FULL_IDENTIFIER, POLYGON_MAINNET_FULL_IDENTIFIER,
+    POLYGON_AMOY_FULL_IDENTIFIER, POLYGON_MAINNET_FULL_IDENTIFIER, PULSE_MAINNET_FULL_IDENTIFIER,
 };
 use serde_derive::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter};
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum Chain {
+    PulseMainnet,
     EthMainnet,
     EthRopsten,
     PolyMainnet,
@@ -28,7 +29,9 @@ impl Default for Chain {
 
 impl From<&str> for Chain {
     fn from(str: &str) -> Self {
-        if str == POLYGON_MAINNET_FULL_IDENTIFIER {
+        if str == PULSE_MAINNET_FULL_IDENTIFIER {
+            Chain::PulseMainnet
+        } else if str == POLYGON_MAINNET_FULL_IDENTIFIER {
             Chain::PolyMainnet
         } else if str == ETH_MAINNET_FULL_IDENTIFIER {
             Chain::EthMainnet
@@ -51,6 +54,7 @@ impl From<&str> for Chain {
 impl Display for Chain {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let chain_name = match self {
+            Chain::PulseMainnet => PULSE_MAINNET_FULL_IDENTIFIER,
             Chain::EthMainnet => ETH_MAINNET_FULL_IDENTIFIER,
             Chain::EthRopsten => ETH_ROPSTEN_FULL_IDENTIFIER,
             Chain::PolyMainnet => POLYGON_MAINNET_FULL_IDENTIFIER,
@@ -79,7 +83,7 @@ impl Chain {
     }
 
     fn mainnets() -> &'static [Chain] {
-        &[Chain::PolyMainnet, Chain::BaseMainnet, Chain::EthMainnet]
+        &[Chain::PulseMainnet, Chain::PolyMainnet, Chain::BaseMainnet, Chain::EthMainnet]
     }
 }
 
@@ -177,6 +181,7 @@ mod tests {
     #[test]
     fn display_is_properly_implemented() {
         let chains = [
+            Chain::PulseMainnet,
             Chain::EthMainnet,
             Chain::EthRopsten,
             Chain::PolyMainnet,
@@ -194,6 +199,7 @@ mod tests {
         assert_eq!(
             strings,
             vec![
+                PULSE_MAINNET_FULL_IDENTIFIER.to_string(),
                 ETH_MAINNET_FULL_IDENTIFIER.to_string(),
                 ETH_ROPSTEN_FULL_IDENTIFIER.to_string(),
                 POLYGON_MAINNET_FULL_IDENTIFIER.to_string(),

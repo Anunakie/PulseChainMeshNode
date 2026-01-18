@@ -2,7 +2,7 @@
 name = "test_utilities"
 version = "0.1.0"
 edition = "2021"
-authors = ["Dan Wiebe <dnwiebe@gmail.com>", "MASQ"]
+authors = ["Dan Wiebe <dnwiebe@gmail.com>", "PulseMesh"]
 license = "GPL-3.0-only"
 description = "Testing utilities Code common to Node and masq; also, temporarily, to dns_utility"
 workspace = "../node"
