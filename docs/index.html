@@ -3,384 +3,985 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PulseChainMeshNode - Decentralized Mesh Networking</title>
+    <title>PulseChainMeshNode - Decentralized Privacy Mesh Network</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #8B5CF6;
             --primary-dark: #7C3AED;
             --secondary: #06B6D4;
-            --bg-dark: #0F0F23;
-            --bg-card: #1A1A2E;
+            --accent: #00F0FF;
+            --bg-dark: #0a0e17;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
             --text: #E2E8F0;
             --text-muted: #94A3B8;
+            --gradient-1: #0f0f1a;
+            --gradient-2: #1a0f2e;
+            --gradient-3: #0a1f2e;
+            --gradient-4: #001f3f;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--bg-dark);
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(-45deg, var(--gradient-1), var(--gradient-2), var(--gradient-3), var(--gradient-4));
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: var(--text);
             line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated Mesh Overlay */
+        .mesh-overlay {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 240, 255, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
+            animation: meshMove 20s infinite alternate;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes meshMove {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+            50% { transform: translate(2%, 2%) scale(1.05); opacity: 1; }
+            100% { transform: translate(-2%, -2%) scale(1.1); opacity: 0.8; }
+        }
+
+        /* Honeycomb Pattern */
+        .honeycomb-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .honeycomb-bg::before {
+            content: "";
+            position: absolute;
+            inset: -50%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='rgba(139,92,246,0.08)' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='rgba(6,182,212,0.05)' stroke-width='1'/%3E%3C/svg%3E");
+            background-size: 56px 100px;
+            animation: honeycombFloat 30s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes honeycombFloat {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-56px, -100px) rotate(3deg); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: particleFloat 20s infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 25s; }
+        .particle:nth-child(2) { left: 20%; top: 80%; animation-delay: 2s; animation-duration: 20s; }
+        .particle:nth-child(3) { left: 30%; top: 40%; animation-delay: 4s; animation-duration: 22s; }
+        .particle:nth-child(4) { left: 40%; top: 60%; animation-delay: 1s; animation-duration: 18s; }
+        .particle:nth-child(5) { left: 50%; top: 30%; animation-delay: 3s; animation-duration: 24s; }
+        .particle:nth-child(6) { left: 60%; top: 70%; animation-delay: 5s; animation-duration: 21s; }
+        .particle:nth-child(7) { left: 70%; top: 50%; animation-delay: 2s; animation-duration: 19s; }
+        .particle:nth-child(8) { left: 80%; top: 20%; animation-delay: 4s; animation-duration: 23s; }
+        .particle:nth-child(9) { left: 90%; top: 90%; animation-delay: 1s; animation-duration: 26s; }
+        .particle:nth-child(10) { left: 15%; top: 55%; animation-delay: 3s; animation-duration: 17s; }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            25% { transform: translateY(-30px) translateX(10px); opacity: 0.6; }
+            50% { transform: translateY(-10px) translateX(-10px); opacity: 0.4; }
+            75% { transform: translateY(-40px) translateX(5px); opacity: 0.5; }
+        }
+
+        /* Content wrapper */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         /* Header */
         header {
-            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-dark) 100%);
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(139, 92, 246, 0.2);
             padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
         }
-        
+
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
             font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
+
+        .logo-hex {
+            font-size: 2rem;
+            animation: hexPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes hexPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
         .nav-links a {
-            color: var(--text);
+            color: var(--text-muted);
             text-decoration: none;
-            margin-left: 30px;
-            transition: color 0.3s;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
         }
-        
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.3s;
+        }
+
         .nav-links a:hover {
-            color: var(--primary);
+            color: var(--text);
         }
-        
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
         /* Hero */
         .hero {
             text-align: center;
-            padding: 100px 20px;
-            background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            padding: 180px 20px 100px;
+            position: relative;
         }
-        
+
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+            animation: heroGlow 5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes heroGlow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10B981;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 20px 5px rgba(16, 185, 129, 0.2); }
+        }
+
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.35rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 20px;
+            line-height: 1.7;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            opacity: 0.8;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
-        .hero p {
-            font-size: 1.25rem;
+
+        .section-header p {
             color: var(--text-muted);
+            font-size: 1.1rem;
             max-width: 600px;
-            margin: 0 auto 40px;
+            margin: 0 auto;
         }
-        
-        .btn {
-            display: inline-block;
-            padding: 15px 40px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            margin-left: 15px;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
-        }
-        
-        /* Features */
+
+        /* Features Grid */
         .features {
-            padding: 80px 0;
+            background: rgba(10, 14, 23, 0.5);
         }
-        
-        .features h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-        }
-        
+
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
         }
-        
+
         .feature-card {
-            background: var(--bg-card);
-            padding: 40px;
-            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.8) 0%, rgba(31, 41, 55, 0.6) 100%);
+            padding: 35px;
+            border-radius: 20px;
             border: 1px solid rgba(139, 92, 246, 0.1);
-            transition: transform 0.3s, border-color 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: var(--primary);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 40px rgba(139, 92, 246, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
-        
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
         .feature-icon {
-            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
             margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
-        
+
         .feature-card h3 {
             font-size: 1.25rem;
-            margin-bottom: 15px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+            position: relative;
+            z-index: 1;
         }
-        
+
         .feature-card p {
             color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
         }
-        
-        /* Setup */
-        .setup {
-            padding: 80px 0;
-            background: var(--bg-card);
+
+        /* Privacy Highlights */
+        .privacy-section {
+            background: linear-gradient(180deg, rgba(10, 14, 23, 0.5) 0%, rgba(17, 24, 39, 0.8) 100%);
         }
-        
-        .setup h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-        }
-        
-        .code-block {
-            background: var(--bg-dark);
-            border-radius: 12px;
-            padding: 30px;
-            overflow-x: auto;
-            max-width: 800px;
+
+        .privacy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
             margin: 0 auto;
         }
-        
-        .code-block code {
-            color: var(--secondary);
-            font-family: 'Fira Code', 'Consolas', monospace;
-            font-size: 0.9rem;
+
+        .privacy-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 25px;
+            background: rgba(17, 24, 39, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            transition: all 0.3s;
         }
-        
+
+        .privacy-item:hover {
+            border-color: rgba(16, 185, 129, 0.5);
+            background: rgba(16, 185, 129, 0.1);
+            transform: translateX(5px);
+        }
+
+        .privacy-check {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .privacy-item span {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        /* Setup Section */
+        .setup {
+            background: rgba(10, 14, 23, 0.7);
+        }
+
+        .setup-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .code-block {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-header {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot.red { background: #ff5f56; }
+        .code-dot.yellow { background: #ffbd2e; }
+        .code-dot.green { background: #27ca40; }
+
+        .code-title {
+            margin-left: 10px;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .code-content {
+            padding: 25px;
+            overflow-x: auto;
+        }
+
+        .code-content code {
+            font-family: "Fira Code", "JetBrains Mono", Consolas, monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: #e6edf3;
+        }
+
+        .code-content .comment { color: #8b949e; }
+        .code-content .command { color: var(--accent); }
+
         /* Roadmap */
         .roadmap {
-            padding: 80px 0;
+            background: rgba(17, 24, 39, 0.5);
         }
-        
-        .roadmap h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-        }
-        
+
         .timeline {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
+            position: relative;
         }
-        
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
         .timeline-item {
             display: flex;
-            margin-bottom: 30px;
+            gap: 25px;
+            margin-bottom: 35px;
+            position: relative;
         }
-        
+
         .timeline-marker {
-            width: 20px;
-            height: 20px;
-            background: var(--primary);
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
             flex-shrink: 0;
-            margin-top: 5px;
+            position: relative;
+            z-index: 1;
+            border: 3px solid var(--bg-dark);
         }
-        
+
         .timeline-marker.completed {
-            background: #10B981;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
         }
-        
+
         .timeline-marker.in-progress {
-            background: #F59E0B;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            animation: markerPulse 2s ease-in-out infinite;
         }
-        
+
+        .timeline-marker.upcoming {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        @keyframes markerPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 20px 8px rgba(245, 158, 11, 0.2); }
+        }
+
+        .timeline-content {
+            background: rgba(17, 24, 39, 0.6);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            flex: 1;
+            transition: all 0.3s;
+        }
+
+        .timeline-content:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateX(5px);
+        }
+
         .timeline-content h3 {
-            margin-bottom: 5px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
         }
-        
+
         .timeline-content p {
             color: var(--text-muted);
+            font-size: 0.95rem;
         }
-        
+
         /* Footer */
         footer {
-            background: var(--bg-card);
-            padding: 40px 0;
-            text-align: center;
+            background: rgba(10, 14, 23, 0.9);
+            padding: 60px 0 30px;
             border-top: 1px solid rgba(139, 92, 246, 0.1);
         }
-        
-        footer p {
-            color: var(--text-muted);
+
+        .footer-content {
+            text-align: center;
         }
-        
-        footer a {
+
+        .footer-logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            padding-top: 30px;
+            border-top: 1px solid rgba(139, 92, 246, 0.1);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .footer-bottom a {
             color: var(--primary);
             text-decoration: none;
         }
-        
-        .status-badge {
-            display: inline-block;
-            background: rgba(245, 158, 11, 0.2);
-            color: #F59E0B;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            margin-bottom: 20px;
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-marker {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <div class="logo">⬡ PulseChainMeshNode</div>
-            <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#setup">Setup</a>
-                <a href="#roadmap">Roadmap</a>
-                <a href="https://github.com/YourUsername/PulseChainMeshNode">GitHub</a>
-            </div>
-        </nav>
-    </header>
+    <!-- Animated Backgrounds -->
+    <div class="mesh-overlay"></div>
+    <div class="honeycomb-bg"></div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
 
-    <section class="hero">
-        <div class="container">
-            <span class="status-badge">🚧 Development Phase</span>
-            <h1>PulseChainMeshNode</h1>
-            <p>Decentralized mesh networking for the PulseChain ecosystem. Route your traffic through a privacy-focused, distributed network of nodes.</p>
-            <a href="https://github.com/YourUsername/PulseChainMeshNode" class="btn btn-primary">Get Started</a>
-            <a href="#setup" class="btn btn-secondary">Documentation</a>
-        </div>
-    </section>
+    <div class="content-wrapper">
+        <header>
+            <nav class="container">
+                <div class="logo">
+                    <span class="logo-hex">⬡</span>
+                    PulseChainMeshNode
+                </div>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#privacy">Privacy</a>
+                    <a href="#setup">Setup</a>
+                    <a href="#roadmap">Roadmap</a>
+                    <a href="https://github.com/Anunakie/PulseChainMeshNode" target="_blank">GitHub</a>
+                </div>
+            </nav>
+        </header>
 
-    <section class="features" id="features">
-        <div class="container">
-            <h2>Features</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Privacy First</h3>
-                    <p>Route your internet traffic through multiple nodes, making it virtually impossible to trace back to you.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⬡</div>
-                    <h3>PulseChain Native</h3>
-                    <p>Built specifically for PulseChain mainnet (Chain ID: 369) with native blockchain integration.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3>Decentralized</h3>
-                    <p>No central servers or authorities. The network is run entirely by its participants.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🆓</div>
-                    <h3>Token-Free Testing</h3>
-                    <p>Currently operates without token requirements, allowing anyone to test and develop freely.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💻</div>
-                    <h3>Cross-Platform</h3>
-                    <p>Runs on Linux, macOS, and Windows. Deploy nodes anywhere.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📖</div>
-                    <h3>Open Source</h3>
-                    <p>Fully open source under GPLv3. Audit the code, contribute, or fork it.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="setup" id="setup">
-        <div class="container">
-            <h2>Quick Setup</h2>
-            <div class="code-block">
-                <code>
-# Clone the repository<br>
-git clone https://github.com/YourUsername/PulseChainMeshNode.git<br>
-cd PulseChainMeshNode<br><br>
-
-# Build the project<br>
-cd node<br>
-cargo build --release<br><br>
-
-# Run the node<br>
-./target/release/pulsemesh_node --help
-                </code>
-            </div>
-        </div>
-    </section>
-
-    <section class="roadmap" id="roadmap">
-        <div class="container">
-            <h2>Roadmap</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-marker completed"></div>
-                    <div class="timeline-content">
-                        <h3>Phase 1: Fork & Rebrand</h3>
-                        <p>Fork MASQ Network, rebrand to PulseChainMeshNode, add PulseChain support</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-marker in-progress"></div>
-                    <div class="timeline-content">
-                        <h3>Phase 2: Token-Free Testing</h3>
-                        <p>Disable token requirements for open testing and development</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3>Phase 3: Smart Contracts</h3>
-                        <p>Deploy PulseChain-native smart contracts for network incentivization</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3>Phase 4: Production Launch</h3>
-                        <p>Full production release with token integration and mainnet deployment</p>
-                    </div>
+        <section class="hero">
+            <div class="hero-glow"></div>
+            <div class="container">
+                <span class="status-badge">
+                    <span>●</span> Token-Free Testing Active
+                </span>
+                <h1>PulseChainMeshNode</h1>
+                <p class="hero-subtitle">
+                    Decentralized mesh networking for the PulseChain ecosystem. 
+                    Route your traffic through a privacy-focused, distributed network of nodes.
+                </p>
+                <p class="hero-description">
+                    A community-adapted fork of MASQ focused on PulseChain compatibility, 
+                    core mesh privacy, and open testing — with token features planned for later phases.
+                </p>
+                <div class="btn-group">
+                    <a href="https://github.com/Anunakie/PulseChainMeshNode" class="btn btn-primary">
+                        ⬇️ Download Node
+                    </a>
+                    <a href="#setup" class="btn btn-secondary">
+                        📖 Documentation
+                    </a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer>
-        <div class="container">
-            <p>PulseChainMeshNode is open source software licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3</a></p>
-            <p style="margin-top: 10px;">Based on <a href="https://github.com/MASQ-Project/Node">MASQ Network</a> • Built for <a href="https://pulsechain.com">PulseChain</a></p>
-        </div>
-    </footer>
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2>🚀 Powerful Features</h2>
+                    <p>Everything you need for private, decentralized internet access on PulseChain</p>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">💳</div>
+                        <h3>PulseChain Web3 Wallets Built-In</h3>
+                        <p>Ready-to-use Web3 wallets supporting PulseChain and compatible chains right from launch — making decentralized finance and interactions seamless without extra setup.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>Organized Spaces for dApps</h3>
+                        <p>Use Spaces to neatly organize your decentralized apps in a dock-style interface. Switch between focused workspaces effortlessly to reduce clutter and boost productivity.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Supreme Ad & Tracker Blocking</h3>
+                        <p>All privacy protections enabled out-of-the-box: block cross-site trackers, cookies, and intrusive ads with no hidden toggles required for true default privacy.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🗑️</div>
+                        <h3>Automatic History Self-Destruction</h3>
+                        <p>Browsing history is limited by default and auto-deletes older entries. Customize how many items to keep before they permanently vanish for enhanced anonymity.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h3>Decentralized dApp Access</h3>
+                        <p>Connect through the PulseChainMeshNode mesh to browse and discover dApps on an uncensored, global network — with future plans for a built-in decentralized app library.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔐</div>
+                        <h3>Powerful dMeshVPN</h3>
+                        <p>Route your traffic privately through multiple hops across the global network for strong anonymity, censorship resistance, and access to the true, unrestricted internet.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h3>Wallet-to-Wallet Chat</h3>
+                        <p>Communicate directly peer-to-peer using Ethereum-compatible wallets via integrations like DM3 — no centralized platforms like traditional messengers needed.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3>Privacy-Focused Search</h3>
+                        <p>Integrated search powered by decentralized engines that prioritizes user privacy — no tracking or profiling of your queries.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📁</div>
+                        <h3>IPFS File Sharing</h3>
+                        <p>Upload and share files securely using IPFS integration — content is distributed across nodes for censorship resistance, redundancy, and better privacy.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <h3>Future Bandwidth Rewards</h3>
+                        <p>Coming soon: Share your unused bandwidth with the network to earn rewards — supplement privacy usage while supporting the decentralized mesh.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="privacy-section" id="privacy">
+            <div class="container">
+                <div class="section-header">
+                    <h2>✅ Privacy by Default</h2>
+                    <p>No configuration needed — maximum privacy protection from the start</p>
+                </div>
+                <div class="privacy-grid">
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Ads blocked by default</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Cross-site trackers blocked</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Cookies blocked by default</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Multi-hop dMesh routing</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Country/region hopping</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Auto history destruction</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Decentralized search</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>IPFS storage integration</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Wallet-based chat</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>PulseChain Web3 native</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Privacy-first configuration</span>
+                    </div>
+                    <div class="privacy-item">
+                        <div class="privacy-check">✓</div>
+                        <span>Open source & auditable</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="setup" id="setup">
+            <div class="container">
+                <div class="section-header">
+                    <h2>⚡ Quick Setup</h2>
+                    <p>Get your node running in minutes</p>
+                </div>
+                <div class="setup-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <div class="code-dot red"></div>
+                            <div class="code-dot yellow"></div>
+                            <div class="code-dot green"></div>
+                            <span class="code-title">Terminal</span>
+                        </div>
+                        <div class="code-content">
+                            <code>
+<span class="comment"># Clone the repository</span><br>
+<span class="command">git clone https://github.com/Anunakie/PulseChainMeshNode.git</span><br>
+<span class="command">cd PulseChainMeshNode</span><br><br>
+
+<span class="comment"># Build the project (requires Rust 1.63+)</span><br>
+<span class="command">cd node</span><br>
+<span class="command">cargo build --release</span><br><br>
+
+<span class="comment"># Run the node</span><br>
+<span class="command">./target/release/pulsemesh_node --help</span><br><br>
+
+<span class="comment"># Start with PulseChain mainnet</span><br>
+<span class="command">./target/release/pulsemesh_node --chain pulse-mainnet</span>
+                            </code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="roadmap" id="roadmap">
+            <div class="container">
+                <div class="section-header">
+                    <h2>🗺️ Roadmap</h2>
+                    <p>Our journey to decentralized privacy</p>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker completed">✓</div>
+                        <div class="timeline-content">
+                            <h3>Phase 1: Fork & Rebrand</h3>
+                            <p>Fork MASQ Network, rebrand to PulseChainMeshNode, add PulseChain support (Chain ID: 369)</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker in-progress">⚡</div>
+                        <div class="timeline-content">
+                            <h3>Phase 2: Token-Free Testing</h3>
+                            <p>Disable token requirements for open testing and development. Build community and gather feedback.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker upcoming">3</div>
+                        <div class="timeline-content">
+                            <h3>Phase 3: Smart Contracts</h3>
+                            <p>Deploy PulseChain-native smart contracts for network incentivization and governance.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker upcoming">4</div>
+                        <div class="timeline-content">
+                            <h3>Phase 4: Production Launch</h3>
+                            <p>Full production release with token integration, bandwidth rewards, and mainnet deployment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-logo">⬡ PulseChainMeshNode</div>
+                    <div class="footer-links">
+                        <a href="https://github.com/Anunakie/PulseChainMeshNode" target="_blank">GitHub</a>
+                        <a href="#features">Features</a>
+                        <a href="#setup">Documentation</a>
+                        <a href="https://pulsechain.com" target="_blank">PulseChain</a>
+                    </div>
+                    <div class="footer-bottom">
+                        <p>Open source software licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GPLv3</a></p>
+                        <p style="margin-top: 10px;">Based on <a href="https://github.com/MASQ-Project/Node" target="_blank">MASQ Network</a> • Built for <a href="https://pulsechain.com" target="_blank">PulseChain</a></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 </body>
 </html>
