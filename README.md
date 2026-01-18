@@ -156,3 +156,33 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
   <strong>⬡ PulseChainMeshNode</strong><br>
   <em>Privacy-first mesh networking for PulseChain</em>
 </p>
+
+---
+
+## 🌐 PulseMesh Browser
+
+PulseMesh Browser is a privacy-focused web browser built on Electron with Chrome extension support. It integrates seamlessly with the PulseMesh network for decentralized, censorship-resistant browsing.
+
+### Features
+- **Chrome Extension Support** - Use your favorite privacy extensions
+- **Built-in Mesh Integration** - Connect to the PulseMesh network
+- **Privacy by Default** - Ad blocking and tracker protection
+- **PulseChain Web3** - Native wallet integration
+
+### Building the Browser
+
+```bash
+cd browser
+yarn install
+yarn build
+yarn start
+```
+
+### Creating Windows Installer
+
+```bash
+cd browser/packages/browser
+yarn make --platform win32
+```
+
+The installer will be created in `browser/packages/browser/out/make/`

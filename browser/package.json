@@ -1,0 +1,29 @@
+{
+    "name": "pulsemesh-browser",
+    "productName": "PulseMesh Browser",
+    "version": "0.1.0",
+    "description": "PulseMesh Browser - Privacy-focused browser for PulseChain mesh network",
+    "main": ".webpack/main",
+    "private": "true",
+    "workspaces": [
+        "packages/browser",
+        "packages/electron-chrome-extensions"
+    ],
+    "scripts": {
+        "build": "yarn run build:electron-chrome-extensions",
+        "build:electron-chrome-extensions": "yarn --cwd ./packages/electron-chrome-extensions build",
+        "start": "yarn build && yarn --cwd ./packages/browser start",
+        "package": "yarn build && yarn --cwd ./packages/browser package",
+        "make": "yarn build && yarn --cwd ./packages/browser make",
+        "start:debug": "cross-env DEBUG='electron-chrome-extensions:*' yarn start"
+    },
+    "license": "GPL-3.0",
+    "author": "PulseChainMeshNode Community",
+    "devDependencies": {
+        "cross-env": "^7.0.3",
+        "eslint": "^8.40.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-react": "^7.32.2",
+        "prettier": "^2.8.8"
+    }
+}

@@ -1,0 +1,85 @@
+name: Build PulseMesh Browser
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Install Yarn
+      run: npm install -g yarn
+    
+    - name: Install Dependencies
+      working-directory: ./browser
+      run: yarn install
+    
+    - name: Build Extensions Package
+      working-directory: ./browser
+      run: yarn build
+    
+    - name: Make Windows Installer
+      working-directory: ./browser/packages/browser
+      run: yarn make --platform win32
+    
+    - name: List Output
+      shell: pwsh
+      run: |
+        Get-ChildItem -Recurse browser/packages/browser/out/make -Include *.exe,*.zip | ForEach-Object { Write-Host $_.FullName }
+    
+    - name: Upload Windows Installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: PulseMeshBrowser-Windows-Setup
+        path: browser/packages/browser/out/make/squirrel.windows/x64/*.exe
+    
+    - name: Upload Windows ZIP
+      uses: actions/upload-artifact@v4
+      with:
+        name: PulseMeshBrowser-Windows-Portable
+        path: browser/packages/browser/out/make/zip/win32/x64/*.zip
+
+  build-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Install Yarn
+      run: npm install -g yarn
+    
+    - name: Install Dependencies
+      working-directory: ./browser
+      run: yarn install
+    
+    - name: Build Extensions Package
+      working-directory: ./browser
+      run: yarn build
+    
+    - name: Make Linux Packages
+      working-directory: ./browser/packages/browser
+      run: yarn make --platform linux
+    
+    - name: Upload Linux DEB
+      uses: actions/upload-artifact@v4
+      with:
+        name: PulseMeshBrowser-Linux-DEB
+        path: browser/packages/browser/out/make/deb/x64/*.deb
