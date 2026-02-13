@@ -3,371 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PulseChainMeshNode - Decentralized Privacy Mesh Network</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>PulseChainMeshNode — Privacy-First Web3 Browser for PulseChain</title>
     <style>
         :root {
-            --primary: #8B5CF6;
-            --primary-dark: #7C3AED;
-            --secondary: #06B6D4;
-            --accent: #00F0FF;
-            --bg-dark: #0a0e17;
-            --bg-card: #111827;
-            --bg-card-hover: #1f2937;
-            --text: #E2E8F0;
-            --text-muted: #94A3B8;
-            --gradient-1: #0f0f1a;
-            --gradient-2: #1a0f2e;
-            --gradient-3: #0a1f2e;
-            --gradient-4: #001f3f;
+            --teal: #00D4AA;
+            --purple: #8B5CF6;
+            --blue: #3B82F6;
+            --gold: #F59E0B;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --card: #12121a;
+            --card-border: #1e1e2e;
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(-45deg, var(--gradient-1), var(--gradient-2), var(--gradient-3), var(--gradient-4));
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--dark);
             color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Animated Mesh Overlay */
-        .mesh-overlay {
-            position: fixed;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 240, 255, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
-            animation: meshMove 20s infinite alternate;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes meshMove {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-            50% { transform: translate(2%, 2%) scale(1.05); opacity: 1; }
-            100% { transform: translate(-2%, -2%) scale(1.1); opacity: 0.8; }
-        }
-
-        /* Honeycomb Pattern */
+        /* Animated honeycomb background */
         .honeycomb-bg {
             position: fixed;
-            inset: 0;
-            pointer-events: none;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
-            overflow: hidden;
+            opacity: 0.06;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%2300D4AA' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%238B5CF6' stroke-width='0.5'/%3E%3C/svg%3E");
+            animation: honeycombShift 20s linear infinite;
         }
 
-        .honeycomb-bg::before {
-            content: "";
-            position: absolute;
-            inset: -50%;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='rgba(139,92,246,0.08)' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='rgba(6,182,212,0.05)' stroke-width='1'/%3E%3C/svg%3E");
-            background-size: 56px 100px;
-            animation: honeycombFloat 30s linear infinite;
-            opacity: 0.6;
+        @keyframes honeycombShift {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
         }
 
-        @keyframes honeycombFloat {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(-56px, -100px) rotate(3deg); }
-        }
-
-        /* Floating Particles */
+        /* Floating particles */
         .particles {
             position: fixed;
-            inset: 0;
-            pointer-events: none;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
+            pointer-events: none;
         }
 
         .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--accent);
+            width: 3px; height: 3px;
+            background: var(--teal);
             border-radius: 50%;
-            opacity: 0.3;
-            animation: particleFloat 20s infinite;
+            animation: float linear infinite;
+            opacity: 0.4;
         }
 
-        .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 25s; }
-        .particle:nth-child(2) { left: 20%; top: 80%; animation-delay: 2s; animation-duration: 20s; }
-        .particle:nth-child(3) { left: 30%; top: 40%; animation-delay: 4s; animation-duration: 22s; }
-        .particle:nth-child(4) { left: 40%; top: 60%; animation-delay: 1s; animation-duration: 18s; }
-        .particle:nth-child(5) { left: 50%; top: 30%; animation-delay: 3s; animation-duration: 24s; }
-        .particle:nth-child(6) { left: 60%; top: 70%; animation-delay: 5s; animation-duration: 21s; }
-        .particle:nth-child(7) { left: 70%; top: 50%; animation-delay: 2s; animation-duration: 19s; }
-        .particle:nth-child(8) { left: 80%; top: 20%; animation-delay: 4s; animation-duration: 23s; }
-        .particle:nth-child(9) { left: 90%; top: 90%; animation-delay: 1s; animation-duration: 26s; }
-        .particle:nth-child(10) { left: 15%; top: 55%; animation-delay: 3s; animation-duration: 17s; }
-
-        @keyframes particleFloat {
-            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
-            25% { transform: translateY(-30px) translateX(10px); opacity: 0.6; }
-            50% { transform: translateY(-10px) translateX(-10px); opacity: 0.4; }
-            75% { transform: translateY(-40px) translateX(5px); opacity: 0.5; }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
-        /* Content wrapper */
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            background: rgba(10, 14, 23, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-            padding: 20px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-hex {
-            font-size: 2rem;
-            animation: hexPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes hexPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
-
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: "";
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--text);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
+        .content { position: relative; z-index: 1; }
 
         /* Hero */
         .hero {
-            text-align: center;
-            padding: 180px 20px 100px;
-            position: relative;
-        }
-
-        .hero-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
-            animation: heroGlow 5s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes heroGlow {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
-        }
-
-        .status-badge {
-            display: inline-flex;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #10B981;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 30px;
-            animation: badgePulse 2s ease-in-out infinite;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            background: radial-gradient(ellipse at 50% 30%, rgba(0,212,170,0.08) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.06) 0%, transparent 50%);
         }
 
-        @keyframes badgePulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-            50% { box-shadow: 0 0 20px 5px rgba(16, 185, 129, 0.2); }
+        .hero-logo {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(0,212,170,0.3)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(0,212,170,0.6)); }
         }
 
         .hero h1 {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 800;
-            margin-bottom: 25px;
-            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--accent) 100%);
+            background: linear-gradient(135deg, var(--teal), var(--purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1.1;
+            margin-bottom: 1rem;
         }
 
-        .hero-subtitle {
-            font-size: 1.35rem;
-            color: var(--text-muted);
+        .hero .tagline {
+            font-size: 1.3rem;
+            color: var(--text-dim);
             max-width: 700px;
-            margin: 0 auto 20px;
-            line-height: 1.7;
+            margin-bottom: 2rem;
+            line-height: 1.6;
         }
 
-        .hero-description {
-            font-size: 1rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 40px;
-            opacity: 0.8;
-        }
-
-        .btn-group {
+        .hero-badges {
             display: flex;
-            gap: 15px;
-            justify-content: center;
+            gap: 1rem;
             flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .badge {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .badge-teal { border-color: var(--teal); color: var(--teal); background: rgba(0,212,170,0.1); }
+        .badge-purple { border-color: var(--purple); color: var(--purple); background: rgba(139,92,246,0.1); }
+        .badge-blue { border-color: var(--blue); color: var(--blue); background: rgba(59,130,246,0.1); }
+        .badge-gold { border-color: var(--gold); color: var(--gold); background: rgba(245,158,11,0.1); }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .btn {
+            padding: 0.9rem 2rem;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 16px 32px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
+            gap: 0.5rem;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            background: linear-gradient(135deg, var(--teal), #00b894);
+            color: #000;
+            border: none;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,212,170,0.4);
         }
 
         .btn-secondary {
-            background: rgba(139, 92, 246, 0.1);
-            border: 2px solid var(--primary);
-            color: var(--primary);
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--card-border);
         }
 
         .btn-secondary:hover {
-            background: rgba(139, 92, 246, 0.2);
-            transform: translateY(-3px);
+            border-color: var(--purple);
+            transform: translateY(-2px);
         }
 
-        /* Section Styles */
+        /* Sections */
         section {
-            padding: 100px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-header h2 {
-            font-size: 2.75rem;
-            font-weight: 800;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            max-width: 600px;
+            padding: 5rem 2rem;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* Features Grid */
-        .features {
-            background: rgba(10, 14, 23, 0.5);
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
         }
 
-        .feature-grid {
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Feature grid */
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
         }
 
         .feature-card {
-            background: linear-gradient(135deg, rgba(17, 24, 39, 0.8) 0%, rgba(31, 41, 55, 0.6) 100%);
-            padding: 35px;
-            border-radius: 20px;
-            border: 1px solid rgba(139, 92, 246, 0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
             position: relative;
             overflow: hidden;
         }
@@ -375,909 +218,484 @@
         .feature-card::before {
             content: "";
             position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--teal), var(--purple));
             opacity: 0;
-            transition: opacity 0.4s;
+            transition: opacity 0.3s;
         }
 
         .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.3),
-                0 0 40px rgba(139, 92, 246, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+            border-color: rgba(0,212,170,0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
         }
 
-        .feature-card:hover::before {
-            opacity: 1;
-        }
+        .feature-card:hover::before { opacity: 1; }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
 
         .feature-card h3 {
             font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 0.75rem;
             color: var(--text);
-            position: relative;
-            z-index: 1;
         }
 
         .feature-card p {
-            color: var(--text-muted);
+            color: var(--text-dim);
+            line-height: 1.6;
             font-size: 0.95rem;
-            line-height: 1.7;
-            position: relative;
-            z-index: 1;
         }
 
-        /* Privacy Highlights */
-        .privacy-section {
-            background: linear-gradient(180deg, rgba(10, 14, 23, 0.5) 0%, rgba(17, 24, 39, 0.8) 100%);
+        .feature-tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 1rem;
         }
 
+        .tag-privacy { background: rgba(0,212,170,0.15); color: var(--teal); }
+        .tag-web3 { background: rgba(139,92,246,0.15); color: var(--purple); }
+        .tag-mesh { background: rgba(59,130,246,0.15); color: var(--blue); }
+        .tag-social { background: rgba(245,158,11,0.15); color: var(--gold); }
+        .tag-economy { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+        /* Privacy section */
         .privacy-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            max-width: 1000px;
-            margin: 0 auto;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
         .privacy-item {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 20px 25px;
-            background: rgba(17, 24, 39, 0.6);
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--card);
             border-radius: 12px;
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--card-border);
+        }
+
+        .privacy-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+        .privacy-item h4 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .privacy-item p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* Download section */
+        .download-section {
+            background: radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.08) 0%, transparent 60%);
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .download-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
             transition: all 0.3s;
         }
 
-        .privacy-item:hover {
-            border-color: rgba(16, 185, 129, 0.5);
-            background: rgba(16, 185, 129, 0.1);
-            transform: translateX(5px);
+        .download-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0,212,170,0.3);
         }
 
-        .privacy-check {
-            width: 28px;
-            height: 28px;
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
+        .download-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+        .download-card h3 { margin-bottom: 0.5rem; }
+
+        .download-card p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .download-card .btn {
+            width: 100%;
             justify-content: center;
-            font-size: 0.9rem;
-            flex-shrink: 0;
         }
-
-        .privacy-item span {
-            font-weight: 500;
-            color: var(--text);
-        }
-
-        /* Setup Section */
-        .setup {
-            background: rgba(10, 14, 23, 0.7);
-        }
-
-        .setup-content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .code-block {
-            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .code-header {
-            background: rgba(139, 92, 246, 0.1);
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-        }
-
-        .code-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .code-dot.red { background: #ff5f56; }
-        .code-dot.yellow { background: #ffbd2e; }
-        .code-dot.green { background: #27ca40; }
-
-        .code-title {
-            margin-left: 10px;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-
-        .code-content {
-            padding: 25px;
-            overflow-x: auto;
-        }
-
-        .code-content code {
-            font-family: "Fira Code", "JetBrains Mono", Consolas, monospace;
-            font-size: 0.9rem;
-            line-height: 1.8;
-            color: #e6edf3;
-        }
-
-        .code-content .comment { color: #8b949e; }
-        .code-content .command { color: var(--accent); }
 
         /* Roadmap */
         .roadmap {
-            background: rgba(17, 24, 39, 0.5);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
         }
 
-        .timeline {
-            max-width: 700px;
-            margin: 0 auto;
+        .roadmap-item {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
             position: relative;
         }
 
-        .timeline::before {
-            content: "";
+        .roadmap-item.done { border-color: var(--teal); }
+        .roadmap-item.done::after {
+            content: "✅";
             position: absolute;
-            left: 24px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            top: -10px; right: -10px;
+            font-size: 1.2rem;
         }
 
-        .timeline-item {
-            display: flex;
-            gap: 25px;
-            margin-bottom: 35px;
-            position: relative;
-        }
-
-        .timeline-marker {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 1;
-            border: 3px solid var(--bg-dark);
-        }
-
-        .timeline-marker.completed {
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-        }
-
-        .timeline-marker.in-progress {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-            animation: markerPulse 2s ease-in-out infinite;
-        }
-
-        .timeline-marker.upcoming {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        }
-
-        @keyframes markerPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-            50% { box-shadow: 0 0 20px 8px rgba(245, 158, 11, 0.2); }
-        }
-
-        .timeline-content {
-            background: rgba(17, 24, 39, 0.6);
-            padding: 25px;
-            border-radius: 16px;
-            border: 1px solid rgba(139, 92, 246, 0.1);
-            flex: 1;
-            transition: all 0.3s;
-        }
-
-        .timeline-content:hover {
-            border-color: rgba(139, 92, 246, 0.3);
-            transform: translateX(5px);
-        }
-
-        .timeline-content h3 {
-            font-size: 1.15rem;
+        .roadmap-phase {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--teal);
             font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text);
+            margin-bottom: 0.5rem;
         }
 
-        .timeline-content p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
+        .roadmap-item h4 { font-size: 0.95rem; margin-bottom: 0.3rem; }
+        .roadmap-item p { color: var(--text-dim); font-size: 0.8rem; }
+
+        /* About */
+        .about-box {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-box p {
+            color: var(--text-dim);
+            line-height: 1.8;
+            margin-bottom: 1rem;
         }
 
         /* Footer */
         footer {
-            background: rgba(10, 14, 23, 0.9);
-            padding: 60px 0 30px;
-            border-top: 1px solid rgba(139, 92, 246, 0.1);
-        }
-
-        .footer-content {
             text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--card-border);
         }
 
-        .footer-logo {
-            font-size: 1.75rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-
-        .footer-bottom {
-            padding-top: 30px;
-            border-top: 1px solid rgba(139, 92, 246, 0.1);
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-
-        .footer-bottom a {
-            color: var(--primary);
-            text-decoration: none;
-        }
+        footer a { color: var(--teal); text-decoration: none; }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1.1rem;
-            }
-
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .section-header h2 {
-                font-size: 2rem;
-            }
-
-            .timeline::before {
-                left: 20px;
-            }
-
-            .timeline-marker {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
+            .hero h1 { font-size: 2.2rem; }
+            .hero-logo { font-size: 3.5rem; }
+            .section-title { font-size: 1.8rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .download-grid { grid-template-columns: 1fr; }
         }
 
-        /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
         }
-    
-    /* Download Section Styles */
-    .download-section {
-        padding: 80px 20px;
-        background: linear-gradient(135deg, rgba(0, 212, 170, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
-        border-top: 1px solid rgba(0, 212, 170, 0.2);
-        border-bottom: 1px solid rgba(0, 212, 170, 0.2);
-    }
-
-    .download-subtitle {
-        text-align: center;
-        color: #a0aec0;
-        font-size: 1.2rem;
-        margin-bottom: 40px;
-    }
-
-    .download-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 30px;
-        max-width: 1000px;
-        margin: 0 auto 50px;
-    }
-
-    .download-card {
-        background: rgba(15, 20, 35, 0.8);
-        border: 1px solid rgba(0, 212, 170, 0.3);
-        border-radius: 16px;
-        padding: 30px;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-    .download-card:hover {
-        transform: translateY(-5px);
-        border-color: rgba(0, 212, 170, 0.6);
-        box-shadow: 0 10px 40px rgba(0, 212, 170, 0.2);
-    }
-
-    .download-card.windows:hover {
-        border-color: #00a8e8;
-        box-shadow: 0 10px 40px rgba(0, 168, 232, 0.2);
-    }
-
-    .download-icon {
-        font-size: 3rem;
-        margin-bottom: 15px;
-    }
-
-    .download-card h3 {
-        color: #00d4aa;
-        margin-bottom: 10px;
-    }
-
-    .download-card p {
-        color: #a0aec0;
-        margin-bottom: 20px;
-    }
-
-    .download-btn {
-        display: inline-block;
-        padding: 15px 30px;
-        background: linear-gradient(135deg, #00d4aa 0%, #00a8e8 100%);
-        color: #0a0e17;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        margin-bottom: 15px;
-    }
-
-    .download-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 5px 20px rgba(0, 212, 170, 0.4);
-    }
-
-    .download-btn.secondary {
-        background: transparent;
-        border: 2px solid #00d4aa;
-        color: #00d4aa;
-    }
-
-    .download-btn.secondary:hover {
-        background: rgba(0, 212, 170, 0.1);
-    }
-
-    .download-note {
-        display: block;
-        color: #667eea;
-        font-size: 0.9rem;
-    }
-
-    .install-steps {
-        max-width: 600px;
-        margin: 0 auto 40px;
-        background: rgba(15, 20, 35, 0.6);
-        border: 1px solid rgba(102, 126, 234, 0.3);
-        border-radius: 12px;
-        padding: 30px;
-    }
-
-    .install-steps h3 {
-        color: #00d4aa;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    .install-steps ol {
-        text-align: left;
-        padding-left: 25px;
-    }
-
-    .install-steps li {
-        color: #e2e8f0;
-        margin-bottom: 12px;
-        line-height: 1.6;
-    }
-
-    .install-steps code {
-        background: rgba(0, 212, 170, 0.2);
-        padding: 2px 8px;
-        border-radius: 4px;
-        color: #00d4aa;
-        font-family: monospace;
-    }
-
-    .github-actions-note {
-        text-align: center;
-        color: #a0aec0;
-        font-size: 0.95rem;
-    }
-
-    .github-actions-note a {
-        color: #00d4aa;
-    }
-
-    .hero-download-btn {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 18px 40px;
-        background: linear-gradient(135deg, #00d4aa 0%, #00a8e8 100%);
-        color: #0a0e17;
-        text-decoration: none;
-        border-radius: 50px;
-        font-weight: bold;
-        font-size: 1.2rem;
-        transition: all 0.3s ease;
-        animation: pulse-glow 2s ease-in-out infinite;
-    }
-
-    .hero-download-btn:hover {
-        transform: scale(1.1);
-        box-shadow: 0 10px 40px rgba(0, 212, 170, 0.5);
-    }
-
-    @keyframes pulse-glow {
-        0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 170, 0.3); }
-        50% { box-shadow: 0 0 40px rgba(0, 212, 170, 0.6); }
-    }
-
     </style>
 </head>
 <body>
-    <!-- Animated Backgrounds -->
-    <div class="mesh-overlay"></div>
     <div class="honeycomb-bg"></div>
-    <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
+    <div class="particles" id="particles"></div>
 
-    <div class="content-wrapper">
-        <header>
-            <nav class="container">
-                <div class="logo">
-                    <span class="logo-hex">⬡</span>
-                    PulseChainMeshNode
-                </div>
-                <div class="nav-links">
-                    <a href="#features">Features</a>
-                    <a href="#privacy">Privacy</a>
-                    <a href="#setup">Setup</a>
-                    <a href="#roadmap">Roadmap</a>
-                    <a href="https://github.com/Anunakie/PulseChainMeshNode" target="_blank">GitHub</a>
-                </div>
-            </nav>
-        </header>
-
+    <div class="content">
+        <!-- Hero -->
         <section class="hero">
-            <div class="hero-glow"></div>
-            <div class="container">
-                <span class="status-badge">
-                    <span>●</span> Token-Free Testing Active
-                </span>
-                <h1>PulseChainMeshNode</h1>
-                <p class="hero-subtitle">
-                    Decentralized mesh networking for the PulseChain ecosystem. 
-                    Route your traffic through a privacy-focused, distributed network of nodes.
-                </p>
-                <p class="hero-description">
-                    A community-adapted fork of MASQ focused on PulseChain compatibility, 
-                    core mesh privacy, and open testing — with token features planned for later phases.
-                </p>
-                <div class="btn-group">
-                    <a href="https://github.com/Anunakie/PulseChainMeshNode" class="btn btn-primary">
-                        ⬇️ Download Node
-                    </a>
-                    <a href="#setup" class="btn btn-secondary">
-                        📖 Documentation
-                    </a>
+            <div class="hero-logo">🔷</div>
+            <h1>PulseMesh Browser</h1>
+            <p class="tagline">
+                The privacy-first, decentralized Web3 browser built for PulseChain.
+                Browse privately through a global mesh network, manage your crypto,
+                chat wallet-to-wallet, and share files — all without centralized servers.
+            </p>
+            <div class="hero-badges">
+                <span class="badge badge-teal">🛡️ Privacy by Default</span>
+                <span class="badge badge-purple">💰 Built-in Wallet</span>
+                <span class="badge badge-blue">🌐 Mesh VPN</span>
+                <span class="badge badge-gold">🪙 Token Economy</span>
+            </div>
+            <div class="cta-buttons">
+                <a href="https://github.com/Anunakie/PulseChainMeshNode/releases/tag/v0.3.0-beta" class="btn btn-primary">⬇️ Download v0.3.0-beta</a>
+                <a href="https://github.com/Anunakie/PulseChainMeshNode" class="btn btn-secondary">📂 View Source</a>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features">
+            <h2 class="section-title">🚀 Features</h2>
+            <p class="section-subtitle">Everything you need for private, decentralized browsing on PulseChain</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Supreme Ad & Tracker Blocking</h3>
+                    <p>Built-in network-level blocking of 200+ known ad and tracker domains. No extensions needed — protection is on by default with a real-time blocked counter.</p>
+                    <span class="feature-tag tag-privacy">Privacy</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Privacy-Focused Search</h3>
+                    <p>DuckDuckGo is your default search engine. Type any query in the URL bar and search privately — no tracking, no filter bubbles, no profiling.</p>
+                    <span class="feature-tag tag-privacy">Privacy</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🕐</div>
+                    <h3>Auto-Deleting History</h3>
+                    <p>Your browsing history self-destructs automatically. Configure how many entries to keep (default: 10) — older entries are permanently erased.</p>
+                    <span class="feature-tag tag-privacy">Privacy</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Built-in PulseChain Wallet</h3>
+                    <p>Full Web3 wallet with BIP39 mnemonic generation, HD derivation, AES-256-GCM encrypted storage. Send PLS, manage ERC-20 tokens, all without leaving the browser.</p>
+                    <span class="feature-tag tag-web3">Web3</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Node Control Panel</h3>
+                    <p>Start, stop, and configure your PulseMesh node directly from the browser. Monitor live logs, set neighborhood mode, configure blockchain URLs, and manage your earning wallet.</p>
+                    <span class="feature-tag tag-mesh">Mesh</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Decentralized Mesh VPN</h3>
+                    <p>Route all your traffic through a global mesh network of nodes. Multi-hop SOCKS5/HTTP proxy with automatic fallback to direct connection if the mesh goes offline.</p>
+                    <span class="feature-tag tag-mesh">Mesh</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>dApp Spaces</h3>
+                    <p>Organize your favorite dApps into color-coded workspaces. Pre-configured spaces for DeFi (PulseX, HEX), NFTs, and Tools (PulseScan, Bridge). Create custom spaces with one click.</p>
+                    <span class="feature-tag tag-web3">Web3</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Wallet-to-Wallet Chat</h3>
+                    <p>Send encrypted messages directly between PulseChain wallets using GunDB peer-to-peer relay. ECDH end-to-end encryption, message signing — no centralized servers involved.</p>
+                    <span class="feature-tag tag-social">Social</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3>IPFS File Sharing</h3>
+                    <p>Upload and share files on the decentralized web through IPFS. Get permanent content-addressed links (CIDs), download by hash, and share files that can never be censored.</p>
+                    <span class="feature-tag tag-social">Social</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🪙</div>
+                    <h3>Token Payment System</h3>
+                    <p>PMESH ERC-20 token integration for network payments. Auto-pay node operators for bandwidth, track payment history, configure rates — the foundation of the mesh economy.</p>
+                    <span class="feature-tag tag-economy">Economy</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Bandwidth Sharing & Rewards</h3>
+                    <p>Share your bandwidth with the mesh network and earn token rewards. Real-time speed meters, daily statistics, contribution tracking, and one-click reward claiming.</p>
+                    <span class="feature-tag tag-economy">Economy</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Zero-Knowledge Architecture</h3>
+                    <p>No accounts, no registration, no data collection. Your wallet is your identity. All data stays on your device, encrypted with keys only you control.</p>
+                    <span class="feature-tag tag-privacy">Privacy</span>
                 </div>
             </div>
         </section>
 
-            <!-- Download Section -->
-    <section class="download-section" id="download">
-        <div class="container">
-            <h2 class="section-title">⬇️ Download PulseMeshNode</h2>
-            <p class="download-subtitle">Get started with the decentralized mesh network in minutes</p>
+        <!-- Privacy Highlights -->
+        <section id="privacy">
+            <h2 class="section-title">🔐 Privacy Highlights</h2>
+            <p class="section-subtitle">Privacy isn't a feature — it's the foundation</p>
 
-            <div class="download-cards">
-                <div class="download-card windows">
+            <div class="privacy-grid">
+                <div class="privacy-item">
+                    <span class="privacy-icon">🚫</span>
+                    <div>
+                        <h4>No Telemetry</h4>
+                        <p>Zero data collection. No analytics, no crash reports sent anywhere.</p>
+                    </div>
+                </div>
+                <div class="privacy-item">
+                    <span class="privacy-icon">🔐</span>
+                    <div>
+                        <h4>Local Encryption</h4>
+                        <p>Wallet keys encrypted with AES-256-GCM. PBKDF2 key derivation with 100k iterations.</p>
+                    </div>
+                </div>
+                <div class="privacy-item">
+                    <span class="privacy-icon">🌍</span>
+                    <div>
+                        <h4>Multi-Hop Routing</h4>
+                        <p>Traffic bounces through multiple mesh nodes. No single node sees both source and destination.</p>
+                    </div>
+                </div>
+                <div class="privacy-item">
+                    <span class="privacy-icon">🗑️</span>
+                    <div>
+                        <h4>Auto-Purge</h4>
+                        <p>History, cookies, and session data automatically cleaned. Configurable retention limits.</p>
+                    </div>
+                </div>
+                <div class="privacy-item">
+                    <span class="privacy-icon">🔑</span>
+                    <div>
+                        <h4>Self-Sovereign Identity</h4>
+                        <p>Your wallet address is your identity. No emails, no phone numbers, no KYC.</p>
+                    </div>
+                </div>
+                <div class="privacy-item">
+                    <span class="privacy-icon">✉️</span>
+                    <div>
+                        <h4>E2E Encrypted Chat</h4>
+                        <p>ECDH shared secrets for chat. Messages signed with wallet keys for authenticity.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Downloads -->
+        <section id="downloads" class="download-section">
+            <h2 class="section-title">⬇️ Download PulseMesh Browser</h2>
+            <p class="section-subtitle">Available for Windows, Linux, and macOS</p>
+
+            <div class="download-grid">
+                <div class="download-card">
                     <div class="download-icon">🪟</div>
                     <h3>Windows</h3>
-                    <p>Windows 10/11 (64-bit)</p>
-                    <a href="https://github.com/anunakie/PulseChainMeshNode/releases/download/v0.1.0-beta/PulseMeshNode-Windows-x64.zip" class="download-btn">
-                        <span>⬇️ Download for Windows</span>
-                    </a>
-                    <span class="download-note">~50 MB • Portable ZIP</span>
+                    <p>Windows 10/11 installer (.exe) and portable ZIP</p>
+                    <a href="https://github.com/Anunakie/PulseChainMeshNode/releases/tag/v0.3.0-beta" class="btn btn-primary">Download for Windows</a>
                 </div>
-
-                <div class="download-card linux">
+                <div class="download-card">
                     <div class="download-icon">🐧</div>
                     <h3>Linux</h3>
-                    <p>Ubuntu, Debian, Fedora</p>
-                    <a href="https://github.com/anunakie/PulseChainMeshNode/releases" class="download-btn secondary">
-                        <span>📦 View Linux Releases</span>
-                    </a>
-                    <span class="download-note">Coming Soon</span>
+                    <p>Debian/Ubuntu (.deb) and portable ZIP</p>
+                    <a href="https://github.com/Anunakie/PulseChainMeshNode/releases/tag/v0.3.0-beta" class="btn btn-primary">Download for Linux</a>
                 </div>
-
-                <div class="download-card source">
-                    <div class="download-icon">💻</div>
-                    <h3>Build from Source</h3>
-                    <p>For developers</p>
-                    <a href="https://github.com/anunakie/PulseChainMeshNode" class="download-btn secondary">
-                        <span>🔧 View Source Code</span>
-                    </a>
-                    <span class="download-note">Requires Rust 1.63+</span>
-                </div>
-            </div>
-
-            <div class="install-steps">
-                <h3>🚀 Quick Setup (Windows)</h3>
-                <ol>
-                    <li><strong>Download</strong> the ZIP file above</li>
-                    <li><strong>Extract</strong> to any folder (e.g., C:\PulseMeshNode)</li>
-                    <li><strong>Run</strong> <code>PulseMeshNodeW.exe</code></li>
-                    <li><strong>Configure</strong> your node settings in the UI</li>
-                    <li><strong>Connect</strong> to the mesh network!</li>
-                </ol>
-            </div>
-
-            <div class="github-actions-note">
-                <p>💡 <strong>Note:</strong> Builds are automatically generated via GitHub Actions. 
-                Check the <a href="https://github.com/anunakie/PulseChainMeshNode/actions">Actions tab</a> 
-                for the latest build status.</p>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Browser Download Section -->
-    <section class="download-section browser-section" id="browser-download">
-        <div class="container">
-            <h2 class="section-title">🌐 Download PulseMesh Browser</h2>
-            <p class="download-subtitle">Privacy-focused browser with built-in Web3 wallet and mesh network support</p>
-
-            <div class="download-cards">
-                <div class="download-card windows">
-                    <div class="download-icon">🪟</div>
-                    <h3>Windows Installer</h3>
-                    <p>Windows 10/11 (64-bit)</p>
-                    <a href="https://github.com/Anunakie/PulseChainMeshNode/releases/download/v0.2.0-beta/PulseMeshBrowser-Windows-Setup.exe" class="download-btn">
-                        <span>⬇️ Download Setup.exe</span>
-                    </a>
-                    <span class="download-note">~94 MB • Recommended</span>
-                    <a href="https://github.com/Anunakie/PulseChainMeshNode/releases/download/v0.2.0-beta/PulseMeshBrowser-Windows.zip" class="download-btn secondary" style="margin-top: 10px;">
-                        <span>📦 Portable ZIP</span>
-                    </a>
-                </div>
-
-                <div class="download-card linux">
-                    <div class="download-icon">🐧</div>
-                    <h3>Linux</h3>
-                    <p>Ubuntu, Debian (64-bit)</p>
-                    <a href="https://github.com/Anunakie/PulseChainMeshNode/releases/download/v0.2.0-beta/PulseMeshBrowser-Linux.deb" class="download-btn">
-                        <span>⬇️ Download .deb</span>
-                    </a>
-                    <span class="download-note">~71 MB • Debian/Ubuntu</span>
-                    <a href="https://github.com/Anunakie/PulseChainMeshNode/releases/download/v0.2.0-beta/PulseMeshBrowser-Linux.zip" class="download-btn secondary" style="margin-top: 10px;">
-                        <span>📦 Portable ZIP</span>
-                    </a>
-                </div>
-
-                <div class="download-card source">
-                    <div class="download-icon">🔧</div>
-                    <h3>All Releases</h3>
-                    <p>View all versions</p>
-                    <a href="https://github.com/Anunakie/PulseChainMeshNode/releases" class="download-btn secondary">
-                        <span>📋 GitHub Releases</span>
-                    </a>
-                    <span class="download-note">Node + Browser</span>
-                </div>
-            </div>
-
-            <div class="install-steps">
-                <h3>🚀 Quick Browser Setup</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-                    <div>
-                        <h4 style="color: var(--accent); margin-bottom: 10px;">Windows</h4>
-                        <ol>
-                            <li>Download <code>PulseMeshBrowser-Windows-Setup.exe</code></li>
-                            <li>Run the installer</li>
-                            <li>Launch from Start Menu or Desktop</li>
-                        </ol>
-                    </div>
-                    <div>
-                        <h4 style="color: var(--accent); margin-bottom: 10px;">Linux (Debian/Ubuntu)</h4>
-                        <ol>
-                            <li>Download the <code>.deb</code> file</li>
-                            <li>Run: <code>sudo dpkg -i PulseMeshBrowser-Linux.deb</code></li>
-                            <li>Launch from applications menu</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-
-            <div class="browser-features" style="margin-top: 40px; padding: 30px; background: rgba(139, 92, 246, 0.1); border-radius: 16px; border: 1px solid rgba(139, 92, 246, 0.2);">
-                <h3 style="text-align: center; margin-bottom: 20px;">✨ Browser Features</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; text-align: center;">
-                    <div>💳 <strong>Web3 Wallet</strong><br><small>PulseChain ready</small></div>
-                    <div>🛡️ <strong>Ad Blocking</strong><br><small>Built-in protection</small></div>
-                    <div>🔌 <strong>Extensions</strong><br><small>Chrome compatible</small></div>
-                    <div>🌐 <strong>Mesh Network</strong><br><small>Decentralized access</small></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-<section class="features" id="features">
-            <div class="container">
-                <div class="section-header">
-                    <h2>🚀 Powerful Features</h2>
-                    <p>Everything you need for private, decentralized internet access on PulseChain</p>
-                </div>
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">💳</div>
-                        <h3>PulseChain Web3 Wallets Built-In</h3>
-                        <p>Ready-to-use Web3 wallets supporting PulseChain and compatible chains right from launch — making decentralized finance and interactions seamless without extra setup.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📱</div>
-                        <h3>Organized Spaces for dApps</h3>
-                        <p>Use Spaces to neatly organize your decentralized apps in a dock-style interface. Switch between focused workspaces effortlessly to reduce clutter and boost productivity.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🛡️</div>
-                        <h3>Supreme Ad & Tracker Blocking</h3>
-                        <p>All privacy protections enabled out-of-the-box: block cross-site trackers, cookies, and intrusive ads with no hidden toggles required for true default privacy.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🗑️</div>
-                        <h3>Automatic History Self-Destruction</h3>
-                        <p>Browsing history is limited by default and auto-deletes older entries. Customize how many items to keep before they permanently vanish for enhanced anonymity.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🌐</div>
-                        <h3>Decentralized dApp Access</h3>
-                        <p>Connect through the PulseChainMeshNode mesh to browse and discover dApps on an uncensored, global network — with future plans for a built-in decentralized app library.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🔐</div>
-                        <h3>Powerful dMeshVPN</h3>
-                        <p>Route your traffic privately through multiple hops across the global network for strong anonymity, censorship resistance, and access to the true, unrestricted internet.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">💬</div>
-                        <h3>Wallet-to-Wallet Chat</h3>
-                        <p>Communicate directly peer-to-peer using Ethereum-compatible wallets via integrations like DM3 — no centralized platforms like traditional messengers needed.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🔍</div>
-                        <h3>Privacy-Focused Search</h3>
-                        <p>Integrated search powered by decentralized engines that prioritizes user privacy — no tracking or profiling of your queries.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📁</div>
-                        <h3>IPFS File Sharing</h3>
-                        <p>Upload and share files securely using IPFS integration — content is distributed across nodes for censorship resistance, redundancy, and better privacy.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">💰</div>
-                        <h3>Future Bandwidth Rewards</h3>
-                        <p>Coming soon: Share your unused bandwidth with the network to earn rewards — supplement privacy usage while supporting the decentralized mesh.</p>
-                    </div>
+                <div class="download-card">
+                    <div class="download-icon">🍎</div>
+                    <h3>macOS</h3>
+                    <p>Apple Silicon DMG installer and ZIP</p>
+                    <a href="https://github.com/Anunakie/PulseChainMeshNode/releases/tag/v0.3.0-beta" class="btn btn-primary">Download for macOS</a>
                 </div>
             </div>
         </section>
 
-        <section class="privacy-section" id="privacy">
-            <div class="container">
-                <div class="section-header">
-                    <h2>✅ Privacy by Default</h2>
-                    <p>No configuration needed — maximum privacy protection from the start</p>
+        <!-- Roadmap -->
+        <section id="roadmap">
+            <h2 class="section-title">🗺️ Development Roadmap</h2>
+            <p class="section-subtitle">All 5 phases complete — now entering community testing</p>
+
+            <div class="roadmap">
+                <div class="roadmap-item done">
+                    <div class="roadmap-phase">Phase 1</div>
+                    <h4>Privacy Core</h4>
+                    <p>Ad blocking, private search, auto-delete history</p>
                 </div>
-                <div class="privacy-grid">
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Ads blocked by default</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Cross-site trackers blocked</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Cookies blocked by default</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Multi-hop dMesh routing</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Country/region hopping</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Auto history destruction</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Decentralized search</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>IPFS storage integration</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Wallet-based chat</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>PulseChain Web3 native</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Privacy-first configuration</span>
-                    </div>
-                    <div class="privacy-item">
-                        <div class="privacy-check">✓</div>
-                        <span>Open source & auditable</span>
-                    </div>
+                <div class="roadmap-item done">
+                    <div class="roadmap-phase">Phase 2</div>
+                    <h4>Web3 + Node</h4>
+                    <p>PulseChain wallet, node control panel</p>
+                </div>
+                <div class="roadmap-item done">
+                    <div class="roadmap-phase">Phase 3</div>
+                    <h4>Mesh + Spaces</h4>
+                    <p>Proxy integration, dApp workspaces</p>
+                </div>
+                <div class="roadmap-item done">
+                    <div class="roadmap-phase">Phase 4</div>
+                    <h4>Chat + IPFS</h4>
+                    <p>Encrypted messaging, file sharing</p>
+                </div>
+                <div class="roadmap-item done">
+                    <div class="roadmap-phase">Phase 5</div>
+                    <h4>Token Economy</h4>
+                    <p>PMESH token, bandwidth rewards</p>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-phase">Next</div>
+                    <h4>Mainnet Launch</h4>
+                    <p>Token deployment, public mesh network</p>
                 </div>
             </div>
         </section>
 
-        <section class="setup" id="setup">
-            <div class="container">
-                <div class="section-header">
-                    <h2>⚡ Quick Setup</h2>
-                    <p>Get your node running in minutes</p>
-                </div>
-                <div class="setup-content">
-                    <div class="code-block">
-                        <div class="code-header">
-                            <div class="code-dot red"></div>
-                            <div class="code-dot yellow"></div>
-                            <div class="code-dot green"></div>
-                            <span class="code-title">Terminal</span>
-                        </div>
-                        <div class="code-content">
-                            <code>
-<span class="comment"># Clone the repository</span><br>
-<span class="command">git clone https://github.com/Anunakie/PulseChainMeshNode.git</span><br>
-<span class="command">cd PulseChainMeshNode</span><br><br>
-
-<span class="comment"># Build the project (requires Rust 1.63+)</span><br>
-<span class="command">cd node</span><br>
-<span class="command">cargo build --release</span><br><br>
-
-<span class="comment"># Run the node</span><br>
-<span class="command">./target/release/pulsemesh_node --help</span><br><br>
-
-<span class="comment"># Start with PulseChain mainnet</span><br>
-<span class="command">./target/release/pulsemesh_node --chain pulse-mainnet</span>
-                            </code>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="roadmap" id="roadmap">
-            <div class="container">
-                <div class="section-header">
-                    <h2>🗺️ Roadmap</h2>
-                    <p>Our journey to decentralized privacy</p>
-                </div>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-marker completed">✓</div>
-                        <div class="timeline-content">
-                            <h3>Phase 1: Fork & Rebrand</h3>
-                            <p>Fork MASQ Network, rebrand to PulseChainMeshNode, add PulseChain support (Chain ID: 369)</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-marker in-progress">⚡</div>
-                        <div class="timeline-content">
-                            <h3>Phase 2: Token-Free Testing</h3>
-                            <p>Disable token requirements for open testing and development. Build community and gather feedback.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-marker upcoming">3</div>
-                        <div class="timeline-content">
-                            <h3>Phase 3: Smart Contracts</h3>
-                            <p>Deploy PulseChain-native smart contracts for network incentivization and governance.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-marker upcoming">4</div>
-                        <div class="timeline-content">
-                            <h3>Phase 4: Production Launch</h3>
-                            <p>Full production release with token integration, bandwidth rewards, and mainnet deployment.</p>
-                        </div>
-                    </div>
-                </div>
+        <!-- About -->
+        <section id="about">
+            <h2 class="section-title">ℹ️ About</h2>
+            <div class="about-box">
+                <p>
+                    <strong>PulseChainMeshNode</strong> is a community-adapted fork of the
+                    <a href="https://github.com/MASQ-Project" style="color: var(--teal);">MASQ Network</a> project,
+                    rebuilt and rebranded specifically for the <strong>PulseChain</strong> ecosystem.
+                </p>
+                <p>
+                    The PulseMesh Browser combines a full-featured web browser with a decentralized mesh
+                    network node, Web3 wallet, encrypted communications, and a token-based bandwidth economy —
+                    all in one application.
+                </p>
+                <p style="color: var(--gold);">
+                    ⚠️ This is a <strong>beta release</strong> for testing purposes.
+                    Token features use placeholder contract addresses. The PMESH token has not yet been deployed.
+                </p>
             </div>
         </section>
 
         <footer>
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-logo">⬡ PulseChainMeshNode</div>
-                    <div class="footer-links">
-                        <a href="https://github.com/Anunakie/PulseChainMeshNode" target="_blank">GitHub</a>
-                        <a href="#features">Features</a>
-                        <a href="#setup">Documentation</a>
-                        <a href="https://pulsechain.com" target="_blank">PulseChain</a>
-                    </div>
-                    <div class="footer-bottom">
-                        <p>Open source software licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GPLv3</a></p>
-                        <p style="margin-top: 10px;">Based on <a href="https://github.com/MASQ-Project/Node" target="_blank">MASQ Network</a> • Built for <a href="https://pulsechain.com" target="_blank">PulseChain</a></p>
-                    </div>
-                </div>
-            </div>
+            <p>PulseChainMeshNode &copy; 2026 — Open Source under GPLv3</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://github.com/Anunakie/PulseChainMeshNode">GitHub</a> ·
+                <a href="https://github.com/Anunakie/PulseChainMeshNode/releases">Releases</a> ·
+                <a href="https://pulsechain.com">PulseChain</a>
+            </p>
         </footer>
     </div>
+
+    <script>
+        // Generate floating particles
+        const container = document.getElementById("particles");
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement("div");
+            p.className = "particle";
+            p.style.left = Math.random() * 100 + "%";
+            p.style.animationDuration = (8 + Math.random() * 15) + "s";
+            p.style.animationDelay = Math.random() * 10 + "s";
+            p.style.width = p.style.height = (2 + Math.random() * 3) + "px";
+            if (Math.random() > 0.5) p.style.background = "#8B5CF6";
+            container.appendChild(p);
+        }
+    </script>
 </body>
 </html>
