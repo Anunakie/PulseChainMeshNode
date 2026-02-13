@@ -17,6 +17,8 @@ import { initWalletHandlers } from '../wallet';
 import { initNodeManagerHandlers } from '../node-manager';
 import { initMeshProxyHandlers } from '../mesh-proxy';
 import { initSpacesHandlers } from '../spaces';
+import { initChatHandlers } from '../chat';
+import { initIpfsHandlers } from '../ipfs';
 
 const path = require('path');
 
@@ -52,6 +54,8 @@ const initMain = async () => {
     initNodeManagerHandlers();
     initMeshProxyHandlers();
     initSpacesHandlers();
+    initChatHandlers();
+    initIpfsHandlers();
 
     ipcMain.handle('tab:select-tab', async (event, arg) => {
         tabsManager.selectTab(arg);

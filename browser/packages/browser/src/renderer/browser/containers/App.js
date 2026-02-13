@@ -88,6 +88,31 @@ const App = () => {
     const [newDappName, setNewDappName] = useState('');
     const [newDappUrl, setNewDappUrl] = useState('');
     const [showAddDapp, setShowAddDapp] = useState(false);
+    // ===== CHAT STATE =====
+    const [showChat, setShowChat] = useState(false);
+    const [chatView, setChatView] = useState('conversations');
+    const [chatConversations, setChatConversations] = useState([]);
+    const [chatMessages, setChatMessages] = useState([]);
+    const [chatActivePeer, setChatActivePeer] = useState('');
+    const [chatInput, setChatInput] = useState('');
+    const [chatNewAddress, setChatNewAddress] = useState('');
+    const [chatUnread, setChatUnread] = useState(0);
+    const [chatLoading, setChatLoading] = useState(false);
+    const [chatMsg, setChatMsg] = useState('');
+    const chatRef = useRef(null);
+    const chatMessagesEndRef = useRef(null);
+
+    // ===== IPFS STATE =====
+    const [showIpfs, setShowIpfs] = useState(false);
+    const [ipfsView, setIpfsView] = useState('files');
+    const [ipfsFiles, setIpfsFiles] = useState([]);
+    const [ipfsDownloadCid, setIpfsDownloadCid] = useState('');
+    const [ipfsApiStatus, setIpfsApiStatus] = useState(false);
+    const [ipfsConfig, setIpfsConfig] = useState({ apiUrl: '', gatewayUrl: '' });
+    const [ipfsLoading, setIpfsLoading] = useState(false);
+    const [ipfsMsg, setIpfsMsg] = useState('');
+    const [ipfsMsgType, setIpfsMsgType] = useState('info');
+    const ipfsRef = useRef(null);
 
 
     // Fetch current tabs on mount
@@ -417,6 +442,44 @@ const App = () => {
         return () => clearInterval(interval);
     }, [showMeshPanel]);
 
+
+    // ===== CHAT: Initialize and listen for messages =====
+    useEffect(() => {
+        if (window.chatApi) {
+            if (walletAddress && !walletLocked) {
+                window.chatApi.setWallet(walletAddress, '').catch(() => {});
+            }
+            window.chatApi.onNewMessage((event, data) => {
+                if (showChat && chatActivePeer === data.sender) {
+                    setChatMessages((prev) => [...prev, data]);
+                }
+                refreshChatConversations();
+                refreshChatUnread();
+            });
+        }
+    }, [walletAddress, walletLocked]);
+
+    useEffect(() => {
+        if (showChat && chatActivePeer) {
+            refreshChatMessages(chatActivePeer);
+        }
+    }, [showChat, chatActivePeer]);
+
+    useEffect(() => {
+        if (chatMessagesEndRef.current) {
+            chatMessagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [chatMessages]);
+
+    // ===== IPFS: Load files on mount =====
+    useEffect(() => {
+        if (window.ipfsApi) {
+            refreshIpfsFiles();
+            refreshIpfsConfig();
+            checkIpfsApi();
+        }
+    }, []);
+
     // ===== SPACES: Load spaces on mount =====
     useEffect(() => {
         const loadSpaces = async () => {
@@ -455,6 +518,12 @@ const App = () => {
                 setShowSpaces(false);
                 setSpacesView('list');
                 setShowAddDapp(false);
+            }
+            if (chatRef.current && !chatRef.current.contains(event.target)) {
+                setShowChat(false);
+            }
+            if (ipfsRef.current && !ipfsRef.current.contains(event.target)) {
+                setShowIpfs(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -1055,11 +1124,460 @@ const App = () => {
         }
     };
 
+
+    // ===== CHAT HANDLERS =====
+    const refreshChatConversations = async () => {
+        try {
+            if (window.chatApi) {
+                const convos = await window.chatApi.getConversations();
+                setChatConversations(convos || []);
+            }
+        } catch (err) {
+            console.error('Failed to refresh conversations:', err);
+        }
+    };
+
+    const refreshChatMessages = async (peerAddress) => {
+        try {
+            if (window.chatApi) {
+                const msgs = await window.chatApi.getMessages(peerAddress);
+                setChatMessages(msgs || []);
+                await window.chatApi.markRead(peerAddress);
+                refreshChatUnread();
+            }
+        } catch (err) {
+            console.error('Failed to refresh messages:', err);
+        }
+    };
+
+    const refreshChatUnread = async () => {
+        try {
+            if (window.chatApi) {
+                const count = await window.chatApi.getUnread();
+                setChatUnread(count || 0);
+            }
+        } catch (err) {
+            setChatUnread(0);
+        }
+    };
+
+    const toggleChat = () => {
+        if (!showChat) {
+            refreshChatConversations();
+            refreshChatUnread();
+            setChatView('conversations');
+        }
+        setShowChat(!showChat);
+    };
+
+    const handleStartChat = async () => {
+        const addr = chatNewAddress.trim();
+        if (!addr || !addr.startsWith('0x') || addr.length !== 42) {
+            setChatMsg('Enter a valid wallet address (0x...)');
+            return;
+        }
+        try {
+            setChatLoading(true);
+            await window.chatApi.startChat(addr);
+            setChatActivePeer(addr);
+            setChatNewAddress('');
+            setChatView('chat');
+            refreshChatMessages(addr);
+            refreshChatConversations();
+        } catch (err) {
+            setChatMsg(err.message || 'Failed to start chat');
+        } finally {
+            setChatLoading(false);
+        }
+    };
+
+    const handleSendChatMessage = async () => {
+        const text = chatInput.trim();
+        if (!text || !chatActivePeer) return;
+        try {
+            await window.chatApi.sendMessage(chatActivePeer, text);
+            setChatInput('');
+            refreshChatMessages(chatActivePeer);
+        } catch (err) {
+            setChatMsg(err.message || 'Failed to send message');
+        }
+    };
+
+    const handleSelectConversation = (peerAddress) => {
+        setChatActivePeer(peerAddress);
+        setChatView('chat');
+        refreshChatMessages(peerAddress);
+    };
+
+    const truncateChatAddr = (addr) => {
+        if (!addr) return '';
+        return addr.substring(0, 8) + '...' + addr.substring(addr.length - 6);
+    };
+
+    const formatChatTime = (ts) => {
+        if (!ts) return '';
+        const d = new Date(ts);
+        const now = new Date();
+        if (d.toDateString() === now.toDateString()) {
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    // ===== IPFS HANDLERS =====
+    const showIpfsNotice = (msg, type = 'info') => {
+        setIpfsMsg(msg);
+        setIpfsMsgType(type);
+        setTimeout(() => setIpfsMsg(''), 4000);
+    };
+
+    const refreshIpfsFiles = async () => {
+        try {
+            if (window.ipfsApi) {
+                const files = await window.ipfsApi.getFiles();
+                setIpfsFiles(files || []);
+            }
+        } catch (err) {
+            console.error('Failed to refresh IPFS files:', err);
+        }
+    };
+
+    const refreshIpfsConfig = async () => {
+        try {
+            if (window.ipfsApi) {
+                const cfg = await window.ipfsApi.getConfig();
+                setIpfsConfig(cfg || { apiUrl: '', gatewayUrl: '' });
+            }
+        } catch (err) {
+            console.error('Failed to get IPFS config:', err);
+        }
+    };
+
+    const checkIpfsApi = async () => {
+        try {
+            if (window.ipfsApi) {
+                const result = await window.ipfsApi.checkApi();
+                setIpfsApiStatus(result.available);
+            }
+        } catch (err) {
+            setIpfsApiStatus(false);
+        }
+    };
+
+    const toggleIpfs = () => {
+        if (!showIpfs) {
+            refreshIpfsFiles();
+            refreshIpfsConfig();
+            checkIpfsApi();
+            setIpfsView('files');
+        }
+        setShowIpfs(!showIpfs);
+    };
+
+    const handleIpfsUpload = async () => {
+        try {
+            setIpfsLoading(true);
+            const result = await window.ipfsApi.openFileDialog();
+            if (result.canceled || !result.filePaths.length) {
+                setIpfsLoading(false);
+                return;
+            }
+            const uploaded = await window.ipfsApi.uploadFiles(result.filePaths);
+            const success = uploaded.filter((f) => !f.error);
+            const failed = uploaded.filter((f) => f.error);
+            if (success.length > 0) showIpfsNotice(success.length + ' file(s) uploaded!', 'success');
+            if (failed.length > 0) showIpfsNotice(failed.length + ' file(s) failed: ' + failed[0].error, 'error');
+            refreshIpfsFiles();
+        } catch (err) {
+            showIpfsNotice(err.message || 'Upload failed', 'error');
+        } finally {
+            setIpfsLoading(false);
+        }
+    };
+
+    const handleIpfsDownload = async () => {
+        const cid = ipfsDownloadCid.trim();
+        if (!cid) { showIpfsNotice('Enter a CID to download', 'error'); return; }
+        try {
+            setIpfsLoading(true);
+            const result = await window.ipfsApi.downloadFile(cid);
+            if (result.success) showIpfsNotice('Downloaded: ' + result.sizeFormatted, 'success');
+            setIpfsDownloadCid('');
+        } catch (err) {
+            showIpfsNotice(err.message || 'Download failed', 'error');
+        } finally {
+            setIpfsLoading(false);
+        }
+    };
+
+    const handleIpfsCopyLink = (file) => {
+        const url = file.gatewayUrl || (ipfsConfig.gatewayUrl + '/ipfs/' + file.cid);
+        navigator.clipboard.writeText(url).then(() => showIpfsNotice('Gateway URL copied!', 'success'));
+    };
+
+    const handleIpfsCopyCid = (cid) => {
+        navigator.clipboard.writeText(cid).then(() => showIpfsNotice('CID copied!', 'success'));
+    };
+
+    const handleIpfsOpenFile = (file) => {
+        const url = file.gatewayUrl || (ipfsConfig.gatewayUrl + '/ipfs/' + file.cid);
+        setShowIpfs(false);
+        setInputUrl(url);
+        setIsLoading(true);
+        if (selectedTab) {
+            window.electronApi.loadUrl({ url, id: selectedTab });
+        } else {
+            window.electronApi.loadUrl({ url });
+        }
+    };
+
+    const handleIpfsRemoveFile = async (cid) => {
+        try {
+            await window.ipfsApi.removeFile(cid);
+            refreshIpfsFiles();
+        } catch (err) {
+            console.error('Failed to remove file:', err);
+        }
+    };
+
+    const handleIpfsSaveConfig = async () => {
+        try {
+            await window.ipfsApi.setConfig(ipfsConfig);
+            showIpfsNotice('Configuration saved!', 'success');
+            checkIpfsApi();
+        } catch (err) {
+            showIpfsNotice('Failed to save config', 'error');
+        }
+    };
+
+    const getFileTypeIcon = (type) => {
+        const icons = { image: 'IMG', video: 'VID', audio: 'AUD', document: 'DOC', text: 'TXT', archive: 'ZIP' };
+        return icons[type] || 'FILE';
+    };
+
+    const truncateCid = (cid) => {
+        if (!cid) return '';
+        if (cid.length <= 16) return cid;
+        return cid.substring(0, 8) + '...' + cid.substring(cid.length - 6);
+    };
+
     const getActiveSpace = () => spaces.find((s) => s.id === activeSpaceId);
 
     const spaceColors = ['#14b8a6', '#a855f7', '#3b82f6', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'];
 
     const hasActivePage = tabs.length > 0 && selectedTab;
+
+    // ===== RENDER: Chat Panel Content =====
+    const renderChatContent = () => {
+        if (!walletAddress || walletLocked) {
+            return (
+                <div className={styles.chatEmpty}>
+                    <p>Unlock your wallet to use chat</p>
+                </div>
+            );
+        }
+
+        if (chatView === 'newChat') {
+            return (
+                <div className={styles.chatNewChat}>
+                    <h4 className={styles.chatSubtitle}>New Conversation</h4>
+                    <input
+                        type="text"
+                        className={styles.chatAddrInput}
+                        placeholder="Enter wallet address (0x...)"
+                        value={chatNewAddress}
+                        onChange={(e) => setChatNewAddress(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleStartChat()}
+                    />
+                    {chatMsg && <div className={styles.chatMsgBar}>{chatMsg}</div>}
+                    <div className={styles.chatNewActions}>
+                        <button className={styles.chatBtnPrimary} onClick={handleStartChat} disabled={chatLoading}>
+                            {chatLoading ? 'Starting...' : 'Start Chat'}
+                        </button>
+                        <button className={styles.chatBtnSecondary} onClick={() => setChatView('conversations')}>Back</button>
+                    </div>
+                </div>
+            );
+        }
+
+        if (chatView === 'chat' && chatActivePeer) {
+            return (
+                <div className={styles.chatConvoView}>
+                    <div className={styles.chatConvoHeader}>
+                        <button className={styles.chatBackBtn} onClick={() => { setChatView('conversations'); setChatActivePeer(''); }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                        </button>
+                        <span className={styles.chatPeerAddr} title={chatActivePeer}>{truncateChatAddr(chatActivePeer)}</span>
+                    </div>
+                    <div className={styles.chatMessageList}>
+                        {chatMessages.length === 0 ? (
+                            <div className={styles.chatEmptyMessages}>No messages yet. Say hello!</div>
+                        ) : (
+                            chatMessages.map((msg, idx) => (
+                                <div key={idx} className={`${styles.chatBubbleRow} ${msg.sender === walletAddress ? styles.chatBubbleSent : styles.chatBubbleReceived}`}>
+                                    <div className={styles.chatBubble}>
+                                        <div className={styles.chatBubbleText}>{msg.text}</div>
+                                        <div className={styles.chatBubbleTime}>{formatChatTime(msg.timestamp)}</div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                        <div ref={chatMessagesEndRef} />
+                    </div>
+                    <div className={styles.chatInputRow}>
+                        <input
+                            type="text"
+                            className={styles.chatMsgInput}
+                            placeholder="Type a message..."
+                            value={chatInput}
+                            onChange={(e) => setChatInput(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSendChatMessage()}
+                        />
+                        <button className={styles.chatSendBtn} onClick={handleSendChatMessage} title="Send">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Conversations list (default)
+        return (
+            <div className={styles.chatConvoList}>
+                <div className={styles.chatListHeader}>
+                    <span>Conversations</span>
+                    <button className={styles.chatNewBtn} onClick={() => setChatView('newChat')} title="New Chat">+</button>
+                </div>
+                {chatConversations.length === 0 ? (
+                    <div className={styles.chatEmpty}>
+                        <p>No conversations yet</p>
+                        <button className={styles.chatBtnPrimary} onClick={() => setChatView('newChat')}>Start a Chat</button>
+                    </div>
+                ) : (
+                    chatConversations.map((convo, idx) => (
+                        <div key={idx} className={styles.chatConvoItem} onClick={() => handleSelectConversation(convo.peerAddress)}>
+                            <div className={styles.chatConvoAvatar}>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#14b8a6"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                            </div>
+                            <div className={styles.chatConvoInfo}>
+                                <div className={styles.chatConvoAddr}>{truncateChatAddr(convo.peerAddress)}</div>
+                                <div className={styles.chatConvoPreview}>{convo.lastMessage || 'No messages'}</div>
+                            </div>
+                            <div className={styles.chatConvoMeta}>
+                                <div className={styles.chatConvoTime}>{formatChatTime(convo.lastTimestamp)}</div>
+                                {convo.unread > 0 && <div className={styles.chatUnreadBadge}>{convo.unread}</div>}
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        );
+    };
+
+    // ===== RENDER: IPFS Panel Content =====
+    const renderIpfsContent = () => {
+        if (ipfsView === 'download') {
+            return (
+                <div className={styles.ipfsDownloadView}>
+                    <h4 className={styles.ipfsSubtitle}>Download from IPFS</h4>
+                    <input
+                        type="text"
+                        className={styles.ipfsCidInput}
+                        placeholder="Enter IPFS CID (Qm... or bafy...)"
+                        value={ipfsDownloadCid}
+                        onChange={(e) => setIpfsDownloadCid(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleIpfsDownload()}
+                    />
+                    <div className={styles.ipfsActions}>
+                        <button className={styles.ipfsBtnPrimary} onClick={handleIpfsDownload} disabled={ipfsLoading}>
+                            {ipfsLoading ? 'Downloading...' : 'Download'}
+                        </button>
+                        <button className={styles.ipfsBtnSecondary} onClick={() => setIpfsView('files')}>Back</button>
+                    </div>
+                </div>
+            );
+        }
+
+        if (ipfsView === 'config') {
+            return (
+                <div className={styles.ipfsConfigView}>
+                    <h4 className={styles.ipfsSubtitle}>IPFS Configuration</h4>
+                    <label className={styles.ipfsLabel}>API URL (local node)</label>
+                    <input
+                        type="text"
+                        className={styles.ipfsConfigInput}
+                        placeholder="http://127.0.0.1:5001"
+                        value={ipfsConfig.apiUrl}
+                        onChange={(e) => setIpfsConfig({ ...ipfsConfig, apiUrl: e.target.value })}
+                    />
+                    <label className={styles.ipfsLabel}>Gateway URL</label>
+                    <input
+                        type="text"
+                        className={styles.ipfsConfigInput}
+                        placeholder="https://ipfs.io"
+                        value={ipfsConfig.gatewayUrl}
+                        onChange={(e) => setIpfsConfig({ ...ipfsConfig, gatewayUrl: e.target.value })}
+                    />
+                    <div className={styles.ipfsApiStatusRow}>
+                        <span className={styles.ipfsApiDot} style={{ backgroundColor: ipfsApiStatus ? '#4ade80' : '#ef4444' }} />
+                        <span>{ipfsApiStatus ? 'IPFS node connected' : 'IPFS node not detected'}</span>
+                    </div>
+                    <div className={styles.ipfsActions}>
+                        <button className={styles.ipfsBtnPrimary} onClick={handleIpfsSaveConfig}>Save Config</button>
+                        <button className={styles.ipfsBtnSecondary} onClick={() => { setIpfsView('files'); checkIpfsApi(); }}>Back</button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Files list (default)
+        return (
+            <div className={styles.ipfsFilesView}>
+                <div className={styles.ipfsToolbar}>
+                    <button className={styles.ipfsBtnPrimary} onClick={handleIpfsUpload} disabled={ipfsLoading}>
+                        {ipfsLoading ? 'Uploading...' : 'Upload File'}
+                    </button>
+                    <button className={styles.ipfsBtnSecondary} onClick={() => setIpfsView('download')}>Download CID</button>
+                    <button className={styles.ipfsConfigBtn} onClick={() => setIpfsView('config')} title="Settings">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58z"/></svg>
+                    </button>
+                </div>
+                <div className={styles.ipfsApiStatusRow}>
+                    <span className={styles.ipfsApiDot} style={{ backgroundColor: ipfsApiStatus ? '#4ade80' : '#ef4444' }} />
+                    <span style={{ fontSize: '11px', color: '#888' }}>{ipfsApiStatus ? 'Node connected' : 'No local node'}</span>
+                </div>
+                <div className={styles.ipfsFileList}>
+                    {ipfsFiles.length === 0 ? (
+                        <div className={styles.ipfsEmpty}>No files uploaded yet</div>
+                    ) : (
+                        ipfsFiles.map((file, idx) => (
+                            <div key={idx} className={styles.ipfsFileItem}>
+                                <div className={styles.ipfsFileIcon}>{getFileTypeIcon(file.type)}</div>
+                                <div className={styles.ipfsFileInfo}>
+                                    <div className={styles.ipfsFileName}>{file.name}</div>
+                                    <div className={styles.ipfsFileMeta}>
+                                        <span className={styles.ipfsFileCid} onClick={() => handleIpfsCopyCid(file.cid)} title={file.cid}>{truncateCid(file.cid)}</span>
+                                        <span className={styles.ipfsFileSize}>{file.sizeFormatted}</span>
+                                    </div>
+                                </div>
+                                <div className={styles.ipfsFileActions}>
+                                    <button className={styles.ipfsSmallBtn} onClick={() => handleIpfsOpenFile(file)} title="Open in browser">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                                    </button>
+                                    <button className={styles.ipfsSmallBtn} onClick={() => handleIpfsCopyLink(file)} title="Copy gateway URL">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                    </button>
+                                    <button className={styles.ipfsSmallBtn + ' ' + styles.ipfsDeleteBtn} onClick={() => handleIpfsRemoveFile(file.cid)} title="Remove">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+        );
+    };
 
     // ===== RENDER: Wallet Panel Content =====
     const renderWalletContent = () => {
@@ -1380,6 +1898,52 @@ const App = () => {
                                 </div>
                                 <div className={styles.dropdownBody}>
                                     {renderMeshContent()}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Chat Button */}
+                    <div className={styles.chatContainer} ref={chatRef}>
+                        <button
+                            className={`${styles.navBtn} ${styles.chatBtn}`}
+                            onClick={toggleChat}
+                            title="Wallet-to-Wallet Chat"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                            {chatUnread > 0 && <span className={styles.chatUnreadBadgeNav}>{chatUnread > 9 ? '9+' : chatUnread}</span>}
+                        </button>
+                        {showChat && (
+                            <div className={styles.dropdown + ' ' + styles.chatDropdown}>
+                                <div className={styles.dropdownHeader + ' ' + styles.chatHeader}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#14b8a6"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                                    <span>Chat</span>
+                                </div>
+                                <div className={styles.dropdownBody}>
+                                    {renderChatContent()}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* IPFS Button */}
+                    <div className={styles.ipfsContainer} ref={ipfsRef}>
+                        <button
+                            className={`${styles.navBtn} ${styles.ipfsBtn}`}
+                            onClick={toggleIpfs}
+                            title="IPFS File Sharing"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                        </button>
+                        {showIpfs && (
+                            <div className={styles.dropdown + ' ' + styles.ipfsDropdown}>
+                                <div className={styles.dropdownHeader + ' ' + styles.ipfsHeader}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#14b8a6"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                                    <span>IPFS Files</span>
+                                </div>
+                                <div className={styles.dropdownBody}>
+                                    {ipfsMsg && <div className={styles.ipfsMsgBar + ' ' + styles['ipfsMsg' + ipfsMsgType.charAt(0).toUpperCase() + ipfsMsgType.slice(1)]}>{ipfsMsg}</div>}
+                                    {renderIpfsContent()}
                                 </div>
                             </div>
                         )}

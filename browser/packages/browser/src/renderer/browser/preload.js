@@ -103,3 +103,30 @@ contextBridge.exposeInMainWorld('spacesApi', {
     removeDapp: (spaceId, url) => ipcRenderer.invoke('spaces:remove-dapp', { spaceId, url }),
     getActiveSpace: () => ipcRenderer.invoke('spaces:get'),
 });
+
+// Wallet-to-Wallet Decentralized Chat API
+contextBridge.exposeInMainWorld('chatApi', {
+    setWallet: (address, privateKey) => ipcRenderer.invoke('chat:set-wallet', { address, privateKey }),
+    sendMessage: (peerAddress, text) => ipcRenderer.invoke('chat:send-message', { peerAddress, text }),
+    getMessages: (peerAddress) => ipcRenderer.invoke('chat:get-messages', { peerAddress }),
+    getConversations: () => ipcRenderer.invoke('chat:get-conversations'),
+    startChat: (peerAddress) => ipcRenderer.invoke('chat:start-chat', { peerAddress }),
+    markRead: (peerAddress) => ipcRenderer.invoke('chat:mark-read', { peerAddress }),
+    getUnread: () => ipcRenderer.invoke('chat:get-unread'),
+    disconnect: () => ipcRenderer.invoke('chat:disconnect'),
+    onNewMessage: (callback) => ipcRenderer.on('chat:new-message', callback),
+});
+
+// IPFS Decentralized File Sharing API
+contextBridge.exposeInMainWorld('ipfsApi', {
+    uploadFile: (filePath) => ipcRenderer.invoke('ipfs:upload-file', { filePath }),
+    uploadFiles: (filePaths) => ipcRenderer.invoke('ipfs:upload-files', { filePaths }),
+    downloadFile: (cid, savePath) => ipcRenderer.invoke('ipfs:download-file', { cid, savePath }),
+    getFiles: () => ipcRenderer.invoke('ipfs:get-files'),
+    removeFile: (cid) => ipcRenderer.invoke('ipfs:remove-file', { cid }),
+    getFileInfo: (cid) => ipcRenderer.invoke('ipfs:get-file-info', { cid }),
+    getConfig: () => ipcRenderer.invoke('ipfs:get-config'),
+    setConfig: (config) => ipcRenderer.invoke('ipfs:set-config', config),
+    checkApi: () => ipcRenderer.invoke('ipfs:check-api'),
+    openFileDialog: () => ipcRenderer.invoke('ipfs:open-file-dialog'),
+});

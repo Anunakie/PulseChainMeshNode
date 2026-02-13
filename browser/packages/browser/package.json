@@ -38,6 +38,8 @@
         "electron-squirrel-startup": "^1.0.0",
         "electron-store": "^8.1.0",
         "ethers": "5.7.2",
+        "gun": "^0.2020.1241",
+        "ipfs-http-client": "56.0.3",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.11.2"
