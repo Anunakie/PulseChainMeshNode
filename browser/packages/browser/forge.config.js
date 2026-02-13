@@ -24,6 +24,13 @@ module.exports = {
             platforms: ['darwin', 'win32', 'linux'],
         },
         {
+            name: '@electron-forge/maker-dmg',
+            config: {
+                name: 'PulseMeshBrowser',
+                format: 'ULFO',
+            },
+        },
+        {
             name: '@electron-forge/maker-deb',
             config: {
                 options: {

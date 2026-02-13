@@ -11,36 +11,36 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-    
+
     - name: Install Yarn
       run: npm install -g yarn
-    
+
     - name: Install Dependencies
       working-directory: ./browser
       run: yarn install
-    
+
     - name: Build Extensions Package
       working-directory: ./browser
       run: yarn build
-    
+
     - name: Make Windows Installer
       working-directory: ./browser/packages/browser
       run: yarn make --platform win32
-    
+
     - name: List All Output Files
       shell: pwsh
       run: |
         Write-Host "=== Listing all files in out directory ==="
         Get-ChildItem -Recurse browser/packages/browser/out -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName }
-    
+
     - name: Upload Windows Artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -53,46 +53,89 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-    
+
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y dpkg fakeroot rpm
-    
+        sudo apt-get install -y dpkg fakeroot
+
     - name: Install Yarn
       run: npm install -g yarn
-    
+
     - name: Install Dependencies
       working-directory: ./browser
       run: yarn install
-    
+
     - name: Build Extensions Package
       working-directory: ./browser
       run: yarn build
-    
+
     - name: Make Linux Packages
       working-directory: ./browser/packages/browser
       run: yarn make --platform linux
-    
+
     - name: List All Output Files
       run: |
         echo "=== Listing all files in out directory ==="
         find browser/packages/browser/out -type f 2>/dev/null || echo "No output found"
-    
+
     - name: Upload Linux Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: PulseMeshBrowser-Linux
         path: |
           browser/packages/browser/out/make/**/*.deb
-          browser/packages/browser/out/make/**/*.rpm
+          browser/packages/browser/out/make/**/*.zip
+        if-no-files-found: warn
+
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install Yarn
+      run: npm install -g yarn
+
+    - name: Install Dependencies
+      working-directory: ./browser
+      run: yarn install
+
+    - name: Install DMG Maker
+      working-directory: ./browser/packages/browser
+      run: yarn add --dev @electron-forge/maker-dmg
+
+    - name: Build Extensions Package
+      working-directory: ./browser
+      run: yarn build
+
+    - name: Make macOS Packages
+      working-directory: ./browser/packages/browser
+      run: yarn make --platform darwin
+
+    - name: List All Output Files
+      run: |
+        echo "=== Listing all files in out directory ==="
+        find browser/packages/browser/out -type f 2>/dev/null || echo "No output found"
+
+    - name: Upload macOS Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: PulseMeshBrowser-macOS
+        path: |
+          browser/packages/browser/out/make/**/*.dmg
           browser/packages/browser/out/make/**/*.zip
         if-no-files-found: warn
