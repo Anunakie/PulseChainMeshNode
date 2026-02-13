@@ -226,6 +226,334 @@ body {
     to { transform: rotate(360deg); }
 }
 
+/* ===== Privacy Tools (Shield + History) ===== */
+.privacyTools {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.shieldContainer,
+.historyContainer {
+    position: relative;
+}
+
+.shieldBtn {
+    position: relative;
+    color: #4ade80 !important;
+}
+
+.shieldBtn:hover {
+    background: rgba(74, 222, 128, 0.12) !important;
+}
+
+.shieldBadge {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 8px;
+    font-weight: 700;
+    min-width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.historyBtn {
+    color: #00d4ff !important;
+}
+
+.historyBtn:hover {
+    background: rgba(0, 212, 255, 0.12) !important;
+}
+
+/* ===== Dropdown (shared) ===== */
+.dropdown {
+    position: absolute;
+    top: 36px;
+    right: 0;
+    width: 300px;
+    background: #1a1a2e;
+    border: 1px solid rgba(100, 200, 255, 0.15);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow: hidden;
+    animation: dropdownIn 0.15s ease;
+}
+
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdownHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(100, 200, 255, 0.08);
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.headerActions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.smallBtn {
+    background: transparent;
+    border: none;
+    color: #808090;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.smallBtn:hover {
+    background: rgba(100, 200, 255, 0.1);
+    color: #00d4ff;
+}
+
+.dangerBtn:hover {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important;
+}
+
+.dropdownBody {
+    padding: 10px 14px;
+}
+
+.statRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.statLabel {
+    font-size: 12px;
+    color: #808090;
+}
+
+.statValue {
+    font-size: 14px;
+    font-weight: 700;
+    color: #00d4ff;
+}
+
+.statActive {
+    font-size: 12px;
+    font-weight: 600;
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.dropdownNote {
+    font-size: 11px;
+    color: #606070;
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+/* ===== History Dropdown ===== */
+.historyDropdown {
+    width: 360px;
+}
+
+.historyList {
+    max-height: 320px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 200, 255, 0.15) transparent;
+}
+
+.historyList::-webkit-scrollbar {
+    width: 5px;
+}
+
+.historyList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.historyList::-webkit-scrollbar-thumb {
+    background: rgba(100, 200, 255, 0.15);
+    border-radius: 3px;
+}
+
+.emptyHistory {
+    padding: 24px;
+    text-align: center;
+    color: #505060;
+    font-size: 12px;
+}
+
+.historyEntry {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.historyEntry:hover {
+    background: rgba(0, 212, 255, 0.06);
+}
+
+.historyEntry:last-child {
+    border-bottom: none;
+}
+
+.historyEntryIcon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.historyEntryIcon img {
+    border-radius: 2px;
+}
+
+.historyEntryContent {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.historyEntryTitle {
+    font-size: 12px;
+    color: #d0d0d0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.historyEntryUrl {
+    font-size: 10px;
+    color: #505060;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.historyEntryMeta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.historyTime {
+    font-size: 10px;
+    color: #505060;
+    white-space: nowrap;
+}
+
+.deleteEntryBtn {
+    background: transparent;
+    border: none;
+    color: #505060;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 4px;
+    border-radius: 3px;
+    transition: all 0.12s ease;
+    line-height: 1;
+    opacity: 0;
+}
+
+.historyEntry:hover .deleteEntryBtn {
+    opacity: 1;
+}
+
+.deleteEntryBtn:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
+}
+
+/* ===== Settings Panel ===== */
+.settingsPanel {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(100, 200, 255, 0.08);
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.settingsLabel {
+    font-size: 12px;
+    color: #b0b0b0;
+    display: block;
+}
+
+.settingsInputRow {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.settingsInput {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(100, 200, 255, 0.15);
+    border-radius: 6px;
+    padding: 5px 10px;
+    color: #d0d0d0;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.settingsInput:focus {
+    border-color: rgba(0, 212, 255, 0.4);
+}
+
+.saveBtn {
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    padding: 5px 14px;
+    color: #00d4ff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.saveBtn:hover {
+    background: rgba(0, 212, 255, 0.25);
+}
+
+.settingsNote {
+    font-size: 10px;
+    color: #505060;
+    margin-top: 6px;
+}
+
 /* ===== Content Area ===== */
 .contentArea {
     flex: 1;

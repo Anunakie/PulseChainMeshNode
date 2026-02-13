@@ -1,4 +1,5 @@
 import { session as electronSession } from 'electron';
+import { initAdBlock } from '../adblock';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -25,17 +26,11 @@ export const initSession = async (s) => {
     const allowedSources = [`'self'`];
     isDevelopment && allowedSources.push(` 'unsafe-eval'`); // react-refresh-webpack-plugin needs this
 
-    // session.webRequest.onHeadersReceived((details, callback) => {
-    //     callback({
-    //         responseHeaders: {
-    //             ...details.responseHeaders,
-    //             'Content-Security-Policy': [
-    //                 'script-src '.concat(...allowedSources),
-    //             ],
-    //         },
-    //     });
-    // });
+    // Initialize ad & tracker blocking on this session
+    initAdBlock(session);
 
+    // Note: onHeadersReceived is set after onBeforeRequest in the adblock module
+    // We set CSP headers here separately
     session.webRequest.onHeadersReceived((details, callback) => {
         callback({
             responseHeaders: {

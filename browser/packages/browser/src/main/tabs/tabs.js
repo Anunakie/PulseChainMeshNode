@@ -1,6 +1,7 @@
 import { BrowserView } from 'electron';
 import events from '../events';
 import { getTabSession } from '../session';
+import { addToHistory } from '../history';
 
 import windowManager from '../window';
 import {
@@ -79,6 +80,10 @@ class Tab {
                 url,
                 tabId: this.id,
             });
+
+            // Track history on navigation
+            const title = this.view.webContents.getTitle() || url;
+            addToHistory(url, title, '');
         });
 
         this.view.webContents.on('page-favicon-updated', (event, favicons) => {
@@ -86,6 +91,12 @@ class Tab {
                 icons: favicons,
                 tabId: this.id,
             });
+
+            // Update history entry with favicon
+            if (this.url && favicons && favicons.length > 0) {
+                const title = this.view.webContents.getTitle() || this.url;
+                addToHistory(this.url, title, favicons[0]);
+            }
         });
 
         this.view.webContents.on('page-title-updated', (event, title) => {
@@ -93,6 +104,11 @@ class Tab {
                 title: title,
                 tabId: this.id,
             });
+
+            // Update history entry with title
+            if (this.url && title) {
+                addToHistory(this.url, title, '');
+            }
         });
 
         this.view.webContents.on(
@@ -106,6 +122,11 @@ class Tab {
                 this.url = url;
                 if (isMainFrame) {
                     if (url.endsWith('#')) this.goHome();
+                    else {
+                        // Track in-page navigation in history
+                        const title = this.view.webContents.getTitle() || url;
+                        addToHistory(url, title, '');
+                    }
                 }
             }
         );

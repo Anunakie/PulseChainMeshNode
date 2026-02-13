@@ -11,12 +11,40 @@ import AppUpdater from '../updater';
 import { getTabSession } from '../session';
 import tabsManager from '../tabs';
 import { getExtensionFoldersAndManifests } from '../chrome-extensions';
+import { initAdBlockHandlers } from '../adblock';
+import { initHistoryHandlers, addToHistory } from '../history';
 
 const path = require('path');
 
 let appUpdater = new AppUpdater();
 
+/**
+ * Determine if a string is a search query rather than a URL
+ * @param {string} input - User input from URL bar
+ * @returns {boolean}
+ */
+function isSearchQuery(input) {
+    // If it has a protocol, it's a URL
+    if (input.startsWith('http://') || input.startsWith('https://')) {
+        return false;
+    }
+    // If it has no dots or spaces, likely a search
+    if (!input.includes('.')) {
+        return true;
+    }
+    // If it has spaces, it's a search query
+    if (input.includes(' ')) {
+        return true;
+    }
+    // If it looks like a domain (e.g., "example.com"), it's a URL
+    return false;
+}
+
 const initMain = async () => {
+    // Initialize adblock and history IPC handlers
+    initAdBlockHandlers();
+    initHistoryHandlers();
+
     ipcMain.handle('tab:select-tab', async (event, arg) => {
         tabsManager.selectTab(arg);
     });
@@ -24,15 +52,20 @@ const initMain = async () => {
     ipcMain.handle('tab:load-url', async (event, arg) => {
         let url = arg.url;
 
-        const protocol = 'https://';
-        const unsafeProtocol = 'http://';
+        // Check if this is a search query -> redirect to DuckDuckGo
+        if (isSearchQuery(url)) {
+            url = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
+        } else {
+            const protocol = 'https://';
+            const unsafeProtocol = 'http://';
 
-        if (url.startsWith(unsafeProtocol)) {
-            url = url.split(unsafeProtocol)[1];
-        }
+            if (url.startsWith(unsafeProtocol)) {
+                url = url.split(unsafeProtocol)[1];
+            }
 
-        if (!url.startsWith(protocol)) {
-            url = protocol.concat(url);
+            if (!url.startsWith(protocol)) {
+                url = protocol.concat(url);
+            }
         }
 
         arg.url = url;

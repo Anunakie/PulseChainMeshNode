@@ -37,3 +37,20 @@ contextBridge.exposeInMainWorld('electronApi', {
     onTabSelected: (callback) => ipcRenderer.on('tab:tab-selected', callback),
     onTabSizeChanged: (arg) => ipcRenderer.invoke('tab:tab-size-changed', arg),
 });
+
+// Ad & Tracker Blocking API
+contextBridge.exposeInMainWorld('adblockApi', {
+    getStats: () => ipcRenderer.invoke('adblock:get-stats'),
+    getTabStats: (tabId) => ipcRenderer.invoke('adblock:get-tab-stats', tabId),
+    resetStats: () => ipcRenderer.invoke('adblock:reset-stats'),
+});
+
+// History Management API
+contextBridge.exposeInMainWorld('historyApi', {
+    getHistory: () => ipcRenderer.invoke('history:get'),
+    addToHistory: (entry) => ipcRenderer.invoke('history:add', entry),
+    clearHistory: () => ipcRenderer.invoke('history:clear'),
+    deleteEntry: (index) => ipcRenderer.invoke('history:delete-entry', index),
+    getLimit: () => ipcRenderer.invoke('history:get-limit'),
+    setLimit: (limit) => ipcRenderer.invoke('history:set-limit', limit),
+});
