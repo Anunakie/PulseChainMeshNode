@@ -1,4 +1,4 @@
-/* Global App Styles */
+/* PulseMesh Browser - App Styles */
 
 * {
     margin: 0;
@@ -23,25 +23,225 @@ body {
     flex-direction: column;
     height: 100vh;
     width: 100vw;
-    padding-top: 32px; /* Space for title bar */
-    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+    background: #0f0f1a;
 }
 
-.main_container {
-    flex: 1;
+/* ===== Tab Bar ===== */
+.tabBar {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    height: 36px;
+    min-height: 36px;
+    padding: 0 8px;
+    padding-top: 32px; /* space for title bar overlay */
+    background: linear-gradient(180deg, #1a1a28 0%, #151522 100%);
+    border-bottom: 1px solid rgba(100, 200, 255, 0.08);
+    -webkit-app-region: drag;
     overflow: hidden;
 }
 
+.tabList {
+    display: flex;
+    flex: 1;
+    overflow-x: auto;
+    gap: 2px;
+    -webkit-app-region: no-drag;
+    scrollbar-width: none;
+}
+
+.tabList::-webkit-scrollbar {
+    display: none;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    min-width: 100px;
+    max-width: 200px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+    border-bottom: none;
+    -webkit-app-region: no-drag;
+    user-select: none;
+}
+
+.tab:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.tabActive {
+    background: rgba(0, 212, 255, 0.08) !important;
+    border-color: rgba(0, 212, 255, 0.2);
+    border-bottom: 2px solid #00d4ff;
+}
+
+.tabFavicon {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.tabTitle {
+    font-size: 11px;
+    color: #b0b0b0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tabActive .tabTitle {
+    color: #e0e0e0;
+}
+
+.newTabBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #808080;
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    -webkit-app-region: no-drag;
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+.newTabBtn:hover {
+    background: rgba(0, 212, 255, 0.1);
+    color: #00d4ff;
+}
+
+/* ===== Navigation Bar ===== */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    height: 42px;
+    min-height: 42px;
+    background: linear-gradient(180deg, #151522 0%, #121220 100%);
+    border-bottom: 1px solid rgba(100, 200, 255, 0.08);
+    gap: 8px;
+}
+
+.navButtons {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.navBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #909090;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.navBtn:hover {
+    background: rgba(100, 200, 255, 0.1);
+    color: #00d4ff;
+}
+
+.navBtn:active {
+    transform: scale(0.92);
+}
+
+/* ===== URL Bar ===== */
+.urlForm {
+    flex: 1;
+    min-width: 0;
+}
+
+.urlBarContainer {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(100, 200, 255, 0.12);
+    border-radius: 20px;
+    padding: 5px 14px;
+    transition: all 0.2s ease;
+}
+
+.urlBarContainer:focus-within {
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.12);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.lockIcon {
+    color: #4ade80;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.urlInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #d0d0d0;
+    font-size: 13px;
+    outline: none;
+    min-width: 0;
+}
+
+.urlInput::placeholder {
+    color: #505060;
+}
+
+.urlInput::selection {
+    background: rgba(0, 212, 255, 0.3);
+}
+
+.loadingIndicator {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(0, 212, 255, 0.2);
+    border-top-color: #00d4ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===== Content Area ===== */
+.contentArea {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ===== Hidden elements ===== */
 .browser_actions {
-    display: none; /* Hide for now */
+    display: none;
 }
 
 .tab_buttons {
-    display: none; /* Hide for now - tabs managed differently */
+    display: none;
 }
 
 .tab_container {
-    display: none; /* Hide for now */
+    display: none;
 }

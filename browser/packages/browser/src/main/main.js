@@ -39,20 +39,15 @@ const launchApp = async () => {
     // eslint-disable-next-line no-undef
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-    const monitorWindow = await windowManager.getExtensionMonitorWindow();
-    // eslint-disable-next-line no-undef
-    monitorWindow.loadURL(EXTENSION_MONITOR_WEBPACK_ENTRY);
-
-    monitorWindow.once('ready-to-show', async () => {
-        monitorWindow.show();
-        monitorWindow.webContents.openDevTools();
-    });
+    // Extension monitor window - created but kept hidden
+    // const monitorWindow = await windowManager.getExtensionMonitorWindow();
+    // monitorWindow.loadURL(EXTENSION_MONITOR_WEBPACK_ENTRY);
 
     initExtensions();
 
     setTimeout(async () => {
         await tabsManager.loadInTab({
-            url: 'https://app.uniswap.org',
+            url: 'https://pulsechain.com',
         });
     }, 1000);
 };
@@ -83,9 +78,7 @@ app.on('activate', () => {
     }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-
+// Log web-contents-created events but do NOT auto-open devtools
 app.on('web-contents-created', async (event, webContents) => {
     const type = webContents.getType();
     const url = webContents.getURL();
@@ -93,12 +86,4 @@ app.on('web-contents-created', async (event, webContents) => {
     console.log(
         `'web-contents-created' event [type:${type}, url:${url}, title:${title}]`
     );
-    if (
-        ['backgroundPage', 'remote'].includes(type) &&
-        !url.startsWith('devtools') &&
-        !webContents.isDevToolsOpened()
-    ) {
-        console.log(`opening devtools for [type:${type}, url:${url}]`);
-        webContents.openDevTools({ mode: 'detach' });
-    }
 });

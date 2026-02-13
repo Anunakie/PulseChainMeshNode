@@ -1,278 +1,216 @@
-/* PulseMesh Browser Main Styles */
+/* PulseMesh Browser - Welcome Page Styles */
 
-.browserContainer {
+.welcomeContainer {
     display: flex;
-    flex-direction: column;
-    height: 100%;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
-    color: #e0e0e0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-}
-
-/* Navigation Bar */
-.navbar {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    background: linear-gradient(180deg, #1e1e2e 0%, #151520 100%);
-    border-bottom: 1px solid rgba(100, 200, 255, 0.1);
-    gap: 8px;
-    -webkit-app-region: drag;
-}
-
-.navButtons {
-    display: flex;
-    gap: 4px;
-    -webkit-app-region: no-drag;
-}
-
-.navBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 6px;
-    background: transparent;
-    color: #a0a0a0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.navBtn:hover:not(:disabled) {
-    background: rgba(100, 200, 255, 0.1);
-    color: #00d4ff;
-}
-
-.navBtn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.navBtn:active:not(:disabled) {
-    transform: scale(0.95);
-}
-
-/* URL Bar */
-.urlForm {
-    flex: 1;
-    -webkit-app-region: no-drag;
-}
-
-.urlBarContainer {
-    display: flex;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(100, 200, 255, 0.2);
-    border-radius: 20px;
-    padding: 6px 12px;
-    transition: all 0.2s ease;
-}
-
-.urlBarContainer:focus-within {
-    border-color: rgba(0, 212, 255, 0.5);
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
-}
-
-.lockIcon {
-    color: #4ade80;
-    margin-right: 8px;
-    flex-shrink: 0;
-}
-
-.urlInput {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: #e0e0e0;
-    font-size: 14px;
-    outline: none;
-}
-
-.urlInput::placeholder {
-    color: #606060;
-}
-
-.loadingIndicator {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(0, 212, 255, 0.3);
-    border-top-color: #00d4ff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.spinning {
-    animation: spin 1s linear infinite;
-}
-
-/* Menu Button */
-.menuBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 6px;
-    background: transparent;
-    color: #a0a0a0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    -webkit-app-region: no-drag;
-}
-
-.menuBtn:hover {
-    background: rgba(100, 200, 255, 0.1);
-    color: #00d4ff;
-}
-
-/* Content Area */
-.contentArea {
-    flex: 1;
+    height: 100%;
+    background: radial-gradient(ellipse at 50% 30%, rgba(0, 212, 255, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 70%, rgba(168, 85, 247, 0.04) 0%, transparent 50%),
+                linear-gradient(180deg, #0f0f1a 0%, #0a0a12 100%);
     overflow: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-/* Welcome Screen */
-.welcomeScreen {
+.welcomeContent {
     text-align: center;
-    padding: 40px;
-    max-width: 600px;
+    padding: 40px 20px;
+    max-width: 640px;
+    width: 100%;
 }
 
-.logo {
-    margin-bottom: 20px;
+/* Branding */
+.branding {
+    margin-bottom: 32px;
 }
 
 .logoIcon {
-    font-size: 64px;
-    margin-bottom: 10px;
-    animation: pulse 2s ease-in-out infinite;
+    margin-bottom: 16px;
+    animation: float 4s ease-in-out infinite;
 }
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
 }
 
-.logoText {
-    font-size: 32px;
+.title {
+    font-size: 36px;
     font-weight: 700;
-    background: linear-gradient(135deg, #00d4ff 0%, #a855f7 50%, #00d4ff 100%);
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #00d4ff 0%, #a855f7 50%, #06b6d4 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: gradient 3s ease infinite;
+    animation: shimmer 4s ease infinite;
+    margin-bottom: 8px;
 }
 
-@keyframes gradient {
+@keyframes shimmer {
     0% { background-position: 0% center; }
     50% { background-position: 100% center; }
     100% { background-position: 0% center; }
 }
 
-.tagline {
-    color: #808080;
-    font-size: 16px;
+.subtitle {
+    color: #606878;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+/* Search Bar */
+.searchForm {
     margin-bottom: 40px;
+}
+
+.searchContainer {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(100, 200, 255, 0.15);
+    border-radius: 24px;
+    padding: 12px 20px;
+    transition: all 0.25s ease;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.searchContainer:focus-within {
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.1), 0 0 40px rgba(168, 85, 247, 0.05);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.searchIcon {
+    color: #505868;
+    margin-right: 12px;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+
+.searchContainer:focus-within .searchIcon {
+    color: #00d4ff;
+}
+
+.searchInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #e0e0e0;
+    font-size: 15px;
+    outline: none;
+}
+
+.searchInput::placeholder {
+    color: #404858;
+}
+
+.searchInput::selection {
+    background: rgba(0, 212, 255, 0.3);
 }
 
 /* Quick Links */
 .quickLinks {
-    margin-bottom: 40px;
+    margin-bottom: 36px;
 }
 
-.quickLinks h3 {
-    color: #a0a0a0;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 16px;
+.sectionTitle {
+    color: #505868;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    margin-bottom: 16px;
 }
 
 .linkGrid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 480px;
+    margin: 0 auto;
 }
 
 .quickLink {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(100, 200, 255, 0.1);
+    gap: 8px;
+    padding: 16px 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(100, 200, 255, 0.08);
     border-radius: 12px;
-    text-decoration: none;
-    color: #e0e0e0;
-    transition: all 0.3s ease;
     cursor: pointer;
+    transition: all 0.25s ease;
+    color: #c0c0c0;
+    font-family: inherit;
+    font-size: inherit;
 }
 
 .quickLink:hover {
-    background: rgba(0, 212, 255, 0.1);
-    border-color: rgba(0, 212, 255, 0.3);
+    background: rgba(0, 212, 255, 0.06);
+    border-color: rgba(0, 212, 255, 0.25);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.15);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.1);
 }
 
-.linkIcon {
-    font-size: 28px;
-    margin-bottom: 8px;
+.quickLink:active {
+    transform: translateY(0);
 }
 
-.quickLink span {
+.linkIconWrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.linkLabel {
     font-size: 12px;
     font-weight: 500;
+    color: #a0a8b4;
 }
 
 /* Features */
 .features {
     display: flex;
     justify-content: center;
-    gap: 24px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
 .feature {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
+    gap: 6px;
+    padding: 6px 14px;
     background: rgba(255, 255, 255, 0.02);
-    border-radius: 20px;
-    font-size: 13px;
-    color: #a0a0a0;
+    border-radius: 16px;
+    font-size: 12px;
+    color: #606878;
 }
 
 .featureIcon {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 /* Responsive */
-@media (max-width: 600px) {
+@media (max-width: 500px) {
     .linkGrid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
+    .title {
+        font-size: 28px;
+    }
+
     .features {
         flex-direction: column;
         align-items: center;
-    }
-    
-    .logoText {
-        font-size: 24px;
     }
 }

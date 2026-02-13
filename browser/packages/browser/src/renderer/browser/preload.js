@@ -19,9 +19,18 @@ contextBridge.exposeInMainWorld('electronApi', {
     loadUrl: (arg) => ipcRenderer.invoke('tab:load-url', arg),
     refreshTab: (arg) => ipcRenderer.invoke('tab:refresh-tab', arg),
     goHomeTab: (arg) => ipcRenderer.invoke('tab:gohome-tab', arg),
+    newTab: () => ipcRenderer.invoke('tab:new-tab'),
     onDidNavigate: (callback) => ipcRenderer.on('tab:did-navigate', callback),
     onDidNavigateInPage: (callback) =>
         ipcRenderer.on('tab:did-navigate-in-page', callback),
+    onDidStartLoading: (callback) =>
+        ipcRenderer.on('tab:did-start-loading', callback),
+    onDidStopLoading: (callback) =>
+        ipcRenderer.on('tab:did-stop-loading', callback),
+    onPageTitleUpdated: (callback) =>
+        ipcRenderer.on('tab:page-title-updated', callback),
+    onPageFaviconUpdated: (callback) =>
+        ipcRenderer.on('tab:page-favicon-updated', callback),
     onTabsFound: (callback) => ipcRenderer.on('tabs:tabs-found', callback),
     getCurrentTabs: () => ipcRenderer.invoke('tabs:get-current-tabs'),
     selectTab: (arg) => ipcRenderer.invoke('tab:select-tab', arg),

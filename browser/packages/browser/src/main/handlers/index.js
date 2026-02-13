@@ -59,6 +59,11 @@ const initMain = async () => {
         return tabIds;
     });
 
+    ipcMain.handle('tab:new-tab', async (event, arg) => {
+        const tab = await tabsManager.createTab({});
+        return tab.id;
+    });
+
     ipcMain.handle('extensions:get-extensions', async (evt, arg) => {
         const extensionsPath = path.join(__dirname, '../../../../extensions');
         const extensions = getExtensionFoldersAndManifests(extensionsPath);
@@ -70,29 +75,6 @@ const initMain = async () => {
         const tabSession = await getTabSession();
         const result = await tabSession.loadExtension(arg.extensionPath);
         console.log('Extension loaded', result);
-
-        // setTimeout(async () => {
-        //     let landingPage = arg.launchPage;
-
-        //     if (result.id === 'acmacodkjbdgmoleebolmdjonilkdbch') {
-        //         landingPage = 'index.html';
-        //     }
-
-        //     if (result.id === 'eajafomhmkipbjmfmhebemolkcicgfmd') {
-        //         landingPage = 'popup.html';
-        //     }
-
-        //     if (result.id === 'nkbihfbeogaeaoehlefnkodbefgpgknn') {
-        //         landingPage = 'home.html';
-        //     }
-
-        //     await tabsManager.loadInTab({
-        //         extensionId: result.id,
-        //         id: result.id,
-        //         url: 'chrome-extension://' + result.id + '/' + landingPage,
-        //     });
-        // }, 1000);
-
         return;
     });
 

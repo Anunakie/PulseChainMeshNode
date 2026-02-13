@@ -9,7 +9,7 @@ import {
 } from '../chrome-extensions';
 const log = require('electron-log');
 
-const topOffset = 40;
+const topOffset = 80;
 
 class Options {
     static BROWSER_TAB = {
@@ -134,14 +134,12 @@ class Tab {
         const window = await windowManager.getMainWindow();
         window.addBrowserView(this.view);
         const [windowWidth, windowHeight] = window.getContentSize();
-        const width = Math.floor(windowWidth / 3);
-        const height = (windowHeight - topOffset) / 2;
         const beginX = 0;
-        const beginY = topOffset + height;
+        const beginY = topOffset;
+        const width = windowWidth;
+        const height = windowHeight - topOffset;
         this.resize(beginX, beginY, width, height);
         this.isShowing = true;
-
-        this.view?.webContents?.openDevTools({ mode: 'bottom' });
     }
 
     async hide() {

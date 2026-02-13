@@ -1,175 +1,144 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import styles from './main.module.css';
 
-const Main = () => {
-    const [url, setUrl] = useState('https://pulsechain.com');
-    const [inputUrl, setInputUrl] = useState('https://pulsechain.com');
-    const [isLoading, setIsLoading] = useState(false);
-    const [canGoBack, setCanGoBack] = useState(false);
-    const [canGoForward, setCanGoForward] = useState(false);
-    const [pageTitle, setPageTitle] = useState('PulseMesh Browser');
+const Main = ({ onNavigate }) => {
+    const [searchInput, setSearchInput] = useState('');
 
-    const handleUrlSubmit = (e) => {
+    const handleSearch = (e) => {
         e.preventDefault();
-        let newUrl = inputUrl;
-        if (!newUrl.startsWith('http://') && !newUrl.startsWith('https://')) {
-            newUrl = 'https://' + newUrl;
+        if (!searchInput.trim()) return;
+
+        let url = searchInput.trim();
+        if (!url.includes('.') && !url.startsWith('http')) {
+            url = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
+        } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
         }
-        setUrl(newUrl);
-        setIsLoading(true);
-        
-        // Use electronApi to navigate if available
-        if (window.electronApi && window.electronApi.navigate) {
-            window.electronApi.navigate(newUrl);
+
+        if (onNavigate) {
+            onNavigate(url);
         }
     };
 
-    const handleBack = () => {
-        if (window.electronApi && window.electronApi.goBack) {
-            window.electronApi.goBack();
-        }
-    };
-
-    const handleForward = () => {
-        if (window.electronApi && window.electronApi.goForward) {
-            window.electronApi.goForward();
-        }
-    };
-
-    const handleRefresh = () => {
-        setIsLoading(true);
-        if (window.electronApi && window.electronApi.refresh) {
-            window.electronApi.refresh();
-        }
-    };
-
-    const handleHome = () => {
-        const homeUrl = 'https://pulsechain.com';
-        setUrl(homeUrl);
-        setInputUrl(homeUrl);
-        if (window.electronApi && window.electronApi.navigate) {
-            window.electronApi.navigate(homeUrl);
+    const handleQuickLink = (url) => {
+        if (onNavigate) {
+            onNavigate(url);
         }
     };
 
     return (
-        <div className={styles.browserContainer}>
-            {/* Navigation Bar */}
-            <div className={styles.navbar}>
-                <div className={styles.navButtons}>
-                    <button 
-                        className={styles.navBtn} 
-                        onClick={handleBack}
-                        disabled={!canGoBack}
-                        title="Go Back"
-                    >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        <div className={styles.welcomeContainer}>
+            <div className={styles.welcomeContent}>
+                {/* Logo & Branding */}
+                <div className={styles.branding}>
+                    <div className={styles.logoIcon}>
+                        <svg width="72" height="72" viewBox="0 0 100 100" fill="none">
+                            <circle cx="50" cy="50" r="45" stroke="url(#grad1)" strokeWidth="3" fill="none" />
+                            <circle cx="50" cy="50" r="30" stroke="url(#grad2)" strokeWidth="2" fill="none" opacity="0.6" />
+                            <circle cx="50" cy="50" r="15" fill="url(#grad3)" opacity="0.8" />
+                            <circle cx="50" cy="25" r="4" fill="#00d4ff" />
+                            <circle cx="71" cy="62" r="4" fill="#a855f7" />
+                            <circle cx="29" cy="62" r="4" fill="#06b6d4" />
+                            <line x1="50" y1="25" x2="71" y2="62" stroke="rgba(0,212,255,0.3)" strokeWidth="1" />
+                            <line x1="71" y1="62" x2="29" y2="62" stroke="rgba(168,85,247,0.3)" strokeWidth="1" />
+                            <line x1="29" y1="62" x2="50" y2="25" stroke="rgba(6,182,212,0.3)" strokeWidth="1" />
+                            <defs>
+                                <linearGradient id="grad1" x1="0" y1="0" x2="100" y2="100">
+                                    <stop offset="0%" stopColor="#00d4ff" />
+                                    <stop offset="100%" stopColor="#a855f7" />
+                                </linearGradient>
+                                <linearGradient id="grad2" x1="100" y1="0" x2="0" y2="100">
+                                    <stop offset="0%" stopColor="#06b6d4" />
+                                    <stop offset="100%" stopColor="#8b5cf6" />
+                                </linearGradient>
+                                <radialGradient id="grad3" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stopColor="#00d4ff" stopOpacity="0.6" />
+                                    <stop offset="100%" stopColor="#a855f7" stopOpacity="0.2" />
+                                </radialGradient>
+                            </defs>
                         </svg>
-                    </button>
-                    <button 
-                        className={styles.navBtn} 
-                        onClick={handleForward}
-                        disabled={!canGoForward}
-                        title="Go Forward"
-                    >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-                        </svg>
-                    </button>
-                    <button 
-                        className={styles.navBtn} 
-                        onClick={handleRefresh}
-                        title="Refresh"
-                    >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={isLoading ? styles.spinning : ''}>
-                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                        </svg>
-                    </button>
-                    <button 
-                        className={styles.navBtn} 
-                        onClick={handleHome}
-                        title="Home"
-                    >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                        </svg>
-                    </button>
+                    </div>
+                    <h1 className={styles.title}>PulseMesh Browser</h1>
+                    <p className={styles.subtitle}>Decentralized Web3 Browsing</p>
                 </div>
-                
-                {/* URL Bar */}
-                <form className={styles.urlForm} onSubmit={handleUrlSubmit}>
-                    <div className={styles.urlBarContainer}>
-                        <svg className={styles.lockIcon} width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+
+                {/* Search Bar */}
+                <form className={styles.searchForm} onSubmit={handleSearch}>
+                    <div className={styles.searchContainer}>
+                        <svg className={styles.searchIcon} width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                         </svg>
                         <input
                             type="text"
-                            className={styles.urlInput}
-                            value={inputUrl}
-                            onChange={(e) => setInputUrl(e.target.value)}
-                            placeholder="Enter URL or search..."
+                            className={styles.searchInput}
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            placeholder="Search the web or enter a URL..."
+                            autoFocus
                         />
-                        {isLoading && <div className={styles.loadingIndicator} />}
                     </div>
                 </form>
 
-                {/* Menu Button */}
-                <button className={styles.menuBtn} title="Menu">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-                    </svg>
-                </button>
-            </div>
-
-            {/* Welcome Screen / Content Area */}
-            <div className={styles.contentArea}>
-                <div className={styles.welcomeScreen}>
-                    <div className={styles.logo}>
-                        <div className={styles.logoIcon}>🌐</div>
-                        <h1 className={styles.logoText}>PulseMesh Browser</h1>
+                {/* Quick Links */}
+                <div className={styles.quickLinks}>
+                    <h3 className={styles.sectionTitle}>Quick Links</h3>
+                    <div className={styles.linkGrid}>
+                        <button className={styles.quickLink} onClick={() => handleQuickLink('https://pulsechain.com')}>
+                            <div className={styles.linkIconWrap} style={{ background: 'rgba(168, 85, 247, 0.15)' }}>
+                                <span role="img" aria-label="PulseChain">💜</span>
+                            </div>
+                            <span className={styles.linkLabel}>PulseChain</span>
+                        </button>
+                        <button className={styles.quickLink} onClick={() => handleQuickLink('https://pulsex.com')}>
+                            <div className={styles.linkIconWrap} style={{ background: 'rgba(0, 212, 255, 0.15)' }}>
+                                <span role="img" aria-label="PulseX">🔄</span>
+                            </div>
+                            <span className={styles.linkLabel}>PulseX</span>
+                        </button>
+                        <button className={styles.quickLink} onClick={() => handleQuickLink('https://hex.com')}>
+                            <div className={styles.linkIconWrap} style={{ background: 'rgba(0, 212, 255, 0.15)' }}>
+                                <span role="img" aria-label="HEX">💎</span>
+                            </div>
+                            <span className={styles.linkLabel}>HEX</span>
+                        </button>
+                        <button className={styles.quickLink} onClick={() => handleQuickLink('https://app.pulsex.com')}>
+                            <div className={styles.linkIconWrap} style={{ background: 'rgba(168, 85, 247, 0.15)' }}>
+                                <span role="img" aria-label="PulseX DEX">📊</span>
+                            </div>
+                            <span className={styles.linkLabel}>PulseX DEX</span>
+                        </button>
+                        <button className={styles.quickLink} onClick={() => handleQuickLink('https://beacon.pulsechain.com')}>
+                            <div className={styles.linkIconWrap} style={{ background: 'rgba(6, 182, 212, 0.15)' }}>
+                                <span role="img" aria-label="Explorer">🔍</span>
+                            </div>
+                            <span className={styles.linkLabel}>Explorer</span>
+                        </button>
+                        <button className={styles.quickLink} onClick={() => handleQuickLink('https://duckduckgo.com')}>
+                            <div className={styles.linkIconWrap} style={{ background: 'rgba(255, 165, 0, 0.15)' }}>
+                                <span role="img" aria-label="Search">🦆</span>
+                            </div>
+                            <span className={styles.linkLabel}>DuckDuckGo</span>
+                        </button>
                     </div>
-                    <p className={styles.tagline}>Privacy-First Decentralized Browsing</p>
-                    
-                    <div className={styles.quickLinks}>
-                        <h3>Quick Links</h3>
-                        <div className={styles.linkGrid}>
-                            <a href="#" className={styles.quickLink} onClick={(e) => { e.preventDefault(); setInputUrl('https://pulsechain.com'); setUrl('https://pulsechain.com'); }}>
-                                <div className={styles.linkIcon}>💜</div>
-                                <span>PulseChain</span>
-                            </a>
-                            <a href="#" className={styles.quickLink} onClick={(e) => { e.preventDefault(); setInputUrl('https://pulsex.com'); setUrl('https://pulsex.com'); }}>
-                                <div className={styles.linkIcon}>🔄</div>
-                                <span>PulseX</span>
-                            </a>
-                            <a href="#" className={styles.quickLink} onClick={(e) => { e.preventDefault(); setInputUrl('https://hex.com'); setUrl('https://hex.com'); }}>
-                                <div className={styles.linkIcon}>💎</div>
-                                <span>HEX</span>
-                            </a>
-                            <a href="#" className={styles.quickLink} onClick={(e) => { e.preventDefault(); setInputUrl('https://app.pulsex.com'); setUrl('https://app.pulsex.com'); }}>
-                                <div className={styles.linkIcon}>📊</div>
-                                <span>PulseX App</span>
-                            </a>
-                        </div>
-                    </div>
+                </div>
 
-                    <div className={styles.features}>
-                        <div className={styles.feature}>
-                            <span className={styles.featureIcon}>🛡️</span>
-                            <span>Ad Blocking</span>
-                        </div>
-                        <div className={styles.feature}>
-                            <span className={styles.featureIcon}>🔒</span>
-                            <span>Privacy Mode</span>
-                        </div>
-                        <div className={styles.feature}>
-                            <span className={styles.featureIcon}>🌐</span>
-                            <span>Mesh Network</span>
-                        </div>
-                        <div className={styles.feature}>
-                            <span className={styles.featureIcon}>💰</span>
-                            <span>Web3 Wallet</span>
-                        </div>
+                {/* Features */}
+                <div className={styles.features}>
+                    <div className={styles.feature}>
+                        <span className={styles.featureIcon}>🛡️</span>
+                        <span>Privacy First</span>
+                    </div>
+                    <div className={styles.feature}>
+                        <span className={styles.featureIcon}>🌐</span>
+                        <span>Mesh Network</span>
+                    </div>
+                    <div className={styles.feature}>
+                        <span className={styles.featureIcon}>💰</span>
+                        <span>Web3 Ready</span>
+                    </div>
+                    <div className={styles.feature}>
+                        <span className={styles.featureIcon}>⚡</span>
+                        <span>Lightning Fast</span>
                     </div>
                 </div>
             </div>
