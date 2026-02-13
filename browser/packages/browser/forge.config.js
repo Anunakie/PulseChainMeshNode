@@ -1,3 +1,51 @@
+const makers = [
+    {
+        name: '@electron-forge/maker-squirrel',
+        config: {
+            name: 'PulseMeshBrowser',
+            setupExe: 'PulseMeshBrowser-Setup.exe',
+            setupIcon: './src/main/icons/icon.ico',
+            createDesktopShortcut: true,
+            createStartMenuShortcut: true,
+            shortcutName: 'PulseMesh Browser',
+        },
+    },
+    {
+        name: '@electron-forge/maker-zip',
+        platforms: ['darwin', 'win32', 'linux'],
+    },
+    {
+        name: '@electron-forge/maker-deb',
+        config: {
+            options: {
+                name: 'pulsemesh-browser',
+                productName: 'PulseMesh Browser',
+                genericName: 'Web Browser',
+                description: 'Privacy-focused browser for PulseChain mesh network',
+                categories: ['Network', 'WebBrowser'],
+                icon: './src/main/icons/icon.png',
+                bin: 'PulseMeshBrowser',
+            }
+        },
+    },
+];
+
+// Only add DMG maker on macOS
+if (process.platform === 'darwin') {
+    try {
+        require.resolve('@electron-forge/maker-dmg');
+        makers.push({
+            name: '@electron-forge/maker-dmg',
+            config: {
+                name: 'PulseMeshBrowser',
+                format: 'ULFO',
+            },
+        });
+    } catch (e) {
+        // maker-dmg not installed, skip
+    }
+}
+
 module.exports = {
     packagerConfig: {
         name: 'PulseMesh Browser',
@@ -7,44 +55,7 @@ module.exports = {
         appCopyright: 'Copyright (C) 2024 PulseChainMeshNode Community',
     },
     rebuildConfig: {},
-    makers: [
-        {
-            name: '@electron-forge/maker-squirrel',
-            config: {
-                name: 'PulseMeshBrowser',
-                setupExe: 'PulseMeshBrowser-Setup.exe',
-                setupIcon: './src/main/icons/icon.ico',
-                createDesktopShortcut: true,
-                createStartMenuShortcut: true,
-                shortcutName: 'PulseMesh Browser',
-            },
-        },
-        {
-            name: '@electron-forge/maker-zip',
-            platforms: ['darwin', 'win32', 'linux'],
-        },
-        {
-            name: '@electron-forge/maker-dmg',
-            config: {
-                name: 'PulseMeshBrowser',
-                format: 'ULFO',
-            },
-        },
-        {
-            name: '@electron-forge/maker-deb',
-            config: {
-                options: {
-                    name: 'pulsemesh-browser',
-                    productName: 'PulseMesh Browser',
-                    genericName: 'Web Browser',
-                    description: 'Privacy-focused browser for PulseChain mesh network',
-                    categories: ['Network', 'WebBrowser'],
-                    icon: './src/main/icons/icon.png',
-                    bin: 'PulseMeshBrowser',
-                }
-            },
-        },
-    ],
+    makers: makers,
     plugins: [
         {
             name: '@electron-forge/plugin-webpack',
