@@ -54,3 +54,30 @@ contextBridge.exposeInMainWorld('historyApi', {
     getLimit: () => ipcRenderer.invoke('history:get-limit'),
     setLimit: (limit) => ipcRenderer.invoke('history:set-limit', limit),
 });
+
+// PulseChain Web3 Wallet API
+contextBridge.exposeInMainWorld('walletApi', {
+    createWallet: (password) => ipcRenderer.invoke('wallet:create', { password }),
+    importWallet: (input, password) => ipcRenderer.invoke('wallet:import', { input, password }),
+    unlockWallet: (password) => ipcRenderer.invoke('wallet:unlock', { password }),
+    lockWallet: () => ipcRenderer.invoke('wallet:lock'),
+    getWalletAddress: () => ipcRenderer.invoke('wallet:get-address'),
+    getBalance: () => ipcRenderer.invoke('wallet:get-balance'),
+    sendTransaction: (to, amount) => ipcRenderer.invoke('wallet:send-transaction', { to, amount }),
+    getTokenBalance: (tokenAddress) => ipcRenderer.invoke('wallet:get-token-balance', { tokenAddress }),
+    sendToken: (tokenAddress, to, amount) => ipcRenderer.invoke('wallet:send-token', { tokenAddress, to, amount }),
+    addToken: (tokenAddress) => ipcRenderer.invoke('wallet:add-token', { tokenAddress }),
+    getTokenList: () => ipcRenderer.invoke('wallet:get-token-list'),
+    removeToken: (tokenAddress) => ipcRenderer.invoke('wallet:remove-token', { tokenAddress }),
+});
+
+// Node Control Panel API
+contextBridge.exposeInMainWorld('nodeApi', {
+    startNode: () => ipcRenderer.invoke('node:start'),
+    stopNode: () => ipcRenderer.invoke('node:stop'),
+    getNodeStatus: () => ipcRenderer.invoke('node:get-status'),
+    getNodeLogs: (limit) => ipcRenderer.invoke('node:get-logs', { limit }),
+    clearNodeLogs: () => ipcRenderer.invoke('node:clear-logs'),
+    getNodeConfig: () => ipcRenderer.invoke('node:get-config'),
+    configureNode: (config) => ipcRenderer.invoke('node:save-config', config),
+});

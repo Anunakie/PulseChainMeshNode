@@ -29,6 +29,46 @@ const App = () => {
     const [limitInput, setLimitInput] = useState('10');
     const historyRef = useRef(null);
 
+    // ===== WALLET STATE =====
+    const [showWallet, setShowWallet] = useState(false);
+    const walletRef = useRef(null);
+    const [walletAddress, setWalletAddress] = useState(null);
+    const [walletLocked, setWalletLocked] = useState(true);
+    const [hasWallet, setHasWallet] = useState(false);
+    const [plsBalance, setPlsBalance] = useState('0.0');
+    const [walletTokens, setWalletTokens] = useState([]);
+    const [walletTokenBalances, setWalletTokenBalances] = useState({});
+    const [walletView, setWalletView] = useState('main'); // main | create | import | send | addToken
+    const [walletPassword, setWalletPassword] = useState('');
+    const [walletSeedPhrase, setWalletSeedPhrase] = useState('');
+    const [walletImportInput, setWalletImportInput] = useState('');
+    const [walletSendTo, setWalletSendTo] = useState('');
+    const [walletSendAmount, setWalletSendAmount] = useState('');
+    const [walletSendToken, setWalletSendToken] = useState('PLS');
+    const [walletNewTokenAddr, setWalletNewTokenAddr] = useState('');
+    const [walletMsg, setWalletMsg] = useState('');
+    const [walletMsgType, setWalletMsgType] = useState('info'); // info | success | error
+    const [walletLoading, setWalletLoading] = useState(false);
+    const [walletMnemonic, setWalletMnemonic] = useState('');
+
+    // ===== NODE STATE =====
+    const [showNodePanel, setShowNodePanel] = useState(false);
+    const nodeRef = useRef(null);
+    const [nodeStatus, setNodeStatus] = useState('stopped');
+    const [nodeLogs, setNodeLogs] = useState([]);
+    const [nodeConfig, setNodeConfig] = useState({
+        neighborhoodMode: 'standard',
+        blockchainServiceUrl: 'https://rpc.pulsechain.com',
+        earningWallet: '',
+        gasPrice: '1',
+        dnsServers: '1.1.1.1,1.0.0.1',
+        logLevel: 'info',
+    });
+    const [nodeView, setNodeView] = useState('status'); // status | config | logs
+    const [nodeBinaryFound, setNodeBinaryFound] = useState(false);
+    const [nodeLoading, setNodeLoading] = useState(false);
+    const nodeLogEndRef = useRef(null);
+
     // Fetch current tabs on mount
     const getCurrentTabs = useCallback(async () => {
         try {
@@ -78,6 +118,71 @@ const App = () => {
         loadHistoryLimit();
     }, []);
 
+    // ===== WALLET: Check wallet status on mount =====
+    useEffect(() => {
+        const checkWallet = async () => {
+            try {
+                if (window.walletApi) {
+                    const info = await window.walletApi.getWalletAddress();
+                    setHasWallet(info.hasWallet);
+                    setWalletLocked(info.isLocked);
+                    setWalletAddress(info.address);
+                }
+            } catch (err) {
+                console.error('Failed to check wallet:', err);
+            }
+        };
+        checkWallet();
+    }, []);
+
+    // ===== NODE: Check node status on mount =====
+    useEffect(() => {
+        const checkNode = async () => {
+            try {
+                if (window.nodeApi) {
+                    const status = await window.nodeApi.getNodeStatus();
+                    setNodeStatus(status.status);
+                    setNodeBinaryFound(status.binaryFound);
+                    const config = await window.nodeApi.getNodeConfig();
+                    setNodeConfig(config);
+                }
+            } catch (err) {
+                console.error('Failed to check node:', err);
+            }
+        };
+        checkNode();
+    }, []);
+
+    // ===== NODE: Poll status and logs when panel is open =====
+    useEffect(() => {
+        if (!showNodePanel) return;
+        const poll = async () => {
+            try {
+                if (window.nodeApi) {
+                    const status = await window.nodeApi.getNodeStatus();
+                    setNodeStatus(status.status);
+                    setNodeBinaryFound(status.binaryFound);
+                    if (nodeView === 'logs') {
+                        const logs = await window.nodeApi.getNodeLogs(200);
+                        setNodeLogs(logs || []);
+                    }
+                }
+            } catch (err) {
+                console.error('Node poll error:', err);
+            }
+        };
+        poll();
+        const interval = setInterval(poll, 2000);
+        return () => clearInterval(interval);
+    }, [showNodePanel, nodeView]);
+
+    // Auto-scroll node logs
+    useEffect(() => {
+        if (nodeLogEndRef.current) {
+            nodeLogEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [nodeLogs]);
+
     // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -88,6 +193,12 @@ const App = () => {
                 setShowHistory(false);
                 setShowSettings(false);
             }
+            if (walletRef.current && !walletRef.current.contains(event.target)) {
+                setShowWallet(false);
+            }
+            if (nodeRef.current && !nodeRef.current.contains(event.target)) {
+                setShowNodePanel(false);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -96,40 +207,26 @@ const App = () => {
     // Set up IPC event listeners
     useEffect(() => {
         const handleTabsFound = (_event, value) => {
-            console.log('tabsFound', value);
             setTabs(value || []);
         };
-
         const handleTabSelected = (_event, value) => {
-            console.log('onTabSelected', value);
             setSelectedTab(value);
         };
-
         const handleDidNavigate = (_event, value) => {
-            console.log('didNavigate', value);
             if (value && value.url) {
                 setCurrentUrl(value.url);
                 setInputUrl(value.url);
                 setIsLoading(false);
             }
         };
-
         const handleDidNavigateInPage = (_event, value) => {
-            console.log('didNavigateInPage', value);
             if (value && value.url && value.isMainFrame) {
                 setCurrentUrl(value.url);
                 setInputUrl(value.url);
             }
         };
-
-        const handleDidStartLoading = (_event, value) => {
-            setIsLoading(true);
-        };
-
-        const handleDidStopLoading = (_event, value) => {
-            setIsLoading(false);
-        };
-
+        const handleDidStartLoading = () => setIsLoading(true);
+        const handleDidStopLoading = () => setIsLoading(false);
         const handlePageTitleUpdated = (_event, value) => {
             if (value && value.title && value.tabId) {
                 setTabTitles((prev) => ({ ...prev, [value.tabId]: value.title }));
@@ -138,7 +235,6 @@ const App = () => {
                 }
             }
         };
-
         const handlePageFaviconUpdated = (_event, value) => {
             if (value && value.icons && value.icons.length > 0 && value.tabId) {
                 setTabFavicons((prev) => ({ ...prev, [value.tabId]: value.icons[0] }));
@@ -155,20 +251,16 @@ const App = () => {
         window.electronApi.onPageFaviconUpdated(handlePageFaviconUpdated);
     }, [selectedTab]);
 
-    // Navigation handlers
+    // ===== NAVIGATION HANDLERS =====
     const handleUrlSubmit = (e) => {
         e.preventDefault();
         if (!inputUrl.trim()) return;
-
         let url = inputUrl.trim();
-
-        // If it looks like a search query (no dots, no protocol), search with DuckDuckGo
         if (!url.includes('.') && !url.startsWith('http')) {
             url = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
         } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
             url = 'https://' + url;
         }
-
         setIsLoading(true);
         if (selectedTab) {
             window.electronApi.loadUrl({ url, id: selectedTab });
@@ -190,14 +282,11 @@ const App = () => {
         }
     };
 
-    const handleSelectTab = (id) => {
-        window.electronApi.selectTab(id);
-    };
+    const handleSelectTab = (id) => window.electronApi.selectTab(id);
 
     const handleNewTab = async () => {
         try {
-            const tabId = await window.electronApi.newTab();
-            console.log('New tab created:', tabId);
+            await window.electronApi.newTab();
         } catch (err) {
             console.error('Failed to create new tab:', err);
         }
@@ -221,7 +310,7 @@ const App = () => {
         return 'Tab ' + id;
     };
 
-    // History handlers
+    // ===== HISTORY HANDLERS =====
     const loadHistory = async () => {
         try {
             if (window.historyApi) {
@@ -234,9 +323,7 @@ const App = () => {
     };
 
     const toggleHistory = () => {
-        if (!showHistory) {
-            loadHistory();
-        }
+        if (!showHistory) loadHistory();
         setShowHistory(!showHistory);
         setShowSettings(false);
     };
@@ -310,7 +397,459 @@ const App = () => {
         }
     };
 
+    // ===== WALLET HANDLERS =====
+    const showWalletMsg = (msg, type = 'info') => {
+        setWalletMsg(msg);
+        setWalletMsgType(type);
+        if (type !== 'error') {
+            setTimeout(() => setWalletMsg(''), 4000);
+        }
+    };
+
+    const refreshWalletInfo = async () => {
+        try {
+            const info = await window.walletApi.getWalletAddress();
+            setHasWallet(info.hasWallet);
+            setWalletLocked(info.isLocked);
+            setWalletAddress(info.address);
+            if (!info.isLocked && info.address) {
+                const bal = await window.walletApi.getBalance();
+                setPlsBalance(parseFloat(bal.formatted).toFixed(4));
+                const tokens = await window.walletApi.getTokenList();
+                setWalletTokens(tokens || []);
+                // Fetch token balances
+                const balances = {};
+                for (const t of (tokens || [])) {
+                    try {
+                        const tb = await window.walletApi.getTokenBalance(t.address);
+                        balances[t.address] = tb.formatted;
+                    } catch (e) {
+                        balances[t.address] = 'Error';
+                    }
+                }
+                setWalletTokenBalances(balances);
+            }
+        } catch (err) {
+            console.error('Wallet refresh error:', err);
+        }
+    };
+
+    const toggleWallet = () => {
+        if (!showWallet) {
+            refreshWalletInfo();
+            setWalletView('main');
+            setWalletMsg('');
+            setWalletMnemonic('');
+        }
+        setShowWallet(!showWallet);
+    };
+
+    const handleCreateWallet = async () => {
+        if (!walletPassword || walletPassword.length < 6) {
+            showWalletMsg('Password must be at least 6 characters', 'error');
+            return;
+        }
+        setWalletLoading(true);
+        try {
+            const result = await window.walletApi.createWallet(walletPassword);
+            setWalletMnemonic(result.mnemonic);
+            setWalletAddress(result.address);
+            setHasWallet(true);
+            setWalletLocked(false);
+            setWalletView('showMnemonic');
+            showWalletMsg('Wallet created! Save your seed phrase!', 'success');
+            setWalletPassword('');
+        } catch (err) {
+            showWalletMsg(err.message || 'Failed to create wallet', 'error');
+        }
+        setWalletLoading(false);
+    };
+
+    const handleImportWallet = async () => {
+        if (!walletPassword || walletPassword.length < 6) {
+            showWalletMsg('Password must be at least 6 characters', 'error');
+            return;
+        }
+        if (!walletImportInput.trim()) {
+            showWalletMsg('Enter seed phrase or private key', 'error');
+            return;
+        }
+        setWalletLoading(true);
+        try {
+            const result = await window.walletApi.importWallet(walletImportInput.trim(), walletPassword);
+            setWalletAddress(result.address);
+            setHasWallet(true);
+            setWalletLocked(false);
+            setWalletView('main');
+            showWalletMsg('Wallet imported successfully!', 'success');
+            setWalletPassword('');
+            setWalletImportInput('');
+            refreshWalletInfo();
+        } catch (err) {
+            showWalletMsg(err.message || 'Failed to import wallet', 'error');
+        }
+        setWalletLoading(false);
+    };
+
+    const handleUnlockWallet = async () => {
+        if (!walletPassword) {
+            showWalletMsg('Enter your password', 'error');
+            return;
+        }
+        setWalletLoading(true);
+        try {
+            const result = await window.walletApi.unlockWallet(walletPassword);
+            setWalletAddress(result.address);
+            setWalletLocked(false);
+            setWalletView('main');
+            showWalletMsg('Wallet unlocked', 'success');
+            setWalletPassword('');
+            refreshWalletInfo();
+        } catch (err) {
+            showWalletMsg(err.message || 'Invalid password', 'error');
+        }
+        setWalletLoading(false);
+    };
+
+    const handleLockWallet = async () => {
+        try {
+            await window.walletApi.lockWallet();
+            setWalletLocked(true);
+            setWalletAddress(null);
+            setPlsBalance('0.0');
+            setWalletTokenBalances({});
+            setWalletView('main');
+            showWalletMsg('Wallet locked', 'info');
+        } catch (err) {
+            showWalletMsg(err.message || 'Failed to lock', 'error');
+        }
+    };
+
+    const handleSendPls = async () => {
+        if (!walletSendTo || !walletSendAmount) {
+            showWalletMsg('Enter recipient and amount', 'error');
+            return;
+        }
+        setWalletLoading(true);
+        try {
+            let result;
+            if (walletSendToken === 'PLS') {
+                result = await window.walletApi.sendTransaction(walletSendTo, walletSendAmount);
+            } else {
+                result = await window.walletApi.sendToken(walletSendToken, walletSendTo, walletSendAmount);
+            }
+            showWalletMsg('TX sent! Hash: ' + result.hash.substring(0, 16) + '...', 'success');
+            setWalletSendTo('');
+            setWalletSendAmount('');
+            setWalletView('main');
+            setTimeout(() => refreshWalletInfo(), 3000);
+        } catch (err) {
+            showWalletMsg(err.message || 'Transaction failed', 'error');
+        }
+        setWalletLoading(false);
+    };
+
+    const handleAddToken = async () => {
+        if (!walletNewTokenAddr.trim()) {
+            showWalletMsg('Enter token contract address', 'error');
+            return;
+        }
+        setWalletLoading(true);
+        try {
+            const result = await window.walletApi.addToken(walletNewTokenAddr.trim());
+            showWalletMsg('Token added: ' + result.symbol, 'success');
+            setWalletNewTokenAddr('');
+            setWalletView('main');
+            refreshWalletInfo();
+        } catch (err) {
+            showWalletMsg(err.message || 'Failed to add token', 'error');
+        }
+        setWalletLoading(false);
+    };
+
+    const copyAddress = () => {
+        if (walletAddress) {
+            navigator.clipboard.writeText(walletAddress).then(() => {
+                showWalletMsg('Address copied!', 'success');
+            });
+        }
+    };
+
+    const truncateAddr = (addr) => {
+        if (!addr) return '';
+        return addr.substring(0, 6) + '...' + addr.substring(addr.length - 4);
+    };
+
+    // ===== NODE HANDLERS =====
+    const toggleNodePanel = () => {
+        if (!showNodePanel) {
+            setNodeView('status');
+        }
+        setShowNodePanel(!showNodePanel);
+    };
+
+    const handleStartNode = async () => {
+        setNodeLoading(true);
+        try {
+            const result = await window.nodeApi.startNode();
+            setNodeStatus(result.status);
+        } catch (err) {
+            console.error('Failed to start node:', err);
+        }
+        setNodeLoading(false);
+    };
+
+    const handleStopNode = async () => {
+        setNodeLoading(true);
+        try {
+            const result = await window.nodeApi.stopNode();
+            setNodeStatus(result.status);
+        } catch (err) {
+            console.error('Failed to stop node:', err);
+        }
+        setNodeLoading(false);
+    };
+
+    const handleSaveNodeConfig = async () => {
+        try {
+            const result = await window.nodeApi.configureNode(nodeConfig);
+            setNodeConfig(result);
+        } catch (err) {
+            console.error('Failed to save node config:', err);
+        }
+    };
+
+    const handleClearNodeLogs = async () => {
+        try {
+            await window.nodeApi.clearNodeLogs();
+            setNodeLogs([]);
+        } catch (err) {
+            console.error('Failed to clear logs:', err);
+        }
+    };
+
+    const nodeStatusColor = () => {
+        switch (nodeStatus) {
+            case 'running': return '#4ade80';
+            case 'starting': return '#facc15';
+            case 'error': return '#f87171';
+            default: return '#6b7280';
+        }
+    };
+
     const hasActivePage = tabs.length > 0 && selectedTab;
+
+    // ===== RENDER: Wallet Panel Content =====
+    const renderWalletContent = () => {
+        // No wallet exists
+        if (!hasWallet) {
+            if (walletView === 'create') {
+                return (
+                    <div className={styles.walletForm}>
+                        <h4 className={styles.walletSubtitle}>Create New Wallet</h4>
+                        <input type="password" className={styles.walletInput} placeholder="Set password (min 6 chars)" value={walletPassword} onChange={(e) => setWalletPassword(e.target.value)} />
+                        <button className={styles.walletBtnPrimary} onClick={handleCreateWallet} disabled={walletLoading}>{walletLoading ? 'Creating...' : 'Create Wallet'}</button>
+                        <button className={styles.walletBtnSecondary} onClick={() => setWalletView('main')}>Back</button>
+                    </div>
+                );
+            }
+            if (walletView === 'import') {
+                return (
+                    <div className={styles.walletForm}>
+                        <h4 className={styles.walletSubtitle}>Import Wallet</h4>
+                        <textarea className={styles.walletTextarea} placeholder="Seed phrase or private key" value={walletImportInput} onChange={(e) => setWalletImportInput(e.target.value)} rows={3} />
+                        <input type="password" className={styles.walletInput} placeholder="Set password (min 6 chars)" value={walletPassword} onChange={(e) => setWalletPassword(e.target.value)} />
+                        <button className={styles.walletBtnPrimary} onClick={handleImportWallet} disabled={walletLoading}>{walletLoading ? 'Importing...' : 'Import Wallet'}</button>
+                        <button className={styles.walletBtnSecondary} onClick={() => setWalletView('main')}>Back</button>
+                    </div>
+                );
+            }
+            return (
+                <div className={styles.walletForm}>
+                    <p className={styles.walletEmptyText}>No wallet found. Create or import one.</p>
+                    <button className={styles.walletBtnPrimary} onClick={() => setWalletView('create')}>Create New Wallet</button>
+                    <button className={styles.walletBtnSecondary} onClick={() => setWalletView('import')}>Import Wallet</button>
+                </div>
+            );
+        }
+
+        // Wallet locked
+        if (walletLocked) {
+            return (
+                <div className={styles.walletForm}>
+                    <div className={styles.walletLockIcon}>&#128274;</div>
+                    <p className={styles.walletEmptyText}>Wallet is locked</p>
+                    <input type="password" className={styles.walletInput} placeholder="Enter password" value={walletPassword} onChange={(e) => setWalletPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleUnlockWallet()} />
+                    <button className={styles.walletBtnPrimary} onClick={handleUnlockWallet} disabled={walletLoading}>{walletLoading ? 'Unlocking...' : 'Unlock'}</button>
+                </div>
+            );
+        }
+
+        // Show mnemonic after creation
+        if (walletView === 'showMnemonic') {
+            return (
+                <div className={styles.walletForm}>
+                    <h4 className={styles.walletSubtitle}>&#9888; Save Your Seed Phrase!</h4>
+                    <div className={styles.mnemonicBox}>{walletMnemonic}</div>
+                    <p className={styles.walletWarning}>Write this down and store it safely. You will need it to recover your wallet. Never share it!</p>
+                    <button className={styles.walletBtnPrimary} onClick={() => { setWalletView('main'); setWalletMnemonic(''); refreshWalletInfo(); }}>I've Saved It</button>
+                </div>
+            );
+        }
+
+        // Send view
+        if (walletView === 'send') {
+            return (
+                <div className={styles.walletForm}>
+                    <h4 className={styles.walletSubtitle}>Send</h4>
+                    <select className={styles.walletInput} value={walletSendToken} onChange={(e) => setWalletSendToken(e.target.value)}>
+                        <option value="PLS">PLS</option>
+                        {walletTokens.map((t) => (<option key={t.address} value={t.address}>{t.symbol}</option>))}
+                    </select>
+                    <input type="text" className={styles.walletInput} placeholder="Recipient address (0x...)" value={walletSendTo} onChange={(e) => setWalletSendTo(e.target.value)} />
+                    <input type="text" className={styles.walletInput} placeholder="Amount" value={walletSendAmount} onChange={(e) => setWalletSendAmount(e.target.value)} />
+                    <button className={styles.walletBtnPrimary} onClick={handleSendPls} disabled={walletLoading}>{walletLoading ? 'Sending...' : 'Send'}</button>
+                    <button className={styles.walletBtnSecondary} onClick={() => setWalletView('main')}>Cancel</button>
+                </div>
+            );
+        }
+
+        // Add token view
+        if (walletView === 'addToken') {
+            return (
+                <div className={styles.walletForm}>
+                    <h4 className={styles.walletSubtitle}>Add Token</h4>
+                    <input type="text" className={styles.walletInput} placeholder="Token contract address (0x...)" value={walletNewTokenAddr} onChange={(e) => setWalletNewTokenAddr(e.target.value)} />
+                    <button className={styles.walletBtnPrimary} onClick={handleAddToken} disabled={walletLoading}>{walletLoading ? 'Adding...' : 'Add Token'}</button>
+                    <button className={styles.walletBtnSecondary} onClick={() => setWalletView('main')}>Cancel</button>
+                </div>
+            );
+        }
+
+        // Main wallet view (unlocked)
+        return (
+            <div className={styles.walletMain}>
+                <div className={styles.walletAddrRow} onClick={copyAddress} title="Click to copy">
+                    <span className={styles.walletAddrText}>{truncateAddr(walletAddress)}</span>
+                    <span className={styles.walletCopyIcon}>&#128203;</span>
+                </div>
+                <div className={styles.walletBalanceBox}>
+                    <span className={styles.walletBalanceAmount}>{plsBalance}</span>
+                    <span className={styles.walletBalanceSymbol}>PLS</span>
+                </div>
+                <div className={styles.walletActions}>
+                    <button className={styles.walletActionBtn} onClick={() => setWalletView('send')}>Send</button>
+                    <button className={styles.walletActionBtn} onClick={() => refreshWalletInfo()}>Refresh</button>
+                    <button className={styles.walletActionBtn} onClick={handleLockWallet}>Lock</button>
+                </div>
+                {walletTokens.length > 0 && (
+                    <div className={styles.walletTokenList}>
+                        <div className={styles.walletTokenHeader}>Tokens</div>
+                        {walletTokens.map((t) => (
+                            <div key={t.address} className={styles.walletTokenRow}>
+                                <span className={styles.walletTokenSymbol}>{t.symbol}</span>
+                                <span className={styles.walletTokenBal}>{walletTokenBalances[t.address] !== undefined ? parseFloat(walletTokenBalances[t.address]).toFixed(4) : '...'}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                <button className={styles.walletBtnSecondary} onClick={() => setWalletView('addToken')}>+ Add Token</button>
+            </div>
+        );
+    };
+
+    // ===== RENDER: Node Panel Content =====
+    const renderNodeContent = () => {
+        return (
+            <div className={styles.nodePanel}>
+                <div className={styles.nodeTabBar}>
+                    <button className={`${styles.nodeTabBtn} ${nodeView === 'status' ? styles.nodeTabActive : ''}`} onClick={() => setNodeView('status')}>Status</button>
+                    <button className={`${styles.nodeTabBtn} ${nodeView === 'config' ? styles.nodeTabActive : ''}`} onClick={() => setNodeView('config')}>Config</button>
+                    <button className={`${styles.nodeTabBtn} ${nodeView === 'logs' ? styles.nodeTabActive : ''}`} onClick={() => setNodeView('logs')}>Logs</button>
+                </div>
+
+                {nodeView === 'status' && (
+                    <div className={styles.nodeStatusView}>
+                        <div className={styles.nodeStatusRow}>
+                            <span className={styles.nodeStatusDot} style={{ backgroundColor: nodeStatusColor() }} />
+                            <span className={styles.nodeStatusText}>{nodeStatus.charAt(0).toUpperCase() + nodeStatus.slice(1)}</span>
+                        </div>
+                        <div className={styles.nodeInfoRow}>
+                            <span className={styles.nodeInfoLabel}>Binary</span>
+                            <span className={styles.nodeInfoValue}>{nodeBinaryFound ? 'Found' : 'Not Found'}</span>
+                        </div>
+                        <div className={styles.nodeActions}>
+                            {nodeStatus === 'running' ? (
+                                <button className={styles.nodeBtnDanger} onClick={handleStopNode} disabled={nodeLoading}>{nodeLoading ? 'Stopping...' : 'Stop Node'}</button>
+                            ) : (
+                                <button className={styles.nodeBtnPrimary} onClick={handleStartNode} disabled={nodeLoading || !nodeBinaryFound}>{nodeLoading ? 'Starting...' : 'Start Node'}</button>
+                            )}
+                        </div>
+                        {!nodeBinaryFound && (
+                            <p className={styles.nodeWarning}>Node binary not found. Build the PulseMesh node first.</p>
+                        )}
+                    </div>
+                )}
+
+                {nodeView === 'config' && (
+                    <div className={styles.nodeConfigView}>
+                        <label className={styles.nodeConfigLabel}>Neighborhood Mode
+                            <select className={styles.nodeConfigInput} value={nodeConfig.neighborhoodMode} onChange={(e) => setNodeConfig({ ...nodeConfig, neighborhoodMode: e.target.value })}>
+                                <option value="standard">Standard</option>
+                                <option value="zero-hop">Zero Hop</option>
+                                <option value="originate-only">Originate Only</option>
+                                <option value="consume-only">Consume Only</option>
+                            </select>
+                        </label>
+                        <label className={styles.nodeConfigLabel}>Blockchain Service URL
+                            <input type="text" className={styles.nodeConfigInput} value={nodeConfig.blockchainServiceUrl} onChange={(e) => setNodeConfig({ ...nodeConfig, blockchainServiceUrl: e.target.value })} />
+                        </label>
+                        <label className={styles.nodeConfigLabel}>Earning Wallet
+                            <input type="text" className={styles.nodeConfigInput} placeholder="0x..." value={nodeConfig.earningWallet} onChange={(e) => setNodeConfig({ ...nodeConfig, earningWallet: e.target.value })} />
+                        </label>
+                        <label className={styles.nodeConfigLabel}>Gas Price (gwei)
+                            <input type="text" className={styles.nodeConfigInput} value={nodeConfig.gasPrice} onChange={(e) => setNodeConfig({ ...nodeConfig, gasPrice: e.target.value })} />
+                        </label>
+                        <label className={styles.nodeConfigLabel}>DNS Servers
+                            <input type="text" className={styles.nodeConfigInput} value={nodeConfig.dnsServers} onChange={(e) => setNodeConfig({ ...nodeConfig, dnsServers: e.target.value })} />
+                        </label>
+                        <label className={styles.nodeConfigLabel}>Log Level
+                            <select className={styles.nodeConfigInput} value={nodeConfig.logLevel} onChange={(e) => setNodeConfig({ ...nodeConfig, logLevel: e.target.value })}>
+                                <option value="error">Error</option>
+                                <option value="warn">Warn</option>
+                                <option value="info">Info</option>
+                                <option value="debug">Debug</option>
+                                <option value="trace">Trace</option>
+                            </select>
+                        </label>
+                        <button className={styles.nodeBtnPrimary} onClick={handleSaveNodeConfig}>Save Configuration</button>
+                    </div>
+                )}
+
+                {nodeView === 'logs' && (
+                    <div className={styles.nodeLogsView}>
+                        <div className={styles.nodeLogsHeader}>
+                            <span>Live Logs ({nodeLogs.length})</span>
+                            <button className={styles.smallBtn} onClick={handleClearNodeLogs}>Clear</button>
+                        </div>
+                        <div className={styles.nodeLogsScroll}>
+                            {nodeLogs.length === 0 ? (
+                                <div className={styles.nodeLogsEmpty}>No logs yet</div>
+                            ) : (
+                                nodeLogs.map((entry, i) => (
+                                    <div key={i} className={`${styles.nodeLogLine} ${entry.level === 'error' ? styles.nodeLogError : entry.level === 'warn' ? styles.nodeLogWarn : ''}`}>
+                                        <span className={styles.nodeLogTime}>{entry.timestamp ? entry.timestamp.substring(11, 19) : ''}</span>
+                                        <span className={styles.nodeLogMsg}>{entry.message}</span>
+                                    </div>
+                                ))
+                            )}
+                            <div ref={nodeLogEndRef} />
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     return (
         <div className={styles.app}>
@@ -347,29 +886,15 @@ const App = () => {
             {/* Navigation Bar */}
             <div className={styles.navbar}>
                 <div className={styles.navButtons}>
-                    <button
-                        className={styles.navBtn}
-                        onClick={handleRefresh}
-                        title="Refresh"
-                    >
+                    <button className={styles.navBtn} onClick={handleRefresh} title="Refresh">
                         {isLoading ? (
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                            </svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                         ) : (
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                            </svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
                         )}
                     </button>
-                    <button
-                        className={styles.navBtn}
-                        onClick={handleHome}
-                        title="Home"
-                    >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                        </svg>
+                    <button className={styles.navBtn} onClick={handleHome} title="Home">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
                     </button>
                 </div>
 
@@ -377,9 +902,7 @@ const App = () => {
                 <form className={styles.urlForm} onSubmit={handleUrlSubmit}>
                     <div className={styles.urlBarContainer}>
                         {currentUrl.startsWith('https://') && (
-                            <svg className={styles.lockIcon} width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-                            </svg>
+                            <svg className={styles.lockIcon} width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                         )}
                         <input
                             type="text"
@@ -395,6 +918,57 @@ const App = () => {
 
                 {/* Privacy Tools */}
                 <div className={styles.privacyTools}>
+                    {/* Wallet Button */}
+                    <div className={styles.walletContainer} ref={walletRef}>
+                        <button
+                            className={styles.navBtn + ' ' + styles.walletBtn}
+                            onClick={toggleWallet}
+                            title="PulseChain Wallet"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                            {!walletLocked && walletAddress && (
+                                <span className={styles.walletActiveDot} />
+                            )}
+                        </button>
+                        {showWallet && (
+                            <div className={styles.dropdown + ' ' + styles.walletDropdown}>
+                                <div className={styles.dropdownHeader + ' ' + styles.walletHeader}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#a855f7"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                                    <span>PulseChain Wallet</span>
+                                </div>
+                                {walletMsg && (
+                                    <div className={`${styles.walletMsgBar} ${walletMsgType === 'error' ? styles.walletMsgError : walletMsgType === 'success' ? styles.walletMsgSuccess : ''}`}>{walletMsg}</div>
+                                )}
+                                <div className={styles.dropdownBody}>
+                                    {renderWalletContent()}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Node Control Button */}
+                    <div className={styles.nodeContainer} ref={nodeRef}>
+                        <button
+                            className={styles.navBtn + ' ' + styles.nodeBtn}
+                            onClick={toggleNodePanel}
+                            title="Node Control Panel"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                            <span className={styles.nodeStatusIndicator} style={{ backgroundColor: nodeStatusColor() }} />
+                        </button>
+                        {showNodePanel && (
+                            <div className={styles.dropdown + ' ' + styles.nodeDropdown}>
+                                <div className={styles.dropdownHeader + ' ' + styles.nodeHeader}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#06b6d4"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                                    <span>Node Control Panel</span>
+                                </div>
+                                <div className={styles.dropdownBody}>
+                                    {renderNodeContent()}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Shield / Adblock Button */}
                     <div className={styles.shieldContainer} ref={adblockInfoRef}>
                         <button
@@ -402,21 +976,15 @@ const App = () => {
                             onClick={() => setShowAdblockInfo(!showAdblockInfo)}
                             title={blockedCount + ' ads/trackers blocked'}
                         >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-                            </svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
                             {blockedCount > 0 && (
-                                <span className={styles.shieldBadge}>
-                                    {blockedCount > 999 ? '999+' : blockedCount}
-                                </span>
+                                <span className={styles.shieldBadge}>{blockedCount > 999 ? '999+' : blockedCount}</span>
                             )}
                         </button>
                         {showAdblockInfo && (
                             <div className={styles.dropdown}>
                                 <div className={styles.dropdownHeader}>
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#4ade80">
-                                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#4ade80"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
                                     <span>Ad & Tracker Shield</span>
                                 </div>
                                 <div className={styles.dropdownBody}>
@@ -428,9 +996,7 @@ const App = () => {
                                         <span className={styles.statLabel}>Status</span>
                                         <span className={styles.statActive}>Active</span>
                                     </div>
-                                    <p className={styles.dropdownNote}>
-                                        Blocking ads, trackers, and fingerprinting scripts to protect your privacy.
-                                    </p>
+                                    <p className={styles.dropdownNote}>Blocking ads, trackers, and fingerprinting scripts to protect your privacy.</p>
                                 </div>
                             </div>
                         )}
@@ -443,32 +1009,16 @@ const App = () => {
                             onClick={toggleHistory}
                             title="History"
                         >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
-                            </svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
                         </button>
                         {showHistory && (
                             <div className={styles.dropdown + ' ' + styles.historyDropdown}>
                                 <div className={styles.dropdownHeader}>
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#00d4ff">
-                                        <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
-                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#00d4ff"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
                                     <span>History</span>
                                     <div className={styles.headerActions}>
-                                        <button
-                                            className={styles.smallBtn}
-                                            onClick={() => setShowSettings(!showSettings)}
-                                            title="Settings"
-                                        >
-                                            &#9881;
-                                        </button>
-                                        <button
-                                            className={styles.smallBtn + ' ' + styles.dangerBtn}
-                                            onClick={handleClearHistory}
-                                            title="Clear all history"
-                                        >
-                                            &#128465;
-                                        </button>
+                                        <button className={styles.smallBtn} onClick={() => setShowSettings(!showSettings)} title="Settings">&#9881;</button>
+                                        <button className={styles.smallBtn + ' ' + styles.dangerBtn} onClick={handleClearHistory} title="Clear all history">&#128465;</button>
                                     </div>
                                 </div>
                                 {showSettings && (
@@ -476,25 +1026,11 @@ const App = () => {
                                         <label className={styles.settingsLabel}>
                                             Max history entries:
                                             <div className={styles.settingsInputRow}>
-                                                <input
-                                                    type="number"
-                                                    min="1"
-                                                    max="1000"
-                                                    className={styles.settingsInput}
-                                                    value={limitInput}
-                                                    onChange={(e) => setLimitInput(e.target.value)}
-                                                />
-                                                <button
-                                                    className={styles.saveBtn}
-                                                    onClick={handleSaveLimit}
-                                                >
-                                                    Save
-                                                </button>
+                                                <input type="number" min="1" max="1000" className={styles.settingsInput} value={limitInput} onChange={(e) => setLimitInput(e.target.value)} />
+                                                <button className={styles.saveBtn} onClick={handleSaveLimit}>Save</button>
                                             </div>
                                         </label>
-                                        <p className={styles.settingsNote}>
-                                            Currently keeping {historyLimit} entries. Older entries are auto-deleted.
-                                        </p>
+                                        <p className={styles.settingsNote}>Currently keeping {historyLimit} entries. Older entries are auto-deleted.</p>
                                     </div>
                                 )}
                                 <div className={styles.historyList}>
@@ -502,45 +1038,21 @@ const App = () => {
                                         <div className={styles.emptyHistory}>No history yet</div>
                                     ) : (
                                         historyEntries.map((entry, index) => (
-                                            <div
-                                                key={index}
-                                                className={styles.historyEntry}
-                                                onClick={() => handleHistoryClick(entry.url)}
-                                            >
+                                            <div key={index} className={styles.historyEntry} onClick={() => handleHistoryClick(entry.url)}>
                                                 <div className={styles.historyEntryIcon}>
                                                     {entry.favicon ? (
-                                                        <img
-                                                            src={entry.favicon}
-                                                            width="14"
-                                                            height="14"
-                                                            alt=""
-                                                            onError={(e) => { e.target.style.display = 'none'; }}
-                                                        />
+                                                        <img src={entry.favicon} width="14" height="14" alt="" onError={(e) => { e.target.style.display = 'none'; }} />
                                                     ) : (
-                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#606070">
-                                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                                                        </svg>
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#606070"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                                                     )}
                                                 </div>
                                                 <div className={styles.historyEntryContent}>
-                                                    <div className={styles.historyEntryTitle}>
-                                                        {entry.title || entry.url}
-                                                    </div>
-                                                    <div className={styles.historyEntryUrl}>
-                                                        {entry.url.length > 50 ? entry.url.substring(0, 50) + '...' : entry.url}
-                                                    </div>
+                                                    <div className={styles.historyEntryTitle}>{entry.title || entry.url}</div>
+                                                    <div className={styles.historyEntryUrl}>{entry.url.length > 50 ? entry.url.substring(0, 50) + '...' : entry.url}</div>
                                                 </div>
                                                 <div className={styles.historyEntryMeta}>
-                                                    <span className={styles.historyTime}>
-                                                        {formatTimestamp(entry.timestamp)}
-                                                    </span>
-                                                    <button
-                                                        className={styles.deleteEntryBtn}
-                                                        onClick={(e) => handleDeleteHistoryEntry(index, e)}
-                                                        title="Delete entry"
-                                                    >
-                                                        &times;
-                                                    </button>
+                                                    <span className={styles.historyTime}>{formatTimestamp(entry.timestamp)}</span>
+                                                    <button className={styles.deleteEntryBtn} onClick={(e) => handleDeleteHistoryEntry(index, e)} title="Delete entry">&times;</button>
                                                 </div>
                                             </div>
                                         ))
@@ -552,7 +1064,7 @@ const App = () => {
                 </div>
             </div>
 
-            {/* Content Area - shows welcome page when no active page */}
+            {/* Content Area */}
             <div className={styles.contentArea}>
                 {!hasActivePage && <Main onNavigate={handleQuickLink} />}
             </div>

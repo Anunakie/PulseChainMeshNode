@@ -13,6 +13,8 @@ import tabsManager from '../tabs';
 import { getExtensionFoldersAndManifests } from '../chrome-extensions';
 import { initAdBlockHandlers } from '../adblock';
 import { initHistoryHandlers, addToHistory } from '../history';
+import { initWalletHandlers } from '../wallet';
+import { initNodeManagerHandlers } from '../node-manager';
 
 const path = require('path');
 
@@ -44,6 +46,8 @@ const initMain = async () => {
     // Initialize adblock and history IPC handlers
     initAdBlockHandlers();
     initHistoryHandlers();
+    initWalletHandlers();
+    initNodeManagerHandlers();
 
     ipcMain.handle('tab:select-tab', async (event, arg) => {
         tabsManager.selectTab(arg);
