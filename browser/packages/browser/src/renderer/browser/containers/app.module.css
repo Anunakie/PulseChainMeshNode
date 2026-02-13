@@ -1616,3 +1616,529 @@ body {
 .nodeLogMsg {
     color: #a0a0b0;
 }
+
+/* ===== MESH PROXY STYLES ===== */
+
+.meshContainer {
+    position: relative;
+}
+
+.meshBtn {
+    position: relative;
+}
+
+.meshBtnActive {
+    color: #4ade80 !important;
+}
+
+.meshStatusIndicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid #1a1a2e;
+}
+
+.meshDropdown {
+    width: 300px;
+    right: 0;
+}
+
+.meshHeader {
+    border-bottom-color: rgba(74, 222, 128, 0.2);
+}
+
+.meshPanel {
+    padding: 4px 0;
+}
+
+.meshToggleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(74, 222, 128, 0.05);
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.meshToggleLabel {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.meshToggleBtn {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 0;
+}
+
+.meshToggleOn {
+    background-color: #4ade80;
+}
+
+.meshToggleOff {
+    background-color: #4a4a5a;
+}
+
+.meshToggleKnob {
+    position: absolute;
+    top: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    transition: left 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.meshToggleOn .meshToggleKnob {
+    left: 23px;
+}
+
+.meshToggleOff .meshToggleKnob {
+    left: 3px;
+}
+
+.meshStatusRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    margin-bottom: 8px;
+}
+
+.meshStatusDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.meshStatusLabel {
+    font-size: 12px;
+    color: #a0a0b0;
+}
+
+.meshWarning {
+    font-size: 11px;
+    color: #facc15;
+    background: rgba(250, 204, 21, 0.1);
+    border: 1px solid rgba(250, 204, 21, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+}
+
+.meshConfigSection {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 8px;
+    margin-top: 4px;
+}
+
+.meshConfigLabel {
+    display: block;
+    font-size: 11px;
+    color: #808090;
+    margin-bottom: 8px;
+    padding: 0 4px;
+}
+
+.meshConfigInput {
+    width: 100%;
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-size: 12px;
+    margin-top: 4px;
+    box-sizing: border-box;
+}
+
+.meshConfigInput:focus {
+    outline: none;
+    border-color: #4ade80;
+}
+
+.meshPortRow {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.meshPortRow .meshConfigInput {
+    margin-top: 0;
+    flex: 1;
+}
+
+.meshPortSaveBtn {
+    padding: 6px 12px;
+    background: rgba(74, 222, 128, 0.15);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    border-radius: 4px;
+    color: #4ade80;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.meshPortSaveBtn:hover {
+    background: rgba(74, 222, 128, 0.25);
+}
+
+.meshInfoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    margin-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.meshInfoLabel {
+    font-size: 11px;
+    color: #808090;
+}
+
+.meshInfoValue {
+    font-size: 12px;
+    color: #e0e0e0;
+    font-weight: 500;
+}
+
+/* URL bar mesh active indicator */
+.urlBarMeshActive {
+    border: 1px solid rgba(74, 222, 128, 0.4) !important;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.15) !important;
+}
+
+/* ===== SPACES STYLES ===== */
+
+.spacesContainer {
+    position: relative;
+}
+
+.spacesBtn {
+    position: relative;
+}
+
+.spacesDropdown {
+    width: 340px;
+    right: 0;
+}
+
+.spacesHeader {
+    border-bottom-color: rgba(20, 184, 166, 0.2);
+}
+
+.spacesList {
+    padding: 4px 0;
+}
+
+.spacesGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.spacesCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.spacesCard:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.spacesCardDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.spacesCardName {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.spacesCardCount {
+    font-size: 11px;
+    color: #808090;
+}
+
+.spacesBtnPrimary {
+    width: 100%;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #14b8a6, #06b6d4);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.spacesBtnPrimary:hover {
+    opacity: 0.9;
+}
+
+.spacesBtnSecondary {
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #a0a0b0;
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 6px;
+}
+
+.spacesBtnSecondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Spaces Create View */
+.spacesCreate {
+    padding: 4px 0;
+}
+
+.spacesSubtitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin: 0 0 10px 0;
+}
+
+.spacesInput {
+    width: 100%;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 12px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+}
+
+.spacesInput:focus {
+    outline: none;
+    border-color: #14b8a6;
+}
+
+.spacesColorPicker {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.spacesColorBtn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+    padding: 0;
+}
+
+.spacesColorBtn:hover {
+    transform: scale(1.15);
+}
+
+.spacesColorSelected {
+    border-color: white !important;
+    transform: scale(1.15);
+}
+
+.spacesCreateActions {
+    display: flex;
+    gap: 8px;
+}
+
+.spacesCreateActions .spacesBtnPrimary,
+.spacesCreateActions .spacesBtnSecondary {
+    flex: 1;
+    margin-top: 0;
+}
+
+/* Spaces Detail View */
+.spacesDetail {
+    padding: 4px 0;
+}
+
+.spacesDetailHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.spacesBackBtn {
+    background: none;
+    border: none;
+    color: #a0a0b0;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+.spacesBackBtn:hover {
+    color: #e0e0e0;
+}
+
+.spacesDetailDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.spacesDetailName {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e0e0;
+    flex: 1;
+}
+
+.spacesDeleteBtn {
+    background: none;
+    border: none;
+    color: #f87171;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 4px;
+    opacity: 0.6;
+    line-height: 1;
+}
+
+.spacesDeleteBtn:hover {
+    opacity: 1;
+}
+
+.spacesDappGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.spacesDappTile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.spacesDappTile:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.spacesDappAdd {
+    border-style: dashed;
+    opacity: 0.6;
+}
+
+.spacesDappAdd:hover {
+    opacity: 1;
+}
+
+.spacesDappIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.spacesDappLetter {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.spacesDappPlus {
+    font-size: 22px;
+    color: #808090;
+    font-weight: 300;
+}
+
+.spacesDappName {
+    font-size: 10px;
+    color: #a0a0b0;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 80px;
+}
+
+.spacesDappRemove {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    background: none;
+    border: none;
+    color: #f87171;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+    padding: 0;
+    line-height: 1;
+}
+
+.spacesDappTile:hover .spacesDappRemove {
+    opacity: 0.7;
+}
+
+.spacesDappRemove:hover {
+    opacity: 1 !important;
+}
+
+.spacesAddDappForm {
+    padding: 8px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 4px;
+}
+
+.spacesAddDappForm .spacesBtnPrimary {
+    margin-top: 4px;
+}

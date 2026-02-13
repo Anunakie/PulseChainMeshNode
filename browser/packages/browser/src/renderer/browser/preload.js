@@ -81,3 +81,25 @@ contextBridge.exposeInMainWorld('nodeApi', {
     getNodeConfig: () => ipcRenderer.invoke('node:get-config'),
     configureNode: (config) => ipcRenderer.invoke('node:save-config', config),
 });
+
+// Mesh Proxy API
+contextBridge.exposeInMainWorld('meshApi', {
+    enableMesh: () => ipcRenderer.invoke('mesh:enable'),
+    disableMesh: () => ipcRenderer.invoke('mesh:disable'),
+    getMeshStatus: () => ipcRenderer.invoke('mesh:get-status'),
+    setProxyPort: (port) => ipcRenderer.invoke('mesh:set-port', { port }),
+    setProxyType: (type) => ipcRenderer.invoke('mesh:set-type', { type }),
+});
+
+// dApp Spaces API
+contextBridge.exposeInMainWorld('spacesApi', {
+    getSpaces: () => ipcRenderer.invoke('spaces:get'),
+    createSpace: (name, color, icon) => ipcRenderer.invoke('spaces:create', { name, color, icon }),
+    deleteSpace: (id) => ipcRenderer.invoke('spaces:delete', { id }),
+    renameSpace: (id, name) => ipcRenderer.invoke('spaces:rename', { id, name }),
+    updateSpaceColor: (id, color) => ipcRenderer.invoke('spaces:update-color', { id, color }),
+    switchSpace: (id) => ipcRenderer.invoke('spaces:switch', { id }),
+    addDapp: (spaceId, name, url, icon) => ipcRenderer.invoke('spaces:add-dapp', { spaceId, name, url, icon }),
+    removeDapp: (spaceId, url) => ipcRenderer.invoke('spaces:remove-dapp', { spaceId, url }),
+    getActiveSpace: () => ipcRenderer.invoke('spaces:get'),
+});

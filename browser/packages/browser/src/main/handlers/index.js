@@ -15,6 +15,8 @@ import { initAdBlockHandlers } from '../adblock';
 import { initHistoryHandlers, addToHistory } from '../history';
 import { initWalletHandlers } from '../wallet';
 import { initNodeManagerHandlers } from '../node-manager';
+import { initMeshProxyHandlers } from '../mesh-proxy';
+import { initSpacesHandlers } from '../spaces';
 
 const path = require('path');
 
@@ -48,6 +50,8 @@ const initMain = async () => {
     initHistoryHandlers();
     initWalletHandlers();
     initNodeManagerHandlers();
+    initMeshProxyHandlers();
+    initSpacesHandlers();
 
     ipcMain.handle('tab:select-tab', async (event, arg) => {
         tabsManager.selectTab(arg);

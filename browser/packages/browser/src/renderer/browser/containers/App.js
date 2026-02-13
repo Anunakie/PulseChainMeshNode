@@ -68,6 +68,27 @@ const App = () => {
     const [nodeBinaryFound, setNodeBinaryFound] = useState(false);
     const [nodeLoading, setNodeLoading] = useState(false);
     const nodeLogEndRef = useRef(null);
+    // ===== MESH PROXY STATE =====
+    const [showMeshPanel, setShowMeshPanel] = useState(false);
+    const meshRef = useRef(null);
+    const [meshEnabled, setMeshEnabled] = useState(false);
+    const [meshStatus, setMeshStatus] = useState({ enabled: false, proxyType: 'socks5', proxyPort: 1080, nodeRunning: false, connectionStatus: 'direct' });
+    const [meshPort, setMeshPort] = useState('1080');
+    const [meshProxyType, setMeshProxyType] = useState('socks5');
+    const [meshLoading, setMeshLoading] = useState(false);
+
+    // ===== SPACES STATE =====
+    const [showSpaces, setShowSpaces] = useState(false);
+    const spacesRef = useRef(null);
+    const [spaces, setSpaces] = useState([]);
+    const [activeSpaceId, setActiveSpaceId] = useState(null);
+    const [spacesView, setSpacesView] = useState('list');
+    const [newSpaceName, setNewSpaceName] = useState('');
+    const [newSpaceColor, setNewSpaceColor] = useState('#14b8a6');
+    const [newDappName, setNewDappName] = useState('');
+    const [newDappUrl, setNewDappUrl] = useState('');
+    const [showAddDapp, setShowAddDapp] = useState(false);
+
 
     // Fetch current tabs on mount
     const getCurrentTabs = useCallback(async () => {
@@ -99,7 +120,182 @@ const App = () => {
         };
         fetchAdblockStats();
         const interval = setInterval(fetchAdblockStats, 3000);
-        return () => clearInterval(interval);
+    
+    // ===== RENDER: Mesh Panel Content =====
+    const renderMeshContent = () => {
+        return (
+            <div className={styles.meshPanel}>
+                <div className={styles.meshToggleRow}>
+                    <span className={styles.meshToggleLabel}>{meshEnabled ? 'Mesh Routing' : 'Direct Connection'}</span>
+                    <button
+                        className={`${styles.meshToggleBtn} ${meshEnabled ? styles.meshToggleOn : styles.meshToggleOff}`}
+                        onClick={handleToggleMesh}
+                        disabled={meshLoading}
+                    >
+                        <span className={styles.meshToggleKnob} />
+                    </button>
+                </div>
+
+                <div className={styles.meshStatusRow}>
+                    <span className={styles.meshStatusDot} style={{ backgroundColor: meshStatusColor() }} />
+                    <span className={styles.meshStatusLabel}>{meshStatusText()}</span>
+                </div>
+
+                {meshEnabled && !meshStatus.nodeRunning && (
+                    <div className={styles.meshWarning}>
+                        Mesh node is not running. Start the node from the Node Control Panel or traffic will fall back to direct.
+                    </div>
+                )}
+
+                <div className={styles.meshConfigSection}>
+                    <label className={styles.meshConfigLabel}>Proxy Type
+                        <select
+                            className={styles.meshConfigInput}
+                            value={meshProxyType}
+                            onChange={(e) => { setMeshProxyType(e.target.value); handleSetMeshType(e.target.value); }}
+                        >
+                            <option value="socks5">SOCKS5</option>
+                            <option value="http">HTTP</option>
+                        </select>
+                    </label>
+                    <label className={styles.meshConfigLabel}>Proxy Port
+                        <div className={styles.meshPortRow}>
+                            <input
+                                type="number"
+                                className={styles.meshConfigInput}
+                                value={meshPort}
+                                onChange={(e) => setMeshPort(e.target.value)}
+                                min="1"
+                                max="65535"
+                            />
+                            <button className={styles.meshPortSaveBtn} onClick={handleSetMeshPort}>Set</button>
+                        </div>
+                    </label>
+                </div>
+
+                <div className={styles.meshInfoRow}>
+                    <span className={styles.meshInfoLabel}>Connection</span>
+                    <span className={styles.meshInfoValue}>{meshStatus.connectionStatus === 'mesh' ? 'Mesh Network' : 'Direct'}</span>
+                </div>
+            </div>
+        );
+    };
+
+    // ===== RENDER: Spaces Panel Content =====
+    const renderSpacesContent = () => {
+        if (spacesView === 'create') {
+            return (
+                <div className={styles.spacesCreate}>
+                    <h4 className={styles.spacesSubtitle}>Create New Space</h4>
+                    <input
+                        type="text"
+                        className={styles.spacesInput}
+                        placeholder="Space name"
+                        value={newSpaceName}
+                        onChange={(e) => setNewSpaceName(e.target.value)}
+                    />
+                    <div className={styles.spacesColorPicker}>
+                        {spaceColors.map((c) => (
+                            <button
+                                key={c}
+                                className={`${styles.spacesColorBtn} ${newSpaceColor === c ? styles.spacesColorSelected : ''}`}
+                                style={{ backgroundColor: c }}
+                                onClick={() => setNewSpaceColor(c)}
+                            />
+                        ))}
+                    </div>
+                    <div className={styles.spacesCreateActions}>
+                        <button className={styles.spacesBtnPrimary} onClick={handleCreateSpace}>Create</button>
+                        <button className={styles.spacesBtnSecondary} onClick={() => setSpacesView('list')}>Cancel</button>
+                    </div>
+                </div>
+            );
+        }
+
+        if (spacesView === 'detail' && activeSpaceId) {
+            const space = getActiveSpace();
+            if (!space) {
+                setSpacesView('list');
+                return null;
+            }
+            return (
+                <div className={styles.spacesDetail}>
+                    <div className={styles.spacesDetailHeader}>
+                        <button className={styles.spacesBackBtn} onClick={() => { setSpacesView('list'); setShowAddDapp(false); }}>&larr;</button>
+                        <div className={styles.spacesDetailDot} style={{ backgroundColor: space.color }} />
+                        <span className={styles.spacesDetailName}>{space.name}</span>
+                        <button className={styles.spacesDeleteBtn} onClick={() => handleDeleteSpace(space.id)} title="Delete space">&times;</button>
+                    </div>
+                    <div className={styles.spacesDappGrid}>
+                        {(space.dapps || []).map((dapp, i) => (
+                            <div key={i} className={styles.spacesDappTile} onClick={() => handleOpenDapp(dapp.url)}>
+                                <div className={styles.spacesDappIcon} style={{ backgroundColor: space.color + '33' }}>
+                                    {dapp.icon ? (
+                                        <img src={dapp.icon} width="24" height="24" alt="" onError={(e) => { e.target.style.display = 'none'; }} />
+                                    ) : (
+                                        <span className={styles.spacesDappLetter} style={{ color: space.color }}>{dapp.name.charAt(0).toUpperCase()}</span>
+                                    )}
+                                </div>
+                                <span className={styles.spacesDappName}>{dapp.name}</span>
+                                <button
+                                    className={styles.spacesDappRemove}
+                                    onClick={(e) => { e.stopPropagation(); handleRemoveDapp(space.id, dapp.url); }}
+                                    title="Remove dApp"
+                                >&times;</button>
+                            </div>
+                        ))}
+                        <div className={`${styles.spacesDappTile} ${styles.spacesDappAdd}`} onClick={() => setShowAddDapp(!showAddDapp)}>
+                            <div className={styles.spacesDappIcon}>
+                                <span className={styles.spacesDappPlus}>+</span>
+                            </div>
+                            <span className={styles.spacesDappName}>Add dApp</span>
+                        </div>
+                    </div>
+                    {showAddDapp && (
+                        <div className={styles.spacesAddDappForm}>
+                            <input
+                                type="text"
+                                className={styles.spacesInput}
+                                placeholder="dApp name"
+                                value={newDappName}
+                                onChange={(e) => setNewDappName(e.target.value)}
+                            />
+                            <input
+                                type="text"
+                                className={styles.spacesInput}
+                                placeholder="URL (e.g. https://app.pulsex.com)"
+                                value={newDappUrl}
+                                onChange={(e) => setNewDappUrl(e.target.value)}
+                            />
+                            <button className={styles.spacesBtnPrimary} onClick={handleAddDapp}>Add</button>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        return (
+            <div className={styles.spacesList}>
+                <div className={styles.spacesGrid}>
+                    {spaces.map((space) => (
+                        <div
+                            key={space.id}
+                            className={styles.spacesCard}
+                            onClick={() => handleSelectSpace(space)}
+                            style={{ borderColor: space.color }}
+                        >
+                            <div className={styles.spacesCardDot} style={{ backgroundColor: space.color }} />
+                            <span className={styles.spacesCardName}>{space.name}</span>
+                            <span className={styles.spacesCardCount}>{(space.dapps || []).length} dApps</span>
+                        </div>
+                    ))}
+                </div>
+                <button className={styles.spacesBtnPrimary} onClick={() => setSpacesView('create')}>+ New Space</button>
+            </div>
+        );
+    };
+
+    return () => clearInterval(interval);
     }, []);
 
     // Load history limit on mount
@@ -183,6 +379,59 @@ const App = () => {
         }
     }, [nodeLogs]);
 
+
+    // ===== MESH: Check mesh status on mount =====
+    useEffect(() => {
+        const checkMesh = async () => {
+            try {
+                if (window.meshApi) {
+                    const status = await window.meshApi.getMeshStatus();
+                    setMeshStatus(status);
+                    setMeshEnabled(status.enabled);
+                    setMeshPort(String(status.proxyPort));
+                    setMeshProxyType(status.proxyType);
+                }
+            } catch (err) {
+                console.error('Failed to check mesh status:', err);
+            }
+        };
+        checkMesh();
+    }, []);
+
+    // ===== MESH: Poll status when panel is open =====
+    useEffect(() => {
+        if (!showMeshPanel) return;
+        const poll = async () => {
+            try {
+                if (window.meshApi) {
+                    const status = await window.meshApi.getMeshStatus();
+                    setMeshStatus(status);
+                    setMeshEnabled(status.enabled);
+                }
+            } catch (err) {
+                console.error('Mesh poll error:', err);
+            }
+        };
+        poll();
+        const interval = setInterval(poll, 3000);
+        return () => clearInterval(interval);
+    }, [showMeshPanel]);
+
+    // ===== SPACES: Load spaces on mount =====
+    useEffect(() => {
+        const loadSpaces = async () => {
+            try {
+                if (window.spacesApi) {
+                    const s = await window.spacesApi.getSpaces();
+                    setSpaces(s || []);
+                }
+            } catch (err) {
+                console.error('Failed to load spaces:', err);
+            }
+        };
+        loadSpaces();
+    }, []);
+
     // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -198,6 +447,14 @@ const App = () => {
             }
             if (nodeRef.current && !nodeRef.current.contains(event.target)) {
                 setShowNodePanel(false);
+            }
+            if (meshRef.current && !meshRef.current.contains(event.target)) {
+                setShowMeshPanel(false);
+            }
+            if (spacesRef.current && !spacesRef.current.contains(event.target)) {
+                setShowSpaces(false);
+                setSpacesView('list');
+                setShowAddDapp(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -637,6 +894,171 @@ const App = () => {
         }
     };
 
+
+    // ===== MESH HANDLERS =====
+    const toggleMeshPanel = () => {
+        setShowMeshPanel(!showMeshPanel);
+    };
+
+    const handleEnableMesh = async () => {
+        setMeshLoading(true);
+        try {
+            const result = await window.meshApi.enableMesh();
+            setMeshStatus(result);
+            setMeshEnabled(result.enabled);
+        } catch (err) {
+            console.error('Failed to enable mesh:', err);
+        }
+        setMeshLoading(false);
+    };
+
+    const handleDisableMesh = async () => {
+        setMeshLoading(true);
+        try {
+            const result = await window.meshApi.disableMesh();
+            setMeshStatus(result);
+            setMeshEnabled(result.enabled);
+        } catch (err) {
+            console.error('Failed to disable mesh:', err);
+        }
+        setMeshLoading(false);
+    };
+
+    const handleToggleMesh = () => {
+        if (meshEnabled) {
+            handleDisableMesh();
+        } else {
+            handleEnableMesh();
+        }
+    };
+
+    const handleSetMeshPort = async () => {
+        const port = parseInt(meshPort, 10);
+        if (isNaN(port) || port < 1 || port > 65535) return;
+        try {
+            const result = await window.meshApi.setProxyPort(port);
+            setMeshStatus(result);
+            setMeshPort(String(result.proxyPort));
+        } catch (err) {
+            console.error('Failed to set mesh port:', err);
+        }
+    };
+
+    const handleSetMeshType = async (type) => {
+        try {
+            const result = await window.meshApi.setProxyType(type);
+            setMeshStatus(result);
+            setMeshProxyType(result.proxyType);
+        } catch (err) {
+            console.error('Failed to set mesh type:', err);
+        }
+    };
+
+    const meshStatusColor = () => {
+        if (meshEnabled && meshStatus.nodeRunning) return '#4ade80';
+        if (meshEnabled && !meshStatus.nodeRunning) return '#facc15';
+        return '#6b7280';
+    };
+
+    const meshStatusText = () => {
+        if (meshEnabled && meshStatus.nodeRunning) return 'Mesh Active';
+        if (meshEnabled && !meshStatus.nodeRunning) return 'Node Offline';
+        return 'Direct';
+    };
+
+    // ===== SPACES HANDLERS =====
+    const refreshSpaces = async () => {
+        try {
+            if (window.spacesApi) {
+                const s = await window.spacesApi.getSpaces();
+                setSpaces(s || []);
+            }
+        } catch (err) {
+            console.error('Failed to refresh spaces:', err);
+        }
+    };
+
+    const toggleSpaces = () => {
+        if (!showSpaces) {
+            refreshSpaces();
+            setSpacesView('list');
+            setShowAddDapp(false);
+        }
+        setShowSpaces(!showSpaces);
+    };
+
+    const handleCreateSpace = async () => {
+        if (!newSpaceName.trim()) return;
+        try {
+            await window.spacesApi.createSpace(newSpaceName.trim(), newSpaceColor, '');
+            setNewSpaceName('');
+            setNewSpaceColor('#14b8a6');
+            setSpacesView('list');
+            refreshSpaces();
+        } catch (err) {
+            console.error('Failed to create space:', err);
+        }
+    };
+
+    const handleDeleteSpace = async (id) => {
+        try {
+            await window.spacesApi.deleteSpace(id);
+            if (activeSpaceId === id) {
+                setActiveSpaceId(null);
+                setSpacesView('list');
+            }
+            refreshSpaces();
+        } catch (err) {
+            console.error('Failed to delete space:', err);
+        }
+    };
+
+    const handleSelectSpace = (space) => {
+        setActiveSpaceId(space.id);
+        setSpacesView('detail');
+    };
+
+    const handleAddDapp = async () => {
+        if (!newDappName.trim() || !newDappUrl.trim() || !activeSpaceId) return;
+        let url = newDappUrl.trim();
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
+        try {
+            await window.spacesApi.addDapp(activeSpaceId, newDappName.trim(), url, '');
+            setNewDappName('');
+            setNewDappUrl('');
+            setShowAddDapp(false);
+            refreshSpaces();
+        } catch (err) {
+            console.error('Failed to add dApp:', err);
+        }
+    };
+
+    const handleRemoveDapp = async (spaceId, url) => {
+        try {
+            await window.spacesApi.removeDapp(spaceId, url);
+            refreshSpaces();
+        } catch (err) {
+            console.error('Failed to remove dApp:', err);
+        }
+    };
+
+    const handleOpenDapp = (url) => {
+        setShowSpaces(false);
+        setInputUrl(url);
+        setIsLoading(true);
+        if (selectedTab) {
+            window.electronApi.loadUrl({ url, id: selectedTab });
+        } else {
+            window.electronApi.loadUrl({ url });
+        }
+    };
+
+    const getActiveSpace = () => spaces.find((s) => s.id === activeSpaceId);
+
+    const spaceColors = ['#14b8a6', '#a855f7', '#3b82f6', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'];
+
     const hasActivePage = tabs.length > 0 && selectedTab;
 
     // ===== RENDER: Wallet Panel Content =====
@@ -900,7 +1322,7 @@ const App = () => {
 
                 {/* URL Bar */}
                 <form className={styles.urlForm} onSubmit={handleUrlSubmit}>
-                    <div className={styles.urlBarContainer}>
+                    <div className={`${styles.urlBarContainer} ${meshEnabled ? styles.urlBarMeshActive : ""}`}>
                         {currentUrl.startsWith('https://') && (
                             <svg className={styles.lockIcon} width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                         )}
@@ -918,6 +1340,51 @@ const App = () => {
 
                 {/* Privacy Tools */}
                 <div className={styles.privacyTools}>
+                    {/* Spaces Button */}
+                    <div className={styles.spacesContainer} ref={spacesRef}>
+                        <button
+                            className={styles.navBtn + ' ' + styles.spacesBtn}
+                            onClick={toggleSpaces}
+                            title="dApp Spaces"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+                        </button>
+                        {showSpaces && (
+                            <div className={styles.dropdown + ' ' + styles.spacesDropdown}>
+                                <div className={styles.dropdownHeader + ' ' + styles.spacesHeader}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#14b8a6"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+                                    <span>dApp Spaces</span>
+                                </div>
+                                <div className={styles.dropdownBody}>
+                                    {renderSpacesContent()}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Mesh Network Button */}
+                    <div className={styles.meshContainer} ref={meshRef}>
+                        <button
+                            className={`${styles.navBtn} ${styles.meshBtn} ${meshEnabled ? styles.meshBtnActive : ''}`}
+                            onClick={toggleMeshPanel}
+                            title={meshEnabled ? 'Mesh Network Active' : 'Mesh Network (Direct)'}
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            <span className={styles.meshStatusIndicator} style={{ backgroundColor: meshStatusColor() }} />
+                        </button>
+                        {showMeshPanel && (
+                            <div className={styles.dropdown + ' ' + styles.meshDropdown}>
+                                <div className={styles.dropdownHeader + ' ' + styles.meshHeader}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#4ade80"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                                    <span>Mesh Network</span>
+                                </div>
+                                <div className={styles.dropdownBody}>
+                                    {renderMeshContent()}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Wallet Button */}
                     <div className={styles.walletContainer} ref={walletRef}>
                         <button
