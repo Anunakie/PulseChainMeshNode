@@ -114,6 +114,34 @@ const App = () => {
     const [ipfsMsgType, setIpfsMsgType] = useState('info');
     const ipfsRef = useRef(null);
 
+    // ===== TOKEN PAYMENT STATE =====
+    const [showToken, setShowToken] = useState(false);
+    const tokenRef = useRef(null);
+    const [tokenView, setTokenView] = useState('main'); // main | send | history | settings
+    const [tokenBalance, setTokenBalance] = useState({ formatted: '0.0', symbol: 'PMESH' });
+    const [tokenInfo, setTokenInfo] = useState({ name: 'PulseMesh Token', symbol: 'PMESH', decimals: 18, configured: false, address: '' });
+    const [tokenSendTo, setTokenSendTo] = useState('');
+    const [tokenSendAmount, setTokenSendAmount] = useState('');
+    const [tokenPaymentHistory, setTokenPaymentHistory] = useState([]);
+    const [tokenPaymentRate, setTokenPaymentRate] = useState('0.1');
+    const [tokenAutoPayEnabled, setTokenAutoPayEnabled] = useState(false);
+    const [tokenAddressInput, setTokenAddressInput] = useState('');
+    const [tokenGasEstimate, setTokenGasEstimate] = useState('');
+    const [tokenLoading, setTokenLoading] = useState(false);
+    const [tokenMsg, setTokenMsg] = useState('');
+    const [tokenMsgType, setTokenMsgType] = useState('info');
+
+    // ===== BANDWIDTH SHARING STATE =====
+    const [showBandwidth, setShowBandwidth] = useState(false);
+    const bandwidthRef = useRef(null);
+    const [bwStats, setBwStats] = useState(null);
+    const [bwRewards, setBwRewards] = useState({ pending: 0, claimed: 0, totalEarned: 0, rate: 0.05 });
+    const [bwHistory, setBwHistory] = useState([]);
+    const [bwSharingEnabled, setBwSharingEnabled] = useState(false);
+    const [bwLoading, setBwLoading] = useState(false);
+    const [bwMsg, setBwMsg] = useState('');
+    const [bwMsgType, setBwMsgType] = useState('info');
+
 
     // Fetch current tabs on mount
     const getCurrentTabs = useCallback(async () => {
@@ -524,6 +552,12 @@ const App = () => {
             }
             if (ipfsRef.current && !ipfsRef.current.contains(event.target)) {
                 setShowIpfs(false);
+            }
+            if (tokenRef.current && !tokenRef.current.contains(event.target)) {
+                setShowToken(false);
+            }
+            if (bandwidthRef.current && !bandwidthRef.current.contains(event.target)) {
+                setShowBandwidth(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -1367,7 +1401,275 @@ const App = () => {
 
     const hasActivePage = tabs.length > 0 && selectedTab;
 
-    // ===== RENDER: Chat Panel Content =====
+    // ===== TOKEN PAYMENT HANDLERS =====
+    const showTokenNotice = (msg, type = 'info') => {
+        setTokenMsg(msg);
+        setTokenMsgType(type);
+        setTimeout(() => setTokenMsg(''), 4000);
+    };
+
+    const refreshTokenBalance = async () => {
+        try {
+            if (window.tokenApi) {
+                const bal = await window.tokenApi.getTokenBalance();
+                setTokenBalance(bal || { formatted: '0.0', symbol: 'PMESH' });
+            }
+        } catch (err) {
+            console.error('Failed to get token balance:', err);
+        }
+    };
+
+    const refreshTokenInfo = async () => {
+        try {
+            if (window.tokenApi) {
+                const info = await window.tokenApi.getTokenInfo();
+                setTokenInfo(info || { name: 'PulseMesh Token', symbol: 'PMESH', decimals: 18, configured: false });
+                setTokenAddressInput(info.address || '');
+            }
+        } catch (err) {
+            console.error('Failed to get token info:', err);
+        }
+    };
+
+    const refreshTokenHistory = async () => {
+        try {
+            if (window.tokenApi) {
+                const history = await window.tokenApi.getPaymentHistory(50);
+                setTokenPaymentHistory(history || []);
+            }
+        } catch (err) {
+            console.error('Failed to get payment history:', err);
+        }
+    };
+
+    const refreshAutoPayStatus = async () => {
+        try {
+            if (window.tokenApi) {
+                const status = await window.tokenApi.getAutoPayStatus();
+                setTokenAutoPayEnabled(status.enabled || false);
+                setTokenPaymentRate(String(status.rate || '0.1'));
+            }
+        } catch (err) {
+            console.error('Failed to get auto-pay status:', err);
+        }
+    };
+
+    const toggleToken = () => {
+        if (!showToken) {
+            refreshTokenBalance();
+            refreshTokenInfo();
+            refreshAutoPayStatus();
+            setTokenView('main');
+        }
+        setShowToken(!showToken);
+    };
+
+    const handleSendTokens = async () => {
+        const to = tokenSendTo.trim();
+        const amount = tokenSendAmount.trim();
+        if (!to || !to.startsWith('0x') || to.length !== 42) {
+            showTokenNotice('Enter a valid address (0x...)', 'error');
+            return;
+        }
+        if (!amount || parseFloat(amount) <= 0) {
+            showTokenNotice('Enter a valid amount', 'error');
+            return;
+        }
+        try {
+            setTokenLoading(true);
+            const result = await window.tokenApi.sendTokens(to, amount);
+            showTokenNotice('Sent ' + amount + ' ' + tokenBalance.symbol + '! TX: ' + result.hash.substring(0, 10) + '...', 'success');
+            setTokenSendTo('');
+            setTokenSendAmount('');
+            refreshTokenBalance();
+            refreshTokenHistory();
+        } catch (err) {
+            showTokenNotice(err.message || 'Transfer failed', 'error');
+        } finally {
+            setTokenLoading(false);
+        }
+    };
+
+    const handleSetTokenAddress = async () => {
+        const addr = tokenAddressInput.trim();
+        if (!addr || !addr.startsWith('0x') || addr.length !== 42) {
+            showTokenNotice('Enter a valid contract address', 'error');
+            return;
+        }
+        try {
+            await window.tokenApi.setTokenAddress(addr);
+            showTokenNotice('Token address updated!', 'success');
+            refreshTokenInfo();
+            refreshTokenBalance();
+        } catch (err) {
+            showTokenNotice(err.message || 'Failed to set address', 'error');
+        }
+    };
+
+    const handleSetPaymentRate = async () => {
+        const rate = parseFloat(tokenPaymentRate);
+        if (isNaN(rate) || rate < 0) {
+            showTokenNotice('Enter a valid rate', 'error');
+            return;
+        }
+        try {
+            await window.tokenApi.setPaymentRate(rate);
+            showTokenNotice('Payment rate updated!', 'success');
+        } catch (err) {
+            showTokenNotice(err.message || 'Failed to set rate', 'error');
+        }
+    };
+
+    const handleToggleAutoPay = async () => {
+        try {
+            setTokenLoading(true);
+            if (tokenAutoPayEnabled) {
+                await window.tokenApi.disableAutoPay();
+                setTokenAutoPayEnabled(false);
+                showTokenNotice('Auto-pay disabled', 'info');
+            } else {
+                await window.tokenApi.enableAutoPay();
+                setTokenAutoPayEnabled(true);
+                showTokenNotice('Auto-pay enabled!', 'success');
+            }
+        } catch (err) {
+            showTokenNotice(err.message || 'Failed to toggle auto-pay', 'error');
+        } finally {
+            setTokenLoading(false);
+        }
+    };
+
+    const handleEstimateGas = async () => {
+        try {
+            const est = await window.tokenApi.estimateGas(tokenSendTo || '0x0000000000000000000000000000000000000001', tokenSendAmount || '1');
+            setTokenGasEstimate(est.gasCostFormatted || 'Unable to estimate');
+        } catch (err) {
+            setTokenGasEstimate('Unable to estimate');
+        }
+    };
+
+    const formatTokenTime = (ts) => {
+        if (!ts) return '';
+        const d = new Date(ts);
+        return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    const truncateTokenAddr = (addr) => {
+        if (!addr) return '';
+        return addr.substring(0, 8) + '...' + addr.substring(addr.length - 6);
+    };
+
+    // ===== BANDWIDTH SHARING HANDLERS =====
+    const showBwNotice = (msg, type = 'info') => {
+        setBwMsg(msg);
+        setBwMsgType(type);
+        setTimeout(() => setBwMsg(''), 4000);
+    };
+
+    const refreshBwStats = async () => {
+        try {
+            if (window.bandwidthApi) {
+                const stats = await window.bandwidthApi.getStats();
+                setBwStats(stats);
+                setBwSharingEnabled(stats.sharing || false);
+            }
+        } catch (err) {
+            console.error('Failed to get bandwidth stats:', err);
+        }
+    };
+
+    const refreshBwRewards = async () => {
+        try {
+            if (window.bandwidthApi) {
+                const rewards = await window.bandwidthApi.getRewards();
+                setBwRewards(rewards || { pending: 0, claimed: 0, totalEarned: 0, rate: 0.05 });
+            }
+        } catch (err) {
+            console.error('Failed to get bandwidth rewards:', err);
+        }
+    };
+
+    const refreshBwHistory = async () => {
+        try {
+            if (window.bandwidthApi) {
+                const history = await window.bandwidthApi.getHistory(7);
+                setBwHistory(history || []);
+            }
+        } catch (err) {
+            console.error('Failed to get bandwidth history:', err);
+        }
+    };
+
+    const toggleBandwidth = () => {
+        if (!showBandwidth) {
+            refreshBwStats();
+            refreshBwRewards();
+            refreshBwHistory();
+        }
+        setShowBandwidth(!showBandwidth);
+    };
+
+    const handleToggleSharing = async () => {
+        try {
+            setBwLoading(true);
+            if (bwSharingEnabled) {
+                await window.bandwidthApi.disableSharing();
+                setBwSharingEnabled(false);
+                showBwNotice('Bandwidth sharing stopped', 'info');
+            } else {
+                await window.bandwidthApi.enableSharing();
+                setBwSharingEnabled(true);
+                showBwNotice('Bandwidth sharing started!', 'success');
+            }
+            refreshBwStats();
+        } catch (err) {
+            showBwNotice(err.message || 'Failed to toggle sharing', 'error');
+        } finally {
+            setBwLoading(false);
+        }
+    };
+
+    const handleClaimRewards = async () => {
+        try {
+            setBwLoading(true);
+            const result = await window.bandwidthApi.claimRewards();
+            if (result.success) {
+                showBwNotice('Claimed ' + result.claimed + ' tokens!', 'success');
+                refreshBwRewards();
+            } else {
+                showBwNotice(result.message || 'No rewards to claim', 'info');
+            }
+        } catch (err) {
+            showBwNotice(err.message || 'Failed to claim rewards', 'error');
+        } finally {
+            setBwLoading(false);
+        }
+    };
+
+    // Auto-refresh bandwidth stats when panel is open
+    useEffect(() => {
+        let interval;
+        if (showBandwidth && bwSharingEnabled) {
+            interval = setInterval(() => {
+                refreshBwStats();
+                refreshBwRewards();
+            }, 5000);
+        }
+        return () => { if (interval) clearInterval(interval); };
+    }, [showBandwidth, bwSharingEnabled]);
+
+    // Auto-refresh token balance when panel is open
+    useEffect(() => {
+        let interval;
+        if (showToken) {
+            interval = setInterval(() => {
+                refreshTokenBalance();
+            }, 15000);
+        }
+        return () => { if (interval) clearInterval(interval); };
+    }, [showToken]);
+
+        // ===== RENDER: Chat Panel Content =====
     const renderChatContent = () => {
         if (!walletAddress || walletLocked) {
             return (
@@ -1791,6 +2093,273 @@ const App = () => {
         );
     };
 
+    // ===== RENDER: Token Panel Content =====
+    const renderTokenContent = () => {
+        if (tokenView === 'send') {
+            return (
+                <div className={styles.tokenSendView}>
+                    <button className={styles.tokenBackBtn} onClick={() => setTokenView('main')}>← Back</button>
+                    <h4 className={styles.tokenSubTitle}>Send Tokens</h4>
+                    <div className={styles.tokenFormGroup}>
+                        <label>Recipient Address</label>
+                        <input
+                            type="text"
+                            className={styles.tokenInput}
+                            placeholder="0x..."
+                            value={tokenSendTo}
+                            onChange={(e) => setTokenSendTo(e.target.value)}
+                        />
+                    </div>
+                    <div className={styles.tokenFormGroup}>
+                        <label>Amount ({tokenBalance.symbol || 'PMESH'})</label>
+                        <input
+                            type="text"
+                            className={styles.tokenInput}
+                            placeholder="0.0"
+                            value={tokenSendAmount}
+                            onChange={(e) => setTokenSendAmount(e.target.value)}
+                        />
+                    </div>
+                    <button className={styles.tokenEstimateBtn} onClick={handleEstimateGas}>Estimate Gas</button>
+                    {tokenGasEstimate && <div className={styles.tokenGasDisplay}>Gas: {tokenGasEstimate}</div>}
+                    <button
+                        className={styles.tokenSendBtn}
+                        onClick={handleSendTokens}
+                        disabled={tokenLoading}
+                    >{tokenLoading ? 'Sending...' : 'Send Tokens'}</button>
+                </div>
+            );
+        }
+        if (tokenView === 'history') {
+            return (
+                <div className={styles.tokenHistoryView}>
+                    <button className={styles.tokenBackBtn} onClick={() => setTokenView('main')}>← Back</button>
+                    <h4 className={styles.tokenSubTitle}>Payment History</h4>
+                    <div className={styles.tokenHistoryList}>
+                        {tokenPaymentHistory.length === 0 && <div className={styles.tokenEmpty}>No payment history yet</div>}
+                        {tokenPaymentHistory.map((p, i) => (
+                            <div key={i} className={styles.tokenHistoryItem}>
+                                <div className={styles.tokenHistoryRow}>
+                                    <span className={`${styles.tokenHistoryType} ${p.type === 'send' ? styles.tokenTypeSend : styles.tokenTypeApprove}`}>
+                                        {p.type === 'send' ? '↑ SEND' : '✓ APPROVE'}
+                                    </span>
+                                    <span className={styles.tokenHistoryAmount}>{p.amount} {p.symbol}</span>
+                                </div>
+                                <div className={styles.tokenHistoryRow}>
+                                    <span className={styles.tokenHistoryAddr}>{truncateTokenAddr(p.to || p.spender)}</span>
+                                    <span className={`${styles.tokenHistoryStatus} ${styles['tokenStatus' + (p.status || 'pending')]}`}>{p.status || 'pending'}</span>
+                                </div>
+                                <div className={styles.tokenHistoryTime}>{formatTokenTime(p.timestamp)}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+        if (tokenView === 'settings') {
+            return (
+                <div className={styles.tokenSettingsView}>
+                    <button className={styles.tokenBackBtn} onClick={() => setTokenView('main')}>← Back</button>
+                    <h4 className={styles.tokenSubTitle}>Token Settings</h4>
+                    <div className={styles.tokenFormGroup}>
+                        <label>Token Contract Address</label>
+                        <input
+                            type="text"
+                            className={styles.tokenInput}
+                            placeholder="0x..."
+                            value={tokenAddressInput}
+                            onChange={(e) => setTokenAddressInput(e.target.value)}
+                        />
+                        <button className={styles.tokenSmallBtn} onClick={handleSetTokenAddress}>Update Address</button>
+                    </div>
+                    <div className={styles.tokenFormGroup}>
+                        <label>Payment Rate (tokens per MB)</label>
+                        <input
+                            type="text"
+                            className={styles.tokenInput}
+                            placeholder="0.1"
+                            value={tokenPaymentRate}
+                            onChange={(e) => setTokenPaymentRate(e.target.value)}
+                        />
+                        <button className={styles.tokenSmallBtn} onClick={handleSetPaymentRate}>Set Rate</button>
+                    </div>
+                    <div className={styles.tokenAutoPaySection}>
+                        <div className={styles.tokenAutoPayRow}>
+                            <span>Auto-Pay for Bandwidth</span>
+                            <button
+                                className={`${styles.tokenToggle} ${tokenAutoPayEnabled ? styles.tokenToggleOn : ''}`}
+                                onClick={handleToggleAutoPay}
+                                disabled={tokenLoading}
+                            >
+                                <span className={styles.tokenToggleSlider}></span>
+                            </button>
+                        </div>
+                        <div className={styles.tokenAutoPayInfo}>
+                            {tokenAutoPayEnabled ? 'Active — paying ' + tokenPaymentRate + ' tokens/MB' : 'Disabled'}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        // Main view
+        return (
+            <div className={styles.tokenMainView}>
+                <div className={styles.tokenBalanceCard}>
+                    <div className={styles.tokenBalanceLabel}>Token Balance</div>
+                    <div className={styles.tokenBalanceValue}>{parseFloat(tokenBalance.formatted || 0).toFixed(4)}</div>
+                    <div className={styles.tokenBalanceSymbol}>{tokenBalance.symbol || 'PMESH'}</div>
+                    {!tokenInfo.configured && <div className={styles.tokenNotConfigured}>Token not configured</div>}
+                </div>
+                <div className={styles.tokenActions}>
+                    <button className={styles.tokenActionBtn} onClick={() => { setTokenView('send'); handleEstimateGas(); }}>💸 Send</button>
+                    <button className={styles.tokenActionBtn} onClick={() => { setTokenView('history'); refreshTokenHistory(); }}>📋 History</button>
+                    <button className={styles.tokenActionBtn} onClick={() => setTokenView('settings')}>⚙️ Settings</button>
+                </div>
+                <div className={styles.tokenInfoRow}>
+                    <span className={styles.tokenInfoLabel}>Token:</span>
+                    <span className={styles.tokenInfoValue}>{tokenInfo.name || 'PulseMesh Token'}</span>
+                </div>
+                <div className={styles.tokenInfoRow}>
+                    <span className={styles.tokenInfoLabel}>Contract:</span>
+                    <span className={styles.tokenInfoValue} title={tokenInfo.address}>{truncateTokenAddr(tokenInfo.address)}</span>
+                </div>
+                <div className={styles.tokenInfoRow}>
+                    <span className={styles.tokenInfoLabel}>Auto-Pay:</span>
+                    <span className={`${styles.tokenInfoValue} ${tokenAutoPayEnabled ? styles.tokenAutoPayActive : ''}`}>
+                        {tokenAutoPayEnabled ? 'Active (' + tokenPaymentRate + ' tokens/MB)' : 'Disabled'}
+                    </span>
+                </div>
+            </div>
+        );
+    };
+
+    // ===== RENDER: Bandwidth Panel Content =====
+    const renderBandwidthContent = () => {
+        const stats = bwStats || { sharing: false, session: { uploadedFormatted: '0 B', downloadedFormatted: '0 B', netFormatted: '0 B', durationFormatted: '0s' }, allTime: { uploadedFormatted: '0 B', downloadedFormatted: '0 B', netFormatted: '0 B', totalSessions: 0 }, speeds: { uploadFormatted: '0 B/s', downloadFormatted: '0 B/s' }, isContributor: false };
+        const maxBw = Math.max(...bwHistory.map(d => Math.max(d.uploaded || 0, d.downloaded || 0)), 1);
+
+        return (
+            <div className={styles.bwMainView}>
+                {/* Sharing Toggle */}
+                <div className={styles.bwSharingCard}>
+                    <div className={styles.bwSharingRow}>
+                        <div>
+                            <div className={styles.bwSharingLabel}>Bandwidth Sharing</div>
+                            <div className={styles.bwSharingStatus}>{bwSharingEnabled ? 'Active' : 'Inactive'}</div>
+                        </div>
+                        <button
+                            className={`${styles.bwToggle} ${bwSharingEnabled ? styles.bwToggleOn : ''}`}
+                            onClick={handleToggleSharing}
+                            disabled={bwLoading}
+                        >
+                            <span className={styles.bwToggleSlider}></span>
+                        </button>
+                    </div>
+                    {bwSharingEnabled && (
+                        <div className={styles.bwSessionTimer}>Session: {stats.session.durationFormatted}</div>
+                    )}
+                </div>
+
+                {/* Speed Meters */}
+                {bwSharingEnabled && (
+                    <div className={styles.bwSpeedRow}>
+                        <div className={styles.bwSpeedCard}>
+                            <div className={styles.bwSpeedLabel}>↑ Upload</div>
+                            <div className={styles.bwSpeedValue}>{stats.speeds.uploadFormatted}</div>
+                        </div>
+                        <div className={styles.bwSpeedCard}>
+                            <div className={styles.bwSpeedLabel}>↓ Download</div>
+                            <div className={styles.bwSpeedValue}>{stats.speeds.downloadFormatted}</div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Bandwidth Bars */}
+                <div className={styles.bwStatsCard}>
+                    <div className={styles.bwStatsTitle}>Total Bandwidth</div>
+                    <div className={styles.bwBarGroup}>
+                        <div className={styles.bwBarLabel}>
+                            <span>↑ Shared</span>
+                            <span>{stats.allTime.uploadedFormatted}</span>
+                        </div>
+                        <div className={styles.bwBarTrack}>
+                            <div className={styles.bwBarFillUp} style={{ width: stats.allTime.totalBytesUploaded > 0 ? Math.min(100, (stats.allTime.totalBytesUploaded / (stats.allTime.totalBytesUploaded + stats.allTime.totalBytesDownloaded + 1)) * 100) + '%' : '0%' }}></div>
+                        </div>
+                    </div>
+                    <div className={styles.bwBarGroup}>
+                        <div className={styles.bwBarLabel}>
+                            <span>↓ Consumed</span>
+                            <span>{stats.allTime.downloadedFormatted}</span>
+                        </div>
+                        <div className={styles.bwBarTrack}>
+                            <div className={styles.bwBarFillDown} style={{ width: stats.allTime.totalBytesDownloaded > 0 ? Math.min(100, (stats.allTime.totalBytesDownloaded / (stats.allTime.totalBytesUploaded + stats.allTime.totalBytesDownloaded + 1)) * 100) + '%' : '0%' }}></div>
+                        </div>
+                    </div>
+                    <div className={`${styles.bwNetContribution} ${stats.isContributor ? styles.bwNetPositive : styles.bwNetNegative}`}>
+                        Net: {stats.allTime.netFormatted} {stats.isContributor ? '(Contributor ✓)' : '(Consumer)'}
+                    </div>
+                </div>
+
+                {/* Rewards */}
+                <div className={styles.bwRewardsCard}>
+                    <div className={styles.bwRewardsTitle}>Rewards</div>
+                    <div className={styles.bwRewardsRow}>
+                        <div className={styles.bwRewardItem}>
+                            <div className={styles.bwRewardValue}>{bwRewards.pending.toFixed(4)}</div>
+                            <div className={styles.bwRewardLabel}>Pending</div>
+                        </div>
+                        <div className={styles.bwRewardItem}>
+                            <div className={styles.bwRewardValue}>{bwRewards.claimed.toFixed(4)}</div>
+                            <div className={styles.bwRewardLabel}>Claimed</div>
+                        </div>
+                        <div className={styles.bwRewardItem}>
+                            <div className={styles.bwRewardValue}>{bwRewards.totalEarned.toFixed(4)}</div>
+                            <div className={styles.bwRewardLabel}>Total</div>
+                        </div>
+                    </div>
+                    <div className={styles.bwRewardRate}>Rate: {bwRewards.rateFormatted || bwRewards.rate + ' tokens/MB'}</div>
+                    <button
+                        className={styles.bwClaimBtn}
+                        onClick={handleClaimRewards}
+                        disabled={bwLoading || bwRewards.pending <= 0}
+                    >{bwLoading ? 'Claiming...' : 'Claim Rewards'}</button>
+                </div>
+
+                {/* Daily Chart */}
+                {bwHistory.length > 0 && (
+                    <div className={styles.bwChartCard}>
+                        <div className={styles.bwChartTitle}>Last 7 Days</div>
+                        <div className={styles.bwChart}>
+                            {bwHistory.map((day, i) => (
+                                <div key={i} className={styles.bwChartDay}>
+                                    <div className={styles.bwChartBars}>
+                                        <div className={styles.bwChartBarUp} style={{ height: Math.max(2, (day.uploaded / maxBw) * 60) + 'px' }} title={'↑ ' + day.uploadedFormatted}></div>
+                                        <div className={styles.bwChartBarDown} style={{ height: Math.max(2, (day.downloaded / maxBw) * 60) + 'px' }} title={'↓ ' + day.downloadedFormatted}></div>
+                                    </div>
+                                    <div className={styles.bwChartLabel}>{day.dayName}</div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.bwChartLegend}>
+                            <span className={styles.bwLegendUp}>↑ Upload</span>
+                            <span className={styles.bwLegendDown}>↓ Download</span>
+                        </div>
+                    </div>
+                )}
+
+                {/* Session Info */}
+                <div className={styles.bwInfoRow}>
+                    <span>Total Sessions:</span>
+                    <span>{stats.allTime.totalSessions}</span>
+                </div>
+                <div className={styles.bwInfoRow}>
+                    <span>Total Time:</span>
+                    <span>{stats.allTime.totalSessionTimeFormatted}</span>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className={styles.app}>
             {/* Title Bar */}
@@ -1944,6 +2513,51 @@ const App = () => {
                                 <div className={styles.dropdownBody}>
                                     {ipfsMsg && <div className={styles.ipfsMsgBar + ' ' + styles['ipfsMsg' + ipfsMsgType.charAt(0).toUpperCase() + ipfsMsgType.slice(1)]}>{ipfsMsg}</div>}
                                     {renderIpfsContent()}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Token Payment Button */}
+                    <div className={styles.tokenContainer} ref={tokenRef}>
+                        <button
+                            className={`${styles.navBtn} ${styles.tokenBtn}`}
+                            onClick={toggleToken}
+                            title="Token Payments"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.94s4.18 1.36 4.18 3.85c0 1.89-1.44 2.98-3.12 3.19z"/></svg>
+                        </button>
+                        {showToken && (
+                            <div className={styles.dropdown + ' ' + styles.tokenDropdown}>
+                                <div className={styles.dropdownHeader + ' ' + styles.tokenHeader}>
+                                    <span>💰 Token Payments</span>
+                                </div>
+                                <div className={styles.dropdownBody}>
+                                    {tokenMsg && <div className={`${styles.tokenNotice} ${styles['tokenNotice' + tokenMsgType.charAt(0).toUpperCase() + tokenMsgType.slice(1)]}`}>{tokenMsg}</div>}
+                                    {renderTokenContent()}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Bandwidth Sharing Button */}
+                    <div className={styles.bandwidthContainer} ref={bandwidthRef}>
+                        <button
+                            className={`${styles.navBtn} ${styles.bandwidthBtn} ${bwSharingEnabled ? styles.bandwidthBtnActive : ''}`}
+                            onClick={toggleBandwidth}
+                            title="Bandwidth Sharing"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+                            {bwSharingEnabled && <span className={styles.bandwidthActiveDot} />}
+                        </button>
+                        {showBandwidth && (
+                            <div className={styles.dropdown + ' ' + styles.bandwidthDropdown}>
+                                <div className={styles.dropdownHeader + ' ' + styles.bandwidthHeader}>
+                                    <span>📡 Bandwidth Sharing</span>
+                                </div>
+                                <div className={styles.dropdownBody}>
+                                    {bwMsg && <div className={`${styles.bwNotice} ${styles['bwNotice' + bwMsgType.charAt(0).toUpperCase() + bwMsgType.slice(1)]}`}>{bwMsg}</div>}
+                                    {renderBandwidthContent()}
                                 </div>
                             </div>
                         )}

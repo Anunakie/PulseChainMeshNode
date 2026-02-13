@@ -2810,3 +2810,830 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+
+/* ===== TOKEN PAYMENT STYLES ===== */
+.tokenContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.tokenBtn {
+    color: #d4a853 !important;
+}
+
+.tokenBtn:hover {
+    color: #f0c060 !important;
+    background: rgba(212, 168, 83, 0.1) !important;
+}
+
+.tokenDropdown {
+    width: 340px;
+    right: 0;
+    max-height: 520px;
+}
+
+.tokenHeader {
+    background: linear-gradient(135deg, #1a3a3a 0%, #0d2626 100%) !important;
+    border-bottom: 2px solid #d4a853 !important;
+    color: #d4a853 !important;
+}
+
+.tokenNotice {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.tokenNoticeInfo {
+    background: rgba(20, 184, 166, 0.15);
+    color: #14b8a6;
+    border: 1px solid rgba(20, 184, 166, 0.3);
+}
+
+.tokenNoticeSuccess {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.tokenNoticeError {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.tokenMainView {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tokenBalanceCard {
+    background: linear-gradient(135deg, rgba(212, 168, 83, 0.12) 0%, rgba(20, 184, 166, 0.08) 100%);
+    border: 1px solid rgba(212, 168, 83, 0.25);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+}
+
+.tokenBalanceLabel {
+    font-size: 11px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.tokenBalanceValue {
+    font-size: 28px;
+    font-weight: 700;
+    color: #d4a853;
+    line-height: 1.2;
+}
+
+.tokenBalanceSymbol {
+    font-size: 13px;
+    color: #14b8a6;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.tokenNotConfigured {
+    font-size: 10px;
+    color: #f59e0b;
+    margin-top: 6px;
+    padding: 3px 8px;
+    background: rgba(245, 158, 11, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.tokenActions {
+    display: flex;
+    gap: 6px;
+}
+
+.tokenActionBtn {
+    flex: 1;
+    padding: 8px 4px;
+    background: rgba(212, 168, 83, 0.1);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    border-radius: 8px;
+    color: #d4a853;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.tokenActionBtn:hover {
+    background: rgba(212, 168, 83, 0.2);
+    border-color: rgba(212, 168, 83, 0.4);
+}
+
+.tokenInfoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 12px;
+}
+
+.tokenInfoLabel {
+    color: #888;
+}
+
+.tokenInfoValue {
+    color: #ccc;
+    font-family: monospace;
+    font-size: 11px;
+}
+
+.tokenAutoPayActive {
+    color: #22c55e !important;
+}
+
+/* Token Send View */
+.tokenSendView {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tokenBackBtn {
+    background: none;
+    border: none;
+    color: #14b8a6;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0;
+    text-align: left;
+    margin-bottom: 4px;
+}
+
+.tokenBackBtn:hover {
+    color: #2dd4bf;
+}
+
+.tokenSubTitle {
+    margin: 0;
+    font-size: 14px;
+    color: #d4a853;
+    font-weight: 600;
+}
+
+.tokenFormGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tokenFormGroup label {
+    font-size: 11px;
+    color: #888;
+}
+
+.tokenInput {
+    width: 100%;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 12px;
+    outline: none;
+    box-sizing: border-box;
+    font-family: monospace;
+}
+
+.tokenInput:focus {
+    border-color: #d4a853;
+}
+
+.tokenEstimateBtn {
+    background: rgba(20, 184, 166, 0.1);
+    border: 1px solid rgba(20, 184, 166, 0.2);
+    color: #14b8a6;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+.tokenEstimateBtn:hover {
+    background: rgba(20, 184, 166, 0.2);
+}
+
+.tokenGasDisplay {
+    font-size: 11px;
+    color: #999;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 4px;
+}
+
+.tokenSendBtn {
+    padding: 10px;
+    background: linear-gradient(135deg, #d4a853 0%, #b8922e 100%);
+    border: none;
+    border-radius: 8px;
+    color: #1a1a2e;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tokenSendBtn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.tokenSendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.tokenSmallBtn {
+    padding: 5px 10px;
+    background: rgba(212, 168, 83, 0.15);
+    border: 1px solid rgba(212, 168, 83, 0.3);
+    border-radius: 6px;
+    color: #d4a853;
+    font-size: 11px;
+    cursor: pointer;
+    margin-top: 4px;
+    align-self: flex-start;
+}
+
+.tokenSmallBtn:hover {
+    background: rgba(212, 168, 83, 0.25);
+}
+
+/* Token History View */
+.tokenHistoryView {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tokenHistoryList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.tokenEmpty {
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    padding: 20px;
+}
+
+.tokenHistoryItem {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+.tokenHistoryRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.tokenHistoryType {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.tokenTypeSend {
+    background: rgba(212, 168, 83, 0.15);
+    color: #d4a853;
+}
+
+.tokenTypeApprove {
+    background: rgba(20, 184, 166, 0.15);
+    color: #14b8a6;
+}
+
+.tokenHistoryAmount {
+    font-size: 12px;
+    color: #e0e0e0;
+    font-weight: 600;
+}
+
+.tokenHistoryAddr {
+    font-size: 10px;
+    color: #888;
+    font-family: monospace;
+}
+
+.tokenHistoryStatus {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.tokenStatuspending {
+    color: #f59e0b;
+}
+
+.tokenStatusconfirmed {
+    color: #22c55e;
+}
+
+.tokenStatusfailed {
+    color: #ef4444;
+}
+
+.tokenHistoryTime {
+    font-size: 10px;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* Token Settings View */
+.tokenSettingsView {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tokenAutoPaySection {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.tokenAutoPayRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tokenAutoPayInfo {
+    font-size: 11px;
+    color: #888;
+    margin-top: 6px;
+}
+
+.tokenToggle {
+    width: 40px;
+    height: 22px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s;
+    padding: 0;
+}
+
+.tokenToggleOn {
+    background: #d4a853 !important;
+}
+
+.tokenToggleSlider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.tokenToggleOn .tokenToggleSlider {
+    transform: translateX(18px);
+}
+
+
+/* ===== BANDWIDTH SHARING STYLES ===== */
+.bandwidthContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.bandwidthBtn {
+    color: #14b8a6 !important;
+}
+
+.bandwidthBtn:hover {
+    color: #2dd4bf !important;
+    background: rgba(20, 184, 166, 0.1) !important;
+}
+
+.bandwidthBtnActive {
+    color: #22c55e !important;
+}
+
+.bandwidthBtnActive::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+}
+
+.bandwidthActiveDot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: bwPulse 2s infinite;
+}
+
+@keyframes bwPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.bandwidthDropdown {
+    width: 360px;
+    right: 0;
+    max-height: 560px;
+}
+
+.bandwidthHeader {
+    background: linear-gradient(135deg, #0d2e2e 0%, #0a1f1f 100%) !important;
+    border-bottom: 2px solid #14b8a6 !important;
+    color: #14b8a6 !important;
+}
+
+.bwNotice {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.bwNoticeInfo {
+    background: rgba(20, 184, 166, 0.15);
+    color: #14b8a6;
+    border: 1px solid rgba(20, 184, 166, 0.3);
+}
+
+.bwNoticeSuccess {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.bwNoticeError {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.bwMainView {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Sharing Toggle Card */
+.bwSharingCard {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+    border: 1px solid rgba(20, 184, 166, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.bwSharingRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bwSharingLabel {
+    font-size: 13px;
+    color: #e0e0e0;
+    font-weight: 600;
+}
+
+.bwSharingStatus {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+}
+
+.bwSessionTimer {
+    font-size: 11px;
+    color: #14b8a6;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(20, 184, 166, 0.15);
+}
+
+.bwToggle {
+    width: 44px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.bwToggleOn {
+    background: #22c55e !important;
+}
+
+.bwToggleSlider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.bwToggleOn .bwToggleSlider {
+    transform: translateX(20px);
+}
+
+/* Speed Meters */
+.bwSpeedRow {
+    display: flex;
+    gap: 8px;
+}
+
+.bwSpeedCard {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+.bwSpeedLabel {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bwSpeedValue {
+    font-size: 16px;
+    font-weight: 700;
+    color: #14b8a6;
+    margin-top: 2px;
+}
+
+/* Bandwidth Stats */
+.bwStatsCard {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.bwStatsTitle {
+    font-size: 12px;
+    color: #999;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.bwBarGroup {
+    margin-bottom: 8px;
+}
+
+.bwBarLabel {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 3px;
+}
+
+.bwBarTrack {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bwBarFillUp {
+    height: 100%;
+    background: linear-gradient(90deg, #14b8a6, #22c55e);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.bwBarFillDown {
+    height: 100%;
+    background: linear-gradient(90deg, #f59e0b, #ef4444);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.bwNetContribution {
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    padding: 6px;
+    border-radius: 6px;
+    margin-top: 4px;
+}
+
+.bwNetPositive {
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.bwNetNegative {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+}
+
+/* Rewards Card */
+.bwRewardsCard {
+    background: linear-gradient(135deg, rgba(212, 168, 83, 0.08) 0%, rgba(20, 184, 166, 0.06) 100%);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.bwRewardsTitle {
+    font-size: 12px;
+    color: #d4a853;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.bwRewardsRow {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.bwRewardItem {
+    flex: 1;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    padding: 8px 4px;
+}
+
+.bwRewardValue {
+    font-size: 14px;
+    font-weight: 700;
+    color: #d4a853;
+}
+
+.bwRewardLabel {
+    font-size: 10px;
+    color: #888;
+    margin-top: 2px;
+}
+
+.bwRewardRate {
+    font-size: 11px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.bwClaimBtn {
+    width: 100%;
+    padding: 9px;
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.bwClaimBtn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.bwClaimBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Daily Chart */
+.bwChartCard {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.bwChartTitle {
+    font-size: 12px;
+    color: #999;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.bwChart {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 80px;
+    padding: 0 4px;
+}
+
+.bwChartDay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.bwChartBars {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    height: 60px;
+}
+
+.bwChartBarUp {
+    width: 12px;
+    background: linear-gradient(180deg, #14b8a6, #0d9488);
+    border-radius: 2px 2px 0 0;
+    min-height: 2px;
+    transition: height 0.3s;
+}
+
+.bwChartBarDown {
+    width: 12px;
+    background: linear-gradient(180deg, #f59e0b, #d97706);
+    border-radius: 2px 2px 0 0;
+    min-height: 2px;
+    transition: height 0.3s;
+}
+
+.bwChartLabel {
+    font-size: 9px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.bwChartLegend {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 8px;
+    font-size: 10px;
+}
+
+.bwLegendUp {
+    color: #14b8a6;
+}
+
+.bwLegendDown {
+    color: #f59e0b;
+}
+
+/* Info Rows */
+.bwInfoRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #888;
+    padding: 2px 0;
+}
+
+.bwInfoRow span:last-child {
+    color: #ccc;
+}

@@ -130,3 +130,30 @@ contextBridge.exposeInMainWorld('ipfsApi', {
     checkApi: () => ipcRenderer.invoke('ipfs:check-api'),
     openFileDialog: () => ipcRenderer.invoke('ipfs:open-file-dialog'),
 });
+
+// PulseMesh Token Payment API
+contextBridge.exposeInMainWorld('tokenApi', {
+    getTokenBalance: () => ipcRenderer.invoke('token:get-balance'),
+    sendTokens: (to, amount) => ipcRenderer.invoke('token:send', { to, amount }),
+    approveSpending: (spender, amount) => ipcRenderer.invoke('token:approve', { spender, amount }),
+    getPaymentHistory: (limit) => ipcRenderer.invoke('token:get-history', { limit }),
+    setPaymentRate: (rate) => ipcRenderer.invoke('token:set-rate', { rate }),
+    setTokenAddress: (address) => ipcRenderer.invoke('token:set-address', { address }),
+    getTokenInfo: () => ipcRenderer.invoke('token:get-info'),
+    enableAutoPay: () => ipcRenderer.invoke('token:enable-autopay'),
+    disableAutoPay: () => ipcRenderer.invoke('token:disable-autopay'),
+    getAutoPayStatus: () => ipcRenderer.invoke('token:get-autopay-status'),
+    estimateGas: (to, amount) => ipcRenderer.invoke('token:estimate-gas', { to, amount }),
+});
+
+// Bandwidth Sharing & Rewards API
+contextBridge.exposeInMainWorld('bandwidthApi', {
+    getStats: () => ipcRenderer.invoke('bandwidth:get-stats'),
+    enableSharing: () => ipcRenderer.invoke('bandwidth:enable-sharing'),
+    disableSharing: () => ipcRenderer.invoke('bandwidth:disable-sharing'),
+    getSharingStatus: () => ipcRenderer.invoke('bandwidth:get-sharing-status'),
+    getRewards: () => ipcRenderer.invoke('bandwidth:get-rewards'),
+    claimRewards: () => ipcRenderer.invoke('bandwidth:claim-rewards'),
+    getHistory: (days) => ipcRenderer.invoke('bandwidth:get-history', { days }),
+    setRewardRate: (rate) => ipcRenderer.invoke('bandwidth:set-reward-rate', { rate }),
+});

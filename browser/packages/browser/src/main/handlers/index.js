@@ -19,6 +19,8 @@ import { initMeshProxyHandlers } from '../mesh-proxy';
 import { initSpacesHandlers } from '../spaces';
 import { initChatHandlers } from '../chat';
 import { initIpfsHandlers } from '../ipfs';
+import { initTokenHandlers } from '../token';
+import { initBandwidthHandlers } from '../bandwidth';
 
 const path = require('path');
 
@@ -56,6 +58,8 @@ const initMain = async () => {
     initSpacesHandlers();
     initChatHandlers();
     initIpfsHandlers();
+    initTokenHandlers();
+    initBandwidthHandlers();
 
     ipcMain.handle('tab:select-tab', async (event, arg) => {
         tabsManager.selectTab(arg);
