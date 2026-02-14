@@ -10,7 +10,7 @@ import {
 } from '../chrome-extensions';
 const log = require('electron-log');
 
-const topOffset = 80;
+const topOffset = 110;
 
 class Options {
     static BROWSER_TAB = {
