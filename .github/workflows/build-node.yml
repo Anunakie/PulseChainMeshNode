@@ -14,55 +14,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential pkg-config libssl-dev libsodium-dev
-
-      - name: Install Rust 1.63
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: '1.63.0'
-          override: true
-
-      - name: Build node (release)
-        working-directory: node
-        run: cargo build --release --bin PulseMeshNode
-
-      - name: Build CLI tools
-        continue-on-error: true
-        run: |
-          cd pulsemesh && cargo build --release --bin pulsemesh && cd ..
-          cd dns_utility && cargo build --release --bin dns_utility && cd ..
-
-      - name: Package Linux binaries
-        run: |
-          mkdir -p dist/PulseMeshNode-Linux
-          cp node/target/release/PulseMeshNode dist/PulseMeshNode-Linux/ 2>/dev/null || true
-          cp pulsemesh/target/release/pulsemesh dist/PulseMeshNode-Linux/ 2>/dev/null || true
-          cp dns_utility/target/release/dns_utility dist/PulseMeshNode-Linux/ 2>/dev/null || true
-          cp node/target/release/pulsemesh dist/PulseMeshNode-Linux/ 2>/dev/null || true
-          cp node/target/release/dns_utility dist/PulseMeshNode-Linux/ 2>/dev/null || true
-          chmod +x dist/PulseMeshNode-Linux/*
-          cat > dist/PulseMeshNode-Linux/README.txt << 'READMEEOF'
-          PulseMesh Node - Linux
-          ======================
-          1. Make executable: chmod +x PulseMeshNode
-          2. Run: ./PulseMeshNode --help
-          3. Start node: sudo ./PulseMeshNode --neighborhood-mode standard --blockchain-service-url https://rpc.pulsechain.com --chain mainnet
-          READMEEOF
-          cd dist && zip -r PulseMeshNode-Linux.zip PulseMeshNode-Linux/
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: PulseMeshNode-Linux
-          path: dist/PulseMeshNode-Linux.zip
-
   build-windows:
     runs-on: windows-latest
     steps:
@@ -77,13 +28,13 @@ jobs:
       - name: Install libsodium via vcpkg
         shell: powershell
         run: |
-          vcpkg install libsodium:x64-windows-static-md
-          $vcpkgRoot = "$env:VCPKG_INSTALLATION_ROOT\installed\x64-windows-static-md"
-          echo "SODIUM_LIB_DIR=$vcpkgRoot\lib" >> $env:GITHUB_ENV
+          vcpkg install libsodium:x64-windows-static
+          $vcpkgRoot = "$env:VCPKG_INSTALLATION_ROOT/installed/x64-windows-static"
+          echo "SODIUM_LIB_DIR=$vcpkgRoot/lib" >> $env:GITHUB_ENV
           echo "SODIUM_SHARED=0" >> $env:GITHUB_ENV
-          echo "SODIUM_INCLUDE_DIR=$vcpkgRoot\include" >> $env:GITHUB_ENV
-          echo "Sodium lib dir: $vcpkgRoot\lib"
-          Get-ChildItem "$vcpkgRoot\lib" -Filter *sodium*
+          echo "SODIUM_INCLUDE_DIR=$vcpkgRoot/include" >> $env:GITHUB_ENV
+          echo "Sodium lib dir: $vcpkgRoot/lib"
+          Get-ChildItem "$vcpkgRoot/lib" -Filter *sodium*
 
       - name: Build node (release)
         working-directory: node
