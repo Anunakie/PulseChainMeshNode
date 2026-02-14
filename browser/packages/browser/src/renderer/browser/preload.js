@@ -36,6 +36,8 @@ contextBridge.exposeInMainWorld('electronApi', {
     selectTab: (arg) => ipcRenderer.invoke('tab:select-tab', arg),
     onTabSelected: (callback) => ipcRenderer.on('tab:tab-selected', callback),
     onTabSizeChanged: (arg) => ipcRenderer.invoke('tab:tab-size-changed', arg),
+    hideActiveTab: () => ipcRenderer.invoke('tab:hide-active'),
+    showActiveTab: () => ipcRenderer.invoke('tab:show-active'),
 });
 
 // Ad & Tracker Blocking API

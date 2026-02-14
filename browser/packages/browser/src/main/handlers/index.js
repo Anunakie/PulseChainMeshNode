@@ -127,6 +127,22 @@ const initMain = async () => {
         return;
     });
 
+
+    // ===== BROWSERVIEW HIDE/SHOW FOR PANEL OVERLAYS =====
+    ipcMain.handle('tab:hide-active', async (event) => {
+        const tabs = tabsManager.getCurrentTabs();
+        tabs.forEach((tab) => {
+            tab.hide();
+        });
+    });
+
+    ipcMain.handle('tab:show-active', async (event) => {
+        const selected = tabsManager.selected;
+        if (selected) {
+            tabsManager.showTab(selected);
+        }
+    });
+
     ipcMain.handle('close-app', (evt, arg) => {
         app.quit();
     });

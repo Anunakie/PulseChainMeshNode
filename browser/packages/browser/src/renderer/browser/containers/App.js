@@ -159,6 +159,18 @@ const App = () => {
         setTimeout(() => getCurrentTabs(), 500);
     }, [getCurrentTabs]);
 
+    // ===== HIDE/SHOW BROWSERVIEW WHEN PANELS OPEN =====
+    const anyPanelOpen = showAdblockInfo || showHistory || showWallet || showNodePanel || showMeshPanel || showSpaces || showChat || showIpfs || showToken || showBandwidth || showSettings;
+
+    useEffect(() => {
+        if (anyPanelOpen) {
+            try { window.electronApi.hideActiveTab(); } catch(e) {}
+        } else {
+            try { window.electronApi.showActiveTab(); } catch(e) {}
+        }
+    }, [anyPanelOpen]);
+
+
     // Poll adblock stats every 3 seconds
     useEffect(() => {
         const fetchAdblockStats = async () => {
