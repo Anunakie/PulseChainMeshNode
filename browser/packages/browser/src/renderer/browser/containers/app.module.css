@@ -96,6 +96,31 @@ body {
     text-overflow: ellipsis;
 }
 
+.tabCloseBtn {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 4px;
+    margin-left: 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    opacity: 0;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.tab:hover .tabCloseBtn {
+    opacity: 1;
+}
+
+.tabCloseBtn:hover {
+    background: rgba(255, 80, 80, 0.3);
+    color: #ff5555;
+}
+
+
 .tabActive .tabTitle {
     color: #e0e0e0;
 }

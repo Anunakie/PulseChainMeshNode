@@ -45,11 +45,8 @@ const launchApp = async () => {
 
     initExtensions();
 
-    setTimeout(async () => {
-        await tabsManager.loadInTab({
-            url: 'https://pulsechain.com',
-        });
-    }, 1000);
+    // Browser starts with welcome page only - no auto-loading external sites
+    // Users can navigate manually from the welcome page
 };
 
 app.whenReady()

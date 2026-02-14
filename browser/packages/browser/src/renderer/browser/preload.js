@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld('electronApi', {
     refreshTab: (arg) => ipcRenderer.invoke('tab:refresh-tab', arg),
     goHomeTab: (arg) => ipcRenderer.invoke('tab:gohome-tab', arg),
     newTab: () => ipcRenderer.invoke('tab:new-tab'),
+        closeTab: (arg) => ipcRenderer.invoke('tab:close-tab', arg),
     onDidNavigate: (callback) => ipcRenderer.on('tab:did-navigate', callback),
     onDidNavigateInPage: (callback) =>
         ipcRenderer.on('tab:did-navigate-in-page', callback),

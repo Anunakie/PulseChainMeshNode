@@ -134,6 +134,23 @@ const initMain = async () => {
         tabs.forEach((tab) => {
             tab.hide();
         });
+
+    ipcMain.handle('tab:close-tab', async (event, arg) => {
+        const tabId = arg.id;
+        const tabsList = tabsManager.getCurrentTabs();
+        // Don't close if it's the last tab - create a new one first
+        if (tabsList.size <= 1) {
+            await tabsManager.loadInTab({});
+        }
+        await tabsManager.removeTab(tabId);
+        // Select another tab
+        const remaining = tabsManager.getCurrentTabs();
+        if (remaining.size > 0) {
+            const nextId = remaining.keys().next().value;
+            tabsManager.selectTab(nextId);
+        }
+        return true;
+    });
     });
 
     ipcMain.handle('tab:show-active', async (event) => {

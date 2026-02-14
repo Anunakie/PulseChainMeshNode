@@ -664,6 +664,19 @@ const App = () => {
         }
     };
 
+    const handleCloseTab = async (e, id) => {
+        e.stopPropagation(); // Don't select the tab when clicking close
+        try {
+            await window.electronApi.closeTab({ id });
+            // Refresh tab list
+            const currentTabs = await window.electronApi.getCurrentTabs();
+            if (currentTabs) setTabs(currentTabs);
+        } catch (err) {
+            console.error('Failed to close tab:', err);
+        }
+    };
+
+
     const handleQuickLink = (url) => {
         setInputUrl(url);
         setIsLoading(true);
@@ -2396,6 +2409,13 @@ const App = () => {
                                 />
                             )}
                             <span className={styles.tabTitle}>{getTabDisplayName(id)}</span>
+                            <button
+                                className={styles.tabCloseBtn}
+                                onClick={(e) => handleCloseTab(e, id)}
+                                title="Close tab"
+                            >
+                                ×
+                            </button>
                         </div>
                     ))}
                 </div>
