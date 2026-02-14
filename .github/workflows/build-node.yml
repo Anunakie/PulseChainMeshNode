@@ -1,0 +1,116 @@
+name: Build PulseMesh Node
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'node/**'
+      - 'pulsemesh/**'
+      - 'pulsemesh_lib/**'
+      - 'automap/**'
+      - 'dns_utility/**'
+      - 'ip_country/**'
+      - '.github/workflows/build-node.yml'
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libssl-dev libsodium-dev
+
+      - name: Install Rust 1.63
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: '1.63.0'
+          override: true
+
+      - name: Build node (release)
+        working-directory: node
+        run: cargo build --release --bin PulseMeshNode
+
+      - name: Build CLI tools
+        run: |
+          cd pulsemesh && cargo build --release --bin pulsemesh && cd ..
+          cd dns_utility && cargo build --release --bin dns_utility && cd ..
+
+      - name: Package Linux binaries
+        run: |
+          mkdir -p dist/PulseMeshNode-Linux
+          cp node/target/release/PulseMeshNode dist/PulseMeshNode-Linux/
+          cp pulsemesh/target/release/pulsemesh dist/PulseMeshNode-Linux/ 2>/dev/null || true
+          cp dns_utility/target/release/dns_utility dist/PulseMeshNode-Linux/ 2>/dev/null || true
+          # Try workspace target too
+          cp node/target/release/pulsemesh dist/PulseMeshNode-Linux/ 2>/dev/null || true
+          cp node/target/release/dns_utility dist/PulseMeshNode-Linux/ 2>/dev/null || true
+          chmod +x dist/PulseMeshNode-Linux/*
+          cat > dist/PulseMeshNode-Linux/README.txt << 'EOF'
+          PulseMesh Node - Linux
+          ======================
+          1. Make executable: chmod +x PulseMeshNode
+          2. Run: ./PulseMeshNode --help
+          3. Start node: sudo ./PulseMeshNode --neighborhood-mode standard --blockchain-service-url https://rpc.pulsechain.com --chain mainnet
+          EOF
+          cd dist && zip -r PulseMeshNode-Linux.zip PulseMeshNode-Linux/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PulseMeshNode-Linux
+          path: dist/PulseMeshNode-Linux.zip
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rust 1.63
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: '1.63.0'
+          override: true
+
+      - name: Install vcpkg dependencies
+        run: |
+          vcpkg install libsodium:x64-windows-static
+          echo "SODIUM_LIB_DIR=C:/vcpkg/installed/x64-windows-static/lib" >> $env:GITHUB_ENV
+          echo "SODIUM_STATIC=1" >> $env:GITHUB_ENV
+
+      - name: Build node (release)
+        working-directory: node
+        env:
+          RUSTFLAGS: "-C target-feature=+crt-static"
+        run: cargo build --release --bin PulseMeshNodeW
+
+      - name: Build CLI tools
+        env:
+          RUSTFLAGS: "-C target-feature=+crt-static"
+        run: |
+          cd pulsemesh; cargo build --release --bin pulsemesh; cd ..
+          cd dns_utility; cargo build --release --bin dns_utilityw; cd ..
+
+      - name: Package Windows binaries
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/PulseMeshNode-Windows
+          Copy-Item node/target/release/PulseMeshNodeW.exe dist/PulseMeshNode-Windows/PulseMeshNode.exe -ErrorAction SilentlyContinue
+          Copy-Item pulsemesh/target/release/pulsemesh.exe dist/PulseMeshNode-Windows/ -ErrorAction SilentlyContinue
+          Copy-Item dns_utility/target/release/dns_utilityw.exe dist/PulseMeshNode-Windows/dns_utility.exe -ErrorAction SilentlyContinue
+          # Try workspace target too
+          Copy-Item node/target/release/pulsemesh.exe dist/PulseMeshNode-Windows/ -ErrorAction SilentlyContinue
+          Copy-Item node/target/release/dns_utilityw.exe dist/PulseMeshNode-Windows/dns_utility.exe -ErrorAction SilentlyContinue
+          Set-Content dist/PulseMeshNode-Windows/README.txt @"
+          PulseMesh Node - Windows
+          ========================
+          1. Run: PulseMeshNode.exe --help
+          2. Start node: PulseMeshNode.exe --neighborhood-mode standard --blockchain-service-url https://rpc.pulsechain.com --chain mainnet
+          "@
+          Compress-Archive -Path dist/PulseMeshNode-Windows -DestinationPath dist/PulseMeshNode-Windows.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PulseMeshNode-Windows
+          path: dist/PulseMeshNode-Windows.zip

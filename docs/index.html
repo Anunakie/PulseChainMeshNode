@@ -697,5 +697,58 @@
             container.appendChild(p);
         }
     </script>
-</body>
+
+    <!-- Node Binary Downloads -->
+    <section id="node-download" class="download-section" style="padding: 60px 20px; background: rgba(0,0,0,0.3);">
+      <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 2rem; margin-bottom: 10px;">⚙️ PulseMesh Node Binary</h2>
+        <p style="color: #94a3b8; margin-bottom: 30px;">The core mesh networking engine — run your own node to join the decentralized network</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
+          <!-- Windows Node -->
+          <div class="download-card" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(45,212,191,0.2); border-radius: 16px; padding: 30px; transition: all 0.3s;">
+            <div style="font-size: 2.5rem; margin-bottom: 10px;">🪟</div>
+            <h3 style="color: #2dd4bf; margin-bottom: 8px;">Windows Node</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Standalone node binary for Windows</p>
+            <a href="https://github.com/Anunakie/PulseChainMeshNode/releases" 
+               style="display: inline-block; padding: 10px 24px; background: linear-gradient(135deg, #0d9488, #0891b2); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+              Download .exe
+            </a>
+          </div>
+          <!-- Linux Node -->
+          <div class="download-card" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(45,212,191,0.2); border-radius: 16px; padding: 30px; transition: all 0.3s;">
+            <div style="font-size: 2.5rem; margin-bottom: 10px;">🐧</div>
+            <h3 style="color: #2dd4bf; margin-bottom: 8px;">Linux Node</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Standalone node binary for Linux</p>
+            <a href="https://github.com/Anunakie/PulseChainMeshNode/releases" 
+               style="display: inline-block; padding: 10px 24px; background: linear-gradient(135deg, #0d9488, #0891b2); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+              Download Binary
+            </a>
+          </div>
+          <!-- Build from Source -->
+          <div class="download-card" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(45,212,191,0.2); border-radius: 16px; padding: 30px; transition: all 0.3s;">
+            <div style="font-size: 2.5rem; margin-bottom: 10px;">🔧</div>
+            <h3 style="color: #2dd4bf; margin-bottom: 8px;">Build from Source</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Compile the node yourself with Rust</p>
+            <a href="https://github.com/Anunakie/PulseChainMeshNode" 
+               style="display: inline-block; padding: 10px 24px; background: linear-gradient(135deg, #7c3aed, #6366f1); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+              View Source
+            </a>
+          </div>
+        </div>
+
+        <div style="background: rgba(15,23,42,0.6); border: 1px solid rgba(45,212,191,0.15); border-radius: 12px; padding: 20px; text-align: left; max-width: 600px; margin: 0 auto;">
+          <h4 style="color: #2dd4bf; margin-bottom: 10px;">🚀 Quick Start (Linux)</h4>
+          <code style="display: block; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; color: #e2e8f0; font-size: 0.85rem; line-height: 1.6;">
+            $ chmod +x PulseMeshNode<br>
+            $ sudo ./PulseMeshNode \<br>
+            &nbsp;&nbsp;--neighborhood-mode standard \<br>
+            &nbsp;&nbsp;--blockchain-service-url https://rpc.pulsechain.com \<br>
+            &nbsp;&nbsp;--chain mainnet
+          </code>
+        </div>
+      </div>
+    </section>
+
+  </body>
 </html>

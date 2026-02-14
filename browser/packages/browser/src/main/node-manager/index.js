@@ -87,14 +87,27 @@ function addLog(message, level = 'info') {
  */
 function findNodeBinary() {
     // Search common locations
+    // Platform-specific binary name
+    const isWin = process.platform === 'win32';
+    const binName = isWin ? 'PulseMeshNode.exe' : 'PulseMeshNode';
+    const binNameAlt = isWin ? 'pulsemesh_node.exe' : 'pulsemesh_node';
+
     const possiblePaths = [
-        path.join(process.env.HOME || '/root', 'PulseChainMeshNode', 'node', 'target', 'release', 'pulsemesh_node'),
-        path.join(process.env.HOME || '/root', 'PulseChainMeshNode', 'node', 'target', 'release', 'MASQNode'),
-        path.join(process.env.HOME || '/root', 'PulseChainMeshNode', 'target', 'release', 'pulsemesh_node'),
-        path.join(process.env.HOME || '/root', 'PulseChainMeshNode', 'target', 'release', 'MASQNode'),
-        '/usr/local/bin/pulsemesh_node',
-        '/usr/bin/pulsemesh_node',
-    ];
+        // Bundled with browser (same directory as app)
+        path.join(process.resourcesPath || '', binName),
+        path.join(process.resourcesPath || '', binNameAlt),
+        // App directory
+        path.join(path.dirname(process.execPath), binName),
+        path.join(path.dirname(process.execPath), binNameAlt),
+        // User home - built from source
+        path.join(process.env.HOME || process.env.USERPROFILE || '/root', 'PulseChainMeshNode', 'node', 'target', 'release', binName),
+        path.join(process.env.HOME || process.env.USERPROFILE || '/root', 'PulseChainMeshNode', 'node', 'target', 'release', binNameAlt),
+        // System paths
+        isWin ? path.join(process.env.LOCALAPPDATA || '', 'PulseMesh', binName) : '/usr/local/bin/PulseMeshNode',
+        isWin ? path.join(process.env.PROGRAMFILES || '', 'PulseMesh', binName) : '/usr/local/bin/pulsemesh_node',
+        isWin ? '' : '/usr/bin/PulseMeshNode',
+        isWin ? '' : '/usr/bin/pulsemesh_node',
+    ].filter(p => p);
 
     for (const p of possiblePaths) {
         try {
