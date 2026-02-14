@@ -42,20 +42,19 @@ jobs:
       - name: Package Linux binaries
         run: |
           mkdir -p dist/PulseMeshNode-Linux
-          cp node/target/release/PulseMeshNode dist/PulseMeshNode-Linux/
+          cp node/target/release/PulseMeshNode dist/PulseMeshNode-Linux/ 2>/dev/null || true
           cp pulsemesh/target/release/pulsemesh dist/PulseMeshNode-Linux/ 2>/dev/null || true
           cp dns_utility/target/release/dns_utility dist/PulseMeshNode-Linux/ 2>/dev/null || true
-          # Try workspace target too
           cp node/target/release/pulsemesh dist/PulseMeshNode-Linux/ 2>/dev/null || true
           cp node/target/release/dns_utility dist/PulseMeshNode-Linux/ 2>/dev/null || true
           chmod +x dist/PulseMeshNode-Linux/*
-          cat > dist/PulseMeshNode-Linux/README.txt << 'EOF'
+          cat > dist/PulseMeshNode-Linux/README.txt << 'READMEEOF'
           PulseMesh Node - Linux
           ======================
           1. Make executable: chmod +x PulseMeshNode
           2. Run: ./PulseMeshNode --help
           3. Start node: sudo ./PulseMeshNode --neighborhood-mode standard --blockchain-service-url https://rpc.pulsechain.com --chain mainnet
-          EOF
+          READMEEOF
           cd dist && zip -r PulseMeshNode-Linux.zip PulseMeshNode-Linux/
 
       - uses: actions/upload-artifact@v4
@@ -74,11 +73,18 @@ jobs:
           toolchain: '1.63.0'
           override: true
 
-      - name: Install vcpkg dependencies
+      - name: Download and setup libsodium
+        shell: powershell
         run: |
-          vcpkg install libsodium:x64-windows-static
-          echo "SODIUM_LIB_DIR=C:/vcpkg/installed/x64-windows-static/lib" >> $env:GITHUB_ENV
-          echo "SODIUM_STATIC=1" >> $env:GITHUB_ENV
+          $url = "https://download.libsodium.org/libsodium/releases/libsodium-1.0.18-stable-msvc.zip"
+          Invoke-WebRequest -Uri $url -OutFile libsodium.zip
+          Expand-Archive -Path libsodium.zip -DestinationPath libsodium
+          $sodiumDir = (Get-ChildItem -Path libsodium -Directory | Select-Object -First 1).FullName
+          $libDir = "$sodiumDir\x64\Release\v142\static"
+          echo "SODIUM_LIB_DIR=$libDir" >> $env:GITHUB_ENV
+          echo "SODIUM_SHARED=0" >> $env:GITHUB_ENV
+          echo "Sodium lib dir: $libDir"
+          Get-ChildItem $libDir
 
       - name: Build node (release)
         working-directory: node
@@ -94,20 +100,15 @@ jobs:
           cd dns_utility; cargo build --release --bin dns_utilityw; cd ..
 
       - name: Package Windows binaries
+        shell: powershell
         run: |
           New-Item -ItemType Directory -Force -Path dist/PulseMeshNode-Windows
           Copy-Item node/target/release/PulseMeshNodeW.exe dist/PulseMeshNode-Windows/PulseMeshNode.exe -ErrorAction SilentlyContinue
           Copy-Item pulsemesh/target/release/pulsemesh.exe dist/PulseMeshNode-Windows/ -ErrorAction SilentlyContinue
           Copy-Item dns_utility/target/release/dns_utilityw.exe dist/PulseMeshNode-Windows/dns_utility.exe -ErrorAction SilentlyContinue
-          # Try workspace target too
           Copy-Item node/target/release/pulsemesh.exe dist/PulseMeshNode-Windows/ -ErrorAction SilentlyContinue
           Copy-Item node/target/release/dns_utilityw.exe dist/PulseMeshNode-Windows/dns_utility.exe -ErrorAction SilentlyContinue
-          Set-Content dist/PulseMeshNode-Windows/README.txt @"
-          PulseMesh Node - Windows
-          ========================
-          1. Run: PulseMeshNode.exe --help
-          2. Start node: PulseMeshNode.exe --neighborhood-mode standard --blockchain-service-url https://rpc.pulsechain.com --chain mainnet
-          "@
+          Set-Content dist/PulseMeshNode-Windows/README.txt "PulseMesh Node - Windows`r`n========================`r`n1. Run: PulseMeshNode.exe --help`r`n2. Start node: PulseMeshNode.exe --neighborhood-mode standard --blockchain-service-url https://rpc.pulsechain.com --chain mainnet"
           Compress-Archive -Path dist/PulseMeshNode-Windows -DestinationPath dist/PulseMeshNode-Windows.zip
 
       - uses: actions/upload-artifact@v4
