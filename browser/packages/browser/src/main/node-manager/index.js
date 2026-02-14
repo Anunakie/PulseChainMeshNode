@@ -28,7 +28,7 @@ const STORE_KEY_NODE_BINARY = 'node-binary-path';
 const GITHUB_REPO = 'anunakie/PulseChainMeshNode';
 const RELEASE_TAG = 'v0.1.0-beta';
 const NODE_RELEASE_ASSETS = {
-    win32: 'PulseMeshNode-Windows.zip',
+    win32: 'PulseMeshNode-Windows-x64.zip',
     linux: 'PulseMeshNode-Linux.zip',
     darwin: 'PulseMeshNode-macOS.zip',
 };
@@ -202,7 +202,7 @@ function downloadFile(url, destPath) {
             });
 
             req.on('error', reject);
-            req.setTimeout(30000, () => {
+            req.setTimeout(120000, () => {
                 req.destroy();
                 reject(new Error('Download timeout'));
             });
