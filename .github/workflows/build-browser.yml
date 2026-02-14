@@ -25,22 +25,22 @@ jobs:
       run: |
         $binDir = "browser/packages/browser/bin"
         New-Item -ItemType Directory -Force -Path $binDir
-
-        # Get release info
         $headers = @{ "User-Agent" = "PulseMeshBuild/1.0" }
-        $release = Invoke-RestMethod -Uri "https://api.github.com/repos/anunakie/PulseChainMeshNode/releases/tags/v0.1.0-beta" -Headers $headers
-
-        # Find Windows node asset
-        $asset = $release.assets | Where-Object { $_.name -eq "PulseMeshNode-Windows.zip" }
-        if ($asset) {
-            Write-Host "Downloading node binary from: $($asset.browser_download_url)"
-            Invoke-WebRequest -Uri $asset.browser_download_url -OutFile "$binDir/node.zip" -Headers $headers
-            Expand-Archive -Path "$binDir/node.zip" -DestinationPath $binDir -Force
-            Remove-Item "$binDir/node.zip" -Force
-            Write-Host "Node binary contents:"
-            Get-ChildItem $binDir -Recurse
-        } else {
-            Write-Host "WARNING: Node binary asset not found in release, browser will use auto-download"
+        try {
+            $release = Invoke-RestMethod -Uri "https://api.github.com/repos/anunakie/PulseChainMeshNode/releases/tags/v0.1.0-beta" -Headers $headers
+            $asset = $release.assets | Where-Object { $_.name -eq "PulseMeshNode-Windows.zip" }
+            if ($asset) {
+                Write-Host "Downloading node binary from: $($asset.browser_download_url)"
+                Invoke-WebRequest -Uri $asset.browser_download_url -OutFile "$binDir/node.zip" -Headers $headers
+                Expand-Archive -Path "$binDir/node.zip" -DestinationPath $binDir -Force
+                Remove-Item "$binDir/node.zip" -Force
+                Write-Host "Node binary contents:"
+                Get-ChildItem $binDir -Recurse
+            } else {
+                Write-Host "WARNING: Node binary asset not found in release"
+            }
+        } catch {
+            Write-Host "WARNING: Could not download node binary: $_"
         }
 
     - name: Install Yarn
@@ -88,35 +88,23 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y dpkg fakeroot
+        sudo apt-get install -y dpkg fakeroot jq
 
     - name: Download Node Binary for Linux
       run: |
         BIN_DIR="browser/packages/browser/bin"
         mkdir -p "$BIN_DIR"
-
-        # Get release info
-        RELEASE_JSON=$(curl -sL -H "User-Agent: PulseMeshBuild/1.0"           "https://api.github.com/repos/anunakie/PulseChainMeshNode/releases/tags/v0.1.0-beta")
-
-        # Extract Linux asset URL (if exists)
-        ASSET_URL=$(echo "$RELEASE_JSON" | python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-for a in data.get('assets', []):
-    if 'Linux' in a['name'] and a['name'].endswith('.zip'):
-        print(a['browser_download_url'])
-        break
-" 2>/dev/null || true)
-
-        if [ -n "$ASSET_URL" ]; then
-            echo "Downloading node binary from: $ASSET_URL"
-            curl -sL -o "$BIN_DIR/node.zip" "$ASSET_URL"
-            cd "$BIN_DIR" && unzip -o node.zip && rm -f node.zip
-            chmod +x PulseMeshNode pulsemesh_node 2>/dev/null || true
-            echo "Node binary contents:"
-            ls -la
+        RELEASE_JSON=$(curl -sL -H "User-Agent: PulseMeshBuild/1.0" "https://api.github.com/repos/anunakie/PulseChainMeshNode/releases/tags/v0.1.0-beta")
+        ASSET_URL=$(echo "$RELEASE_JSON" | jq -r '.assets[] | select(.name | test("Linux.*zip")) | .browser_download_url' 2>/dev/null || true)
+        if [ -n "$ASSET_URL" ] && [ "$ASSET_URL" != "null" ]; then
+          echo "Downloading node binary from: $ASSET_URL"
+          curl -sL -o "$BIN_DIR/node.zip" "$ASSET_URL"
+          cd "$BIN_DIR" && unzip -o node.zip && rm -f node.zip
+          chmod +x PulseMeshNode pulsemesh_node 2>/dev/null || true
+          echo "Node binary contents:"
+          ls -la
         else
-            echo "WARNING: No Linux node binary in release, browser will use auto-download"
+          echo "WARNING: No Linux node binary in release, browser will use auto-download"
         fi
 
     - name: Install Yarn
@@ -158,12 +146,6 @@ for a in data.get('assets', []):
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-
-    - name: Download Node Binary for macOS
-      run: |
-        BIN_DIR="browser/packages/browser/bin"
-        mkdir -p "$BIN_DIR"
-        echo "NOTE: macOS node binary not yet available, browser will use auto-download"
 
     - name: Install Yarn
       run: npm install -g yarn
