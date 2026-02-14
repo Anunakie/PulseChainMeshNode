@@ -1,11 +1,14 @@
 // PulseMesh Browser - Node Control Panel Manager
 // Manages the PulseMesh node binary (start/stop/monitor/configure)
+// Supports bundled binary, local discovery, and auto-download from GitHub
 
-import { ipcMain } from 'electron';
+import { ipcMain, app } from 'electron';
 
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
+const http = require('http');
 const Store = require('electron-store');
 const log = require('electron-log');
 
@@ -15,8 +18,20 @@ let nodeProcess = null;
 let nodeStatus = 'stopped'; // 'stopped' | 'starting' | 'running' | 'error'
 let nodeLogs = [];
 const MAX_LOG_LINES = 500;
+let downloadProgress = 0;
+let isDownloading = false;
 
 const STORE_KEY_NODE_CONFIG = 'node-config';
+const STORE_KEY_NODE_BINARY = 'node-binary-path';
+
+// GitHub release info for auto-download
+const GITHUB_REPO = 'anunakie/PulseChainMeshNode';
+const RELEASE_TAG = 'v0.1.0-beta';
+const NODE_RELEASE_ASSETS = {
+    win32: 'PulseMeshNode-Windows.zip',
+    linux: 'PulseMeshNode-Linux.zip',
+    darwin: 'PulseMeshNode-macOS.zip',
+};
 
 // Default node configuration
 const DEFAULT_CONFIG = {
@@ -39,7 +54,6 @@ function getStore() {
 
 /**
  * Get node configuration
- * @returns {object}
  */
 function getNodeConfig() {
     const s = getStore();
@@ -52,8 +66,6 @@ function getNodeConfig() {
 
 /**
  * Save node configuration
- * @param {object} config
- * @returns {object}
  */
 function saveNodeConfig(config) {
     const s = getStore();
@@ -66,8 +78,6 @@ function saveNodeConfig(config) {
 
 /**
  * Add a log entry
- * @param {string} message
- * @param {string} level - 'info' | 'error' | 'warn'
  */
 function addLog(message, level = 'info') {
     const entry = {
@@ -82,27 +92,48 @@ function addLog(message, level = 'info') {
 }
 
 /**
+ * Get the user data directory for storing downloaded binaries
+ */
+function getNodeBinDir() {
+    const dir = path.join(app.getPath('userData'), 'node-bin');
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+    return dir;
+}
+
+/**
  * Find the PulseMesh node binary
- * @returns {string|null}
+ * Search order: bundled resources > user data > saved path > system paths
  */
 function findNodeBinary() {
-    // Search common locations
-    // Platform-specific binary name
     const isWin = process.platform === 'win32';
     const binName = isWin ? 'PulseMeshNode.exe' : 'PulseMeshNode';
     const binNameAlt = isWin ? 'pulsemesh_node.exe' : 'pulsemesh_node';
 
     const possiblePaths = [
-        // Bundled with browser (same directory as app)
-        path.join(process.resourcesPath || '', binName),
-        path.join(process.resourcesPath || '', binNameAlt),
-        // App directory
+        // 1. Bundled with browser in resources/bin (extraResource)
+        path.join(process.resourcesPath || '', 'bin', binName),
+        path.join(process.resourcesPath || '', 'bin', binNameAlt),
+
+        // 2. Downloaded to user data directory
+        path.join(getNodeBinDir(), binName),
+        path.join(getNodeBinDir(), binNameAlt),
+
+        // 3. Previously saved custom path
+        getStore().get(STORE_KEY_NODE_BINARY) || '',
+
+        // 4. Same directory as browser executable
         path.join(path.dirname(process.execPath), binName),
         path.join(path.dirname(process.execPath), binNameAlt),
-        // User home - built from source
-        path.join(process.env.HOME || process.env.USERPROFILE || '/root', 'PulseChainMeshNode', 'node', 'target', 'release', binName),
-        path.join(process.env.HOME || process.env.USERPROFILE || '/root', 'PulseChainMeshNode', 'node', 'target', 'release', binNameAlt),
-        // System paths
+
+        // 5. Built from source
+        path.join(process.env.HOME || process.env.USERPROFILE || '/root',
+            'PulseChainMeshNode', 'node', 'target', 'release', binName),
+        path.join(process.env.HOME || process.env.USERPROFILE || '/root',
+            'PulseChainMeshNode', 'node', 'target', 'release', binNameAlt),
+
+        // 6. System paths
         isWin ? path.join(process.env.LOCALAPPDATA || '', 'PulseMesh', binName) : '/usr/local/bin/PulseMeshNode',
         isWin ? path.join(process.env.PROGRAMFILES || '', 'PulseMesh', binName) : '/usr/local/bin/pulsemesh_node',
         isWin ? '' : '/usr/bin/PulseMeshNode',
@@ -112,6 +143,7 @@ function findNodeBinary() {
     for (const p of possiblePaths) {
         try {
             if (fs.existsSync(p)) {
+                log.info('NODE-MANAGER: Found binary at ' + p);
                 return p;
             }
         } catch (e) {
@@ -122,22 +154,209 @@ function findNodeBinary() {
 }
 
 /**
+ * Download a file following redirects
+ */
+function downloadFile(url, destPath) {
+    return new Promise((resolve, reject) => {
+        const makeRequest = (requestUrl, redirectCount = 0) => {
+            if (redirectCount > 5) {
+                reject(new Error('Too many redirects'));
+                return;
+            }
+
+            const protocol = requestUrl.startsWith('https') ? https : http;
+            const req = protocol.get(requestUrl, {
+                headers: { 'User-Agent': 'PulseMeshBrowser/1.0', 'Accept': 'application/octet-stream' }
+            }, (res) => {
+                // Handle redirects
+                if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                    makeRequest(res.headers.location, redirectCount + 1);
+                    return;
+                }
+
+                if (res.statusCode !== 200) {
+                    reject(new Error('Download failed with status ' + res.statusCode));
+                    return;
+                }
+
+                const totalSize = parseInt(res.headers['content-length'] || '0', 10);
+                let downloaded = 0;
+                const file = fs.createWriteStream(destPath);
+
+                res.on('data', (chunk) => {
+                    downloaded += chunk.length;
+                    if (totalSize > 0) {
+                        downloadProgress = Math.round((downloaded / totalSize) * 100);
+                    }
+                });
+
+                res.pipe(file);
+                file.on('finish', () => {
+                    file.close();
+                    resolve(destPath);
+                });
+                file.on('error', (err) => {
+                    fs.unlinkSync(destPath);
+                    reject(err);
+                });
+            });
+
+            req.on('error', reject);
+            req.setTimeout(30000, () => {
+                req.destroy();
+                reject(new Error('Download timeout'));
+            });
+        };
+
+        makeRequest(url);
+    });
+}
+
+/**
+ * Extract a ZIP file (cross-platform)
+ */
+async function extractZip(zipPath, destDir) {
+    const isWin = process.platform === 'win32';
+
+    if (isWin) {
+        // Use PowerShell on Windows
+        execSync(
+            `powershell -Command "Expand-Archive -Path '${zipPath}' -DestinationPath '${destDir}' -Force"`,
+            { timeout: 60000 }
+        );
+    } else {
+        // Use unzip on Linux/macOS
+        try {
+            execSync(`unzip -o "${zipPath}" -d "${destDir}"`, { timeout: 60000 });
+        } catch (e) {
+            // Try with tar if unzip not available
+            execSync(`python3 -c "import zipfile; zipfile.ZipFile('${zipPath}').extractall('${destDir}')"`,
+                { timeout: 60000 });
+        }
+    }
+}
+
+/**
+ * Download the node binary from GitHub releases
+ */
+async function downloadNodeBinary() {
+    if (isDownloading) {
+        return { status: 'downloading', progress: downloadProgress, message: 'Download already in progress' };
+    }
+
+    const platform = process.platform;
+    const assetName = NODE_RELEASE_ASSETS[platform];
+
+    if (!assetName) {
+        return { status: 'error', message: 'No pre-built binary available for ' + platform };
+    }
+
+    isDownloading = true;
+    downloadProgress = 0;
+    addLog('Starting node binary download...', 'info');
+
+    try {
+        // Get release info from GitHub API
+        const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/releases/tags/${RELEASE_TAG}`;
+        addLog('Fetching release info from ' + apiUrl, 'info');
+
+        const releaseData = await new Promise((resolve, reject) => {
+            https.get(apiUrl, {
+                headers: { 'User-Agent': 'PulseMeshBrowser/1.0', 'Accept': 'application/vnd.github.v3+json' }
+            }, (res) => {
+                let data = '';
+                res.on('data', (chunk) => { data += chunk; });
+                res.on('end', () => {
+                    try {
+                        resolve(JSON.parse(data));
+                    } catch (e) {
+                        reject(new Error('Failed to parse release data'));
+                    }
+                });
+            }).on('error', reject);
+        });
+
+        // Find the asset download URL
+        const asset = releaseData.assets?.find(a => a.name === assetName);
+        if (!asset) {
+            throw new Error('Asset ' + assetName + ' not found in release ' + RELEASE_TAG);
+        }
+
+        const downloadUrl = asset.browser_download_url;
+        addLog('Downloading from: ' + downloadUrl, 'info');
+
+        // Download to temp location
+        const binDir = getNodeBinDir();
+        const zipPath = path.join(binDir, assetName);
+
+        await downloadFile(downloadUrl, zipPath);
+        addLog('Download complete, extracting...', 'info');
+
+        // Extract
+        await extractZip(zipPath, binDir);
+        addLog('Extraction complete', 'info');
+
+        // Clean up zip
+        try { fs.unlinkSync(zipPath); } catch (e) { /* ignore */ }
+
+        // Make binary executable on Unix
+        if (platform !== 'win32') {
+            const binName = 'PulseMeshNode';
+            const binPath = path.join(binDir, binName);
+            if (fs.existsSync(binPath)) {
+                fs.chmodSync(binPath, 0o755);
+            }
+            // Also check for alternate name
+            const altPath = path.join(binDir, 'pulsemesh_node');
+            if (fs.existsSync(altPath)) {
+                fs.chmodSync(altPath, 0o755);
+            }
+        }
+
+        // Verify binary exists
+        const foundBinary = findNodeBinary();
+        if (foundBinary) {
+            addLog('Node binary ready at: ' + foundBinary, 'info');
+            getStore().set(STORE_KEY_NODE_BINARY, foundBinary);
+            isDownloading = false;
+            downloadProgress = 100;
+            return { status: 'success', message: 'Node binary downloaded and ready', path: foundBinary };
+        } else {
+            throw new Error('Binary not found after extraction');
+        }
+    } catch (err) {
+        isDownloading = false;
+        downloadProgress = 0;
+        addLog('Download failed: ' + err.message, 'error');
+        log.error('NODE-MANAGER: Download failed ->', err.message);
+        return { status: 'error', message: 'Download failed: ' + err.message };
+    }
+}
+
+/**
  * Start the PulseMesh node
- * @returns {object} - { status, message }
  */
 async function startNode() {
     if (nodeProcess && nodeStatus === 'running') {
         return { status: 'running', message: 'Node is already running' };
     }
 
-    const binaryPath = findNodeBinary();
+    let binaryPath = findNodeBinary();
+
+    // Auto-download if not found
     if (!binaryPath) {
-        nodeStatus = 'error';
-        addLog('Node binary not found. Please ensure PulseMesh node is built.', 'error');
-        return {
-            status: 'error',
-            message: 'Node binary not found. Build the node first.',
-        };
+        addLog('Node binary not found locally. Attempting auto-download...', 'info');
+        const dlResult = await downloadNodeBinary();
+        if (dlResult.status === 'success') {
+            binaryPath = dlResult.path;
+        } else {
+            nodeStatus = 'error';
+            return {
+                status: 'error',
+                message: 'Node binary not found and download failed: ' + dlResult.message,
+                canDownload: true,
+            };
+        }
     }
 
     const config = getNodeConfig();
@@ -219,7 +438,6 @@ async function startNode() {
 
 /**
  * Stop the PulseMesh node
- * @returns {object} - { status, message }
  */
 async function stopNode() {
     if (!nodeProcess) {
@@ -230,7 +448,11 @@ async function stopNode() {
     addLog('Stopping PulseMesh node...', 'info');
 
     try {
-        nodeProcess.kill('SIGTERM');
+        if (process.platform === 'win32') {
+            nodeProcess.kill('SIGTERM');
+        } else {
+            nodeProcess.kill('SIGTERM');
+        }
 
         // Wait for graceful shutdown (up to 5 seconds)
         await new Promise((resolve) => {
@@ -268,21 +490,22 @@ async function stopNode() {
 
 /**
  * Get node status
- * @returns {object}
  */
 function getNodeStatus() {
+    const binaryPath = findNodeBinary();
     return {
         status: nodeStatus,
         pid: nodeProcess?.pid || null,
         uptime: nodeProcess ? process.uptime() : 0,
-        binaryFound: !!findNodeBinary(),
+        binaryFound: !!binaryPath,
+        binaryPath: binaryPath || null,
+        isDownloading: isDownloading,
+        downloadProgress: downloadProgress,
     };
 }
 
 /**
  * Get node logs
- * @param {number} limit - Max number of log lines to return
- * @returns {Array}
  */
 function getNodeLogs(limit = 100) {
     const count = Math.min(limit, nodeLogs.length);
@@ -295,6 +518,18 @@ function getNodeLogs(limit = 100) {
 function clearNodeLogs() {
     nodeLogs = [];
     return { cleared: true };
+}
+
+/**
+ * Set custom binary path
+ */
+function setNodeBinaryPath(binaryPath) {
+    if (binaryPath && fs.existsSync(binaryPath)) {
+        getStore().set(STORE_KEY_NODE_BINARY, binaryPath);
+        addLog('Custom binary path set: ' + binaryPath, 'info');
+        return { status: 'success', path: binaryPath };
+    }
+    return { status: 'error', message: 'File not found: ' + binaryPath };
 }
 
 /**
@@ -329,7 +564,19 @@ export function initNodeManagerHandlers() {
         return saveNodeConfig(config);
     });
 
+    ipcMain.handle('node:download-binary', async (event) => {
+        return await downloadNodeBinary();
+    });
+
+    ipcMain.handle('node:get-download-progress', async (event) => {
+        return { isDownloading, progress: downloadProgress };
+    });
+
+    ipcMain.handle('node:set-binary-path', async (event, binaryPath) => {
+        return setNodeBinaryPath(binaryPath);
+    });
+
     log.info('NODE-MANAGER: IPC handlers registered');
 }
 
-export { startNode, stopNode, getNodeStatus, getNodeLogs, getNodeConfig };
+export { startNode, stopNode, getNodeStatus, getNodeLogs, getNodeConfig, downloadNodeBinary };

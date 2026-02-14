@@ -83,6 +83,9 @@ contextBridge.exposeInMainWorld('nodeApi', {
     clearNodeLogs: () => ipcRenderer.invoke('node:clear-logs'),
     getNodeConfig: () => ipcRenderer.invoke('node:get-config'),
     configureNode: (config) => ipcRenderer.invoke('node:save-config', config),
+    downloadBinary: () => ipcRenderer.invoke('node:download-binary'),
+    getDownloadProgress: () => ipcRenderer.invoke('node:get-download-progress'),
+    setBinaryPath: (path) => ipcRenderer.invoke('node:set-binary-path', path),
 });
 
 // Mesh Proxy API

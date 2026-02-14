@@ -68,6 +68,9 @@ const App = () => {
     const [nodeView, setNodeView] = useState('status'); // status | config | logs
     const [nodeBinaryFound, setNodeBinaryFound] = useState(false);
     const [nodeLoading, setNodeLoading] = useState(false);
+    const [nodeDownloading, setNodeDownloading] = useState(false);
+    const [nodeDownloadProgress, setNodeDownloadProgress] = useState(0);
+    const [nodeBinaryPath, setNodeBinaryPath] = useState(null);
     const nodeLogEndRef = useRef(null);
     // ===== MESH PROXY STATE =====
     const [showMeshPanel, setShowMeshPanel] = useState(false);
@@ -405,6 +408,9 @@ const App = () => {
                     const status = await window.nodeApi.getNodeStatus();
                     setNodeStatus(status.status);
                     setNodeBinaryFound(status.binaryFound);
+                    setNodeBinaryPath(status.binaryPath || null);
+                    setNodeDownloading(status.isDownloading || false);
+                    setNodeDownloadProgress(status.downloadProgress || 0);
                     const config = await window.nodeApi.getNodeConfig();
                     setNodeConfig(config);
                 }
@@ -424,6 +430,9 @@ const App = () => {
                     const status = await window.nodeApi.getNodeStatus();
                     setNodeStatus(status.status);
                     setNodeBinaryFound(status.binaryFound);
+                    setNodeBinaryPath(status.binaryPath || null);
+                    setNodeDownloading(status.isDownloading || false);
+                    setNodeDownloadProgress(status.downloadProgress || 0);
                     if (nodeView === 'logs') {
                         const logs = await window.nodeApi.getNodeLogs(200);
                         setNodeLogs(logs || []);
@@ -1023,6 +1032,21 @@ const App = () => {
         } catch (err) {
             console.error('Failed to clear logs:', err);
         }
+    };
+
+    const handleDownloadNode = async () => {
+        setNodeDownloading(true);
+        setNodeDownloadProgress(0);
+        try {
+            const result = await window.nodeApi.downloadBinary();
+            if (result.status === 'success') {
+                setNodeBinaryFound(true);
+                setNodeBinaryPath(result.path);
+            }
+        } catch (err) {
+            console.error('Failed to download node binary:', err);
+        }
+        setNodeDownloading(false);
     };
 
     const nodeStatusColor = () => {
@@ -2055,17 +2079,61 @@ const App = () => {
                         </div>
                         <div className={styles.nodeInfoRow}>
                             <span className={styles.nodeInfoLabel}>Binary</span>
-                            <span className={styles.nodeInfoValue}>{nodeBinaryFound ? 'Found' : 'Not Found'}</span>
+                            <span className={styles.nodeInfoValue} style={{ color: nodeBinaryFound ? '#4ade80' : '#f87171' }}>
+                                {nodeBinaryFound ? '✓ Found' : '✗ Not Found'}
+                            </span>
                         </div>
+                        {nodeBinaryPath && (
+                            <div className={styles.nodeInfoRow}>
+                                <span className={styles.nodeInfoLabel}>Path</span>
+                                <span className={styles.nodeInfoValue} style={{ fontSize: '10px', wordBreak: 'break-all', opacity: 0.7 }}>{nodeBinaryPath}</span>
+                            </div>
+                        )}
+
+                        {/* Download progress bar */}
+                        {nodeDownloading && (
+                            <div style={{ margin: '8px 0' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px', color: '#06b6d4' }}>
+                                    <span>Downloading node binary...</span>
+                                    <span>{nodeDownloadProgress}%</span>
+                                </div>
+                                <div style={{ width: '100%', height: '6px', backgroundColor: '#1e293b', borderRadius: '3px', overflow: 'hidden' }}>
+                                    <div style={{ width: nodeDownloadProgress + '%', height: '100%', backgroundColor: '#06b6d4', borderRadius: '3px', transition: 'width 0.3s ease' }} />
+                                </div>
+                            </div>
+                        )}
+
                         <div className={styles.nodeActions}>
                             {nodeStatus === 'running' ? (
-                                <button className={styles.nodeBtnDanger} onClick={handleStopNode} disabled={nodeLoading}>{nodeLoading ? 'Stopping...' : 'Stop Node'}</button>
+                                <button className={styles.nodeBtnDanger} onClick={handleStopNode} disabled={nodeLoading}>
+                                    {nodeLoading ? 'Stopping...' : '⏹ Stop Node'}
+                                </button>
                             ) : (
-                                <button className={styles.nodeBtnPrimary} onClick={handleStartNode} disabled={nodeLoading || !nodeBinaryFound}>{nodeLoading ? 'Starting...' : 'Start Node'}</button>
+                                <button className={styles.nodeBtnPrimary} onClick={handleStartNode} disabled={nodeLoading || nodeDownloading}>
+                                    {nodeLoading ? 'Starting...' : '▶ Start Node'}
+                                </button>
                             )}
                         </div>
-                        {!nodeBinaryFound && (
-                            <p className={styles.nodeWarning}>Node binary not found. Build the PulseMesh node first.</p>
+
+                        {!nodeBinaryFound && !nodeDownloading && nodeStatus !== 'running' && (
+                            <div style={{ marginTop: '8px', padding: '10px', backgroundColor: 'rgba(6,182,212,0.08)', borderRadius: '8px', border: '1px solid rgba(6,182,212,0.2)' }}>
+                                <p style={{ fontSize: '11px', color: '#94a3b8', margin: '0 0 8px 0' }}>
+                                    Node binary not found. Download it automatically from GitHub or click Start to auto-download.
+                                </p>
+                                <button
+                                    className={styles.nodeBtnPrimary}
+                                    onClick={handleDownloadNode}
+                                    style={{ width: '100%', fontSize: '12px' }}
+                                >
+                                    ⬇ Download Node Binary
+                                </button>
+                            </div>
+                        )}
+
+                        {nodeBinaryFound && nodeStatus === 'stopped' && (
+                            <p style={{ fontSize: '11px', color: '#4ade80', margin: '8px 0 0', textAlign: 'center' }}>
+                                ✓ Node binary ready. Click Start to launch the mesh node.
+                            </p>
                         )}
                     </div>
                 )}
@@ -2113,7 +2181,7 @@ const App = () => {
                         </div>
                         <div className={styles.nodeLogsScroll}>
                             {nodeLogs.length === 0 ? (
-                                <div className={styles.nodeLogsEmpty}>No logs yet</div>
+                                <div className={styles.nodeLogsEmpty}>No logs yet. Start the node to see output.</div>
                             ) : (
                                 nodeLogs.map((entry, i) => (
                                     <div key={i} className={`${styles.nodeLogLine} ${entry.level === 'error' ? styles.nodeLogError : entry.level === 'warn' ? styles.nodeLogWarn : ''}`}>

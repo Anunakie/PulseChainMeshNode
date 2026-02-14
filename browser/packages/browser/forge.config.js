@@ -1,3 +1,6 @@
+const path = require('path');
+const fs = require('fs');
+
 const makers = [
     {
         name: '@electron-forge/maker-squirrel',
@@ -46,6 +49,16 @@ if (process.platform === 'darwin') {
     }
 }
 
+// Build extraResource list - include bin directory if it has files
+const extraResource = [];
+const binDir = path.join(__dirname, 'bin');
+if (fs.existsSync(binDir)) {
+    const binFiles = fs.readdirSync(binDir).filter(f => !f.startsWith('.'));
+    if (binFiles.length > 0) {
+        extraResource.push('./bin');
+    }
+}
+
 module.exports = {
     packagerConfig: {
         name: 'PulseMesh Browser',
@@ -53,6 +66,7 @@ module.exports = {
         appBundleId: 'com.pulsechainmeshnode.browser',
         icon: './src/main/icons/icon',
         appCopyright: 'Copyright (C) 2024 PulseChainMeshNode Community',
+        extraResource: extraResource,
     },
     rebuildConfig: {},
     makers: makers,
